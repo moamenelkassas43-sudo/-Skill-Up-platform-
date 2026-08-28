@@ -1,0 +1,94 @@
+@import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;700;900&family=Fira+Code:wght@500&display=swap');
+
+body {
+  font-family: 'Cairo', sans-serif;
+}
+
+.text-gold {
+  color: #fbbf24;
+  text-shadow: 0 0 15px rgba(251, 191, 36, 0.6);
+}
+
+/* Pyramid Golden Glow Animation */
+.pyramid-container {
+  position: relative;
+  width: 200px;
+  height: 160px;
+}
+
+.pyramid-line {
+  position: absolute;
+  background: linear-gradient(90deg, #d97706, #fbbf24);
+  box-shadow: 0 0 15px #fbbf24, 0 0 25px #d97706;
+  border-radius: 2px;
+  opacity: 0;
+  animation: drawLine 1.2s forwards ease-in-out;
+}
+
+.p-left {
+  width: 4px;
+  height: 180px;
+  top: 0;
+  left: 50%;
+  transform-origin: top left;
+  transform: rotate(-30deg);
+  animation-delay: 0.3s;
+}
+
+.p-right {
+  width: 4px;
+  height: 180px;
+  top: 0;
+  left: 50%;
+  transform-origin: top left;
+  transform: rotate(30deg);
+  animation-delay: 0.8s;
+}
+
+.p-base {
+  width: 180px;
+  height: 4px;
+  bottom: 0;
+  left: 10px;
+  animation-delay: 1.3s;
+}
+
+.p-mid {
+  width: 4px;
+  height: 155px;
+  top: 0;
+  left: 50%;
+  animation-delay: 1.8s;
+}
+
+@keyframes drawLine {
+  from { opacity: 0; filter: blur(4px); }
+  to { opacity: 1; filter: blur(0); }
+}
+
+/* Animated Bubbles */
+.bubble-btn {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  padding: 18px 32px;
+  border-radius: 9999px;
+  color: white;
+  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
+}
+
+.bubble-btn:hover {
+  transform: scale(1.15) translateY(-6px);
+  filter: brightness(1.2);
+}
+
+/* Dynamic Gender Themes */
+body.theme-male {
+  background-color: #0b132b;
+}
+
+body.theme-female {
+  background-color: #1f0c18;
+}
