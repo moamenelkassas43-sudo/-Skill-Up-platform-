@@ -1,6 +1,31 @@
-/* Typography Integration */
-.font-cairo {
-  font-family: 'Cairo', sans-serif;
+/* 1. Global Setup & Custom Fonts */
+@import url('https://fonts.googleapis.com/css2?family=Noto+Kufi+Arabic:wght@400;600;700;900&family=Plus+Jakarta+Sans:wght@500;700;800&display=swap');
+
+:root {
+  --gold-glow: #fbbf24;
+  --theme-color: #3b82f6;
+  --theme-border: rgba(59, 130, 246, 0.4);
+}
+
+/* Dynamic Gender Themes */
+body.theme-male {
+  --theme-color: #3b82f6;
+  --theme-border: rgba(59, 130, 246, 0.4);
+}
+
+body.theme-female {
+  --theme-color: #ec4899;
+  --theme-border: rgba(236, 72, 153, 0.4);
+}
+
+/* Full Page Background Image Integration */
+body {
+  font-family: 'Noto Kufi Arabic', sans-serif;
+  background-image: linear-gradient(to bottom, rgba(2, 6, 23, 0.88), rgba(2, 6, 23, 0.95)), url("https://i.postimg.cc/SKNW8WBH/cd2dcf5d05d298548db59eeb6905a00f.jpg");
+  background-size: cover;
+  background-position: center;
+  background-attachment: fixed;
+  background-repeat: no-repeat;
 }
 
 .font-english {
@@ -9,119 +34,140 @@
 
 .text-gold {
   color: #fbbf24;
-  text-shadow: 0 0 25px rgba(251, 191, 36, 0.6);
+  text-shadow: 0 0 15px rgba(251, 191, 36, 0.4);
 }
 
-/* 3 Golden Pyramids Dynamic Layout */
+/* 2. Realistic 3D Triple Pyramids CSS Animation */
 .triple-pyramid-stage {
   display: flex;
   align-items: flex-end;
   justify-content: center;
-  gap: -30px;
-}
-
-.pyramid-wrapper {
+  gap: 1.5rem;
   perspective: 1000px;
 }
 
-.pyramid-container {
+.pyramid-wrapper {
   position: relative;
-  width: 180px;
-  height: 150px;
+  width: 90px;
+  height: 90px;
+}
+
+.pyramid-main {
+  width: 130px;
+  height: 130px;
+}
+
+.pyramid-3d {
+  width: 100%;
+  height: 100%;
+  position: relative;
   transform-style: preserve-3d;
+  animation: floatPyramid 4s ease-in-out infinite alternate;
 }
 
-.pyramid-line {
+.pyramid-main .pyramid-3d {
+  animation-delay: -2s;
+}
+
+@keyframes floatPyramid {
+  0% {
+    transform: translateY(0px) rotateY(-5deg);
+  }
+  100% {
+    transform: translateY(-10px) rotateY(15deg);
+  }
+}
+
+.side {
   position: absolute;
-  background: linear-gradient(90deg, #b45309, #fbbf24, #fef08a);
-  box-shadow: 0 0 15px #fbbf24, 0 0 30px #d97706;
-  border-radius: 4px;
-  opacity: 0;
-  animation: drawGlowingLine 1.4s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+  width: 0;
+  height: 0;
+  border-left: 45px solid transparent;
+  border-right: 45px solid transparent;
+  border-bottom: 78px solid rgba(245, 158, 11, 0.85);
+  transform-origin: 50% 100%;
 }
 
-.p-left {
-  width: 4px;
-  height: 170px;
-  top: 0;
-  left: 50%;
-  transform-origin: top left;
-  transform: rotate(-32deg);
-  animation-delay: 0.2s;
+.pyramid-main .side {
+  border-left-width: 65px;
+  border-right-width: 65px;
+  border-bottom-width: 112px;
 }
 
-.p-right {
-  width: 4px;
-  height: 170px;
-  top: 0;
-  left: 50%;
-  transform-origin: top left;
-  transform: rotate(32deg);
-  animation-delay: 0.6s;
+.side-left {
+  transform: rotateY(30deg) skewY(-10deg);
+  border-bottom-color: #d97706;
 }
 
-.p-base {
-  width: 170px;
-  height: 4px;
+.side-right {
+  transform: rotateY(-30deg) skewY(10deg);
+  border-bottom-color: #fbbf24;
+  filter: drop-shadow(0 0 8px rgba(251, 191, 36, 0.6));
+}
+
+.pyramid-glow {
+  position: absolute;
   bottom: 0;
-  left: 5px;
-  animation-delay: 1s;
-}
-
-.p-mid {
-  width: 3px;
-  height: 145px;
-  top: 0;
   left: 50%;
-  animation-delay: 1.4s;
+  transform: translateX(-50%);
+  width: 80%;
+  height: 15px;
+  background: radial-gradient(ellipse at center, rgba(251, 191, 36, 0.6) 0%, transparent 70%);
+  filter: blur(5px);
 }
 
-@keyframes drawGlowingLine {
-  0% { opacity: 0; filter: blur(8px); transform: scaleY(0); }
-  100% { opacity: 1; filter: blur(0); }
+/* 3. Form Control Elements */
+.form-input {
+  width: 100%;
+  padding: 0.75rem 1rem;
+  background-color: rgba(15, 23, 42, 0.8);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 0.75rem;
+  color: #f8fafc;
+  font-size: 0.875rem;
+  outline: none;
+  transition: all 0.3s ease;
 }
 
-/* Animated Interactive Bubbles */
-.bubble-btn {
+.form-input:focus {
+  border-color: #fbbf24;
+  box-shadow: 0 0 12px rgba(251, 191, 36, 0.25);
+}
+
+/* Gender Buttons */
+.gender-btn {
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 12px;
-  padding: 18px 38px;
-  border-radius: 9999px;
-  color: white;
-  backdrop-filter: blur(10px);
-  border: 1px solid rgba(255, 255, 255, 0.15);
-  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.6);
-  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  gap: 0.5rem;
+  padding: 0.75rem;
+  border-width: 1px;
+  border-radius: 0.75rem;
+  background-color: rgba(15, 23, 42, 0.6);
+  transition: all 0.3s ease;
   cursor: pointer;
 }
 
-.bubble-male {
-  background: linear-gradient(135deg, #1e3a8a, #2563eb);
+.gender-btn.active-male {
+  background-color: rgba(59, 130, 246, 0.25);
+  border-color: #3b82f6;
+  box-shadow: 0 0 15px rgba(59, 130, 246, 0.4);
 }
 
-.bubble-male:hover {
-  box-shadow: 0 0 30px rgba(37, 99, 235, 0.6);
-  transform: translateY(-5px) scale(1.05);
+.gender-btn.active-female {
+  background-color: rgba(236, 72, 153, 0.25);
+  border-color: #ec4899;
+  box-shadow: 0 0 15px rgba(236, 72, 153, 0.4);
 }
 
-.bubble-female {
-  background: linear-gradient(135deg, #831843, #db2777);
+/* Navigation Links */
+.nav-link {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  transition: color 0.3s ease;
 }
 
-.bubble-female:hover {
-  box-shadow: 0 0 30px rgba(219, 39, 119, 0.6);
-  transform: translateY(-5px) scale(1.05);
-}
-
-/* Dynamic Themes */
-body.theme-male {
-  background-color: #030712;
-  background-image: radial-gradient(circle at 50% 0%, #1e3a8a33, transparent 70%);
-}
-
-body.theme-female {
-  background-color: #0f051d;
-  background-image: radial-gradient(circle at 50% 0%, #83184333, transparent 70%);
+.nav-link:hover {
+  color: #fbbf24;
 }
