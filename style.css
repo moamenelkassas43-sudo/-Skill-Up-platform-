@@ -1,94 +1,127 @@
-@import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;700;900&family=Fira+Code:wght@500&display=swap');
-
-body {
+/* Typography Integration */
+.font-cairo {
   font-family: 'Cairo', sans-serif;
+}
+
+.font-english {
+  font-family: 'Plus Jakarta Sans', sans-serif;
 }
 
 .text-gold {
   color: #fbbf24;
-  text-shadow: 0 0 15px rgba(251, 191, 36, 0.6);
+  text-shadow: 0 0 25px rgba(251, 191, 36, 0.6);
 }
 
-/* Pyramid Golden Glow Animation */
+/* 3 Golden Pyramids Dynamic Layout */
+.triple-pyramid-stage {
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  gap: -30px;
+}
+
+.pyramid-wrapper {
+  perspective: 1000px;
+}
+
 .pyramid-container {
   position: relative;
-  width: 200px;
-  height: 160px;
+  width: 180px;
+  height: 150px;
+  transform-style: preserve-3d;
 }
 
 .pyramid-line {
   position: absolute;
-  background: linear-gradient(90deg, #d97706, #fbbf24);
-  box-shadow: 0 0 15px #fbbf24, 0 0 25px #d97706;
-  border-radius: 2px;
+  background: linear-gradient(90deg, #b45309, #fbbf24, #fef08a);
+  box-shadow: 0 0 15px #fbbf24, 0 0 30px #d97706;
+  border-radius: 4px;
   opacity: 0;
-  animation: drawLine 1.2s forwards ease-in-out;
+  animation: drawGlowingLine 1.4s cubic-bezier(0.4, 0, 0.2, 1) forwards;
 }
 
 .p-left {
   width: 4px;
-  height: 180px;
+  height: 170px;
   top: 0;
   left: 50%;
   transform-origin: top left;
-  transform: rotate(-30deg);
-  animation-delay: 0.3s;
+  transform: rotate(-32deg);
+  animation-delay: 0.2s;
 }
 
 .p-right {
   width: 4px;
-  height: 180px;
+  height: 170px;
   top: 0;
   left: 50%;
   transform-origin: top left;
-  transform: rotate(30deg);
-  animation-delay: 0.8s;
+  transform: rotate(32deg);
+  animation-delay: 0.6s;
 }
 
 .p-base {
-  width: 180px;
+  width: 170px;
   height: 4px;
   bottom: 0;
-  left: 10px;
-  animation-delay: 1.3s;
+  left: 5px;
+  animation-delay: 1s;
 }
 
 .p-mid {
-  width: 4px;
-  height: 155px;
+  width: 3px;
+  height: 145px;
   top: 0;
   left: 50%;
-  animation-delay: 1.8s;
+  animation-delay: 1.4s;
 }
 
-@keyframes drawLine {
-  from { opacity: 0; filter: blur(4px); }
-  to { opacity: 1; filter: blur(0); }
+@keyframes drawGlowingLine {
+  0% { opacity: 0; filter: blur(8px); transform: scaleY(0); }
+  100% { opacity: 1; filter: blur(0); }
 }
 
-/* Animated Bubbles */
+/* Animated Interactive Bubbles */
 .bubble-btn {
   display: flex;
-  flex-direction: column;
   align-items: center;
-  gap: 8px;
-  padding: 18px 32px;
+  justify-content: center;
+  gap: 12px;
+  padding: 18px 38px;
   border-radius: 9999px;
   color: white;
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.6);
   transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
+  cursor: pointer;
 }
 
-.bubble-btn:hover {
-  transform: scale(1.15) translateY(-6px);
-  filter: brightness(1.2);
+.bubble-male {
+  background: linear-gradient(135deg, #1e3a8a, #2563eb);
 }
 
-/* Dynamic Gender Themes */
+.bubble-male:hover {
+  box-shadow: 0 0 30px rgba(37, 99, 235, 0.6);
+  transform: translateY(-5px) scale(1.05);
+}
+
+.bubble-female {
+  background: linear-gradient(135deg, #831843, #db2777);
+}
+
+.bubble-female:hover {
+  box-shadow: 0 0 30px rgba(219, 39, 119, 0.6);
+  transform: translateY(-5px) scale(1.05);
+}
+
+/* Dynamic Themes */
 body.theme-male {
-  background-color: #0b132b;
+  background-color: #030712;
+  background-image: radial-gradient(circle at 50% 0%, #1e3a8a33, transparent 70%);
 }
 
 body.theme-female {
-  background-color: #1f0c18;
+  background-color: #0f051d;
+  background-image: radial-gradient(circle at 50% 0%, #83184333, transparent 70%);
 }
