@@ -5,26 +5,19 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>منصة مستر أشرف بسيوني | Mr. Ashraf Bassiouny Platform</title>
     
-    <!-- Best Typography: Google Fonts (Noto Kufi Arabic & Plus Jakarta Sans) -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Noto+Kufi+Arabic:wght@400;600;700;900&family=Plus+Jakarta+Sans:wght@500;700;800&display=swap" rel="stylesheet">
     
-    <!-- Tailwind CSS Engine -->
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="style.css">
 </head>
-<body class="bg-slate-950 text-slate-100 min-h-screen font-kufi selection:bg-amber-400 selection:text-black overflow-x-hidden">
+<body class="theme-light bg-slate-900 text-slate-100 min-h-screen font-kufi selection:bg-amber-400 selection:text-black overflow-x-hidden">
 
-    <!-- 1. INTRO SCREEN: REALISTIC TRIPLE PYRAMID Glow & REGISTRATION -->
-    <div id="intro-screen" class="fixed inset-0 bg-slate-950 z-50 flex flex-col items-center justify-center p-4 md:p-6 overflow-y-auto">
+    <!-- 1. INTRO SCREEN & REGISTRATION -->
+    <div id="intro-screen" class="fixed inset-0 bg-slate-950 z-50 flex flex-col items-center justify-center p-4 overflow-y-auto">
         
-        <!-- Ambient Glowing Core -->
-        <div class="absolute w-[600px] h-[600px] bg-amber-500/10 rounded-full blur-[150px] pointer-events-none"></div>
-
-        <!-- 3D Realistic Golden Pyramids Stage -->
-        <div class="triple-pyramid-stage mb-8 mt-6">
-            <!-- Left Pyramid -->
+        <div class="triple-pyramid-stage mb-6 mt-4">
             <div class="pyramid-wrapper pyramid-small opacity-75">
                 <div class="pyramid-3d">
                     <div class="side side-left"></div>
@@ -32,8 +25,6 @@
                     <div class="pyramid-glow"></div>
                 </div>
             </div>
-
-            <!-- Center Pyramid (Main) -->
             <div class="pyramid-wrapper pyramid-main z-10">
                 <div class="pyramid-3d">
                     <div class="side side-left"></div>
@@ -41,8 +32,6 @@
                     <div class="pyramid-glow"></div>
                 </div>
             </div>
-
-            <!-- Right Pyramid -->
             <div class="pyramid-wrapper pyramid-small opacity-75">
                 <div class="pyramid-3d">
                     <div class="side side-left"></div>
@@ -52,56 +41,61 @@
             </div>
         </div>
 
-        <!-- Computer Typing English Intro Text -->
-        <div id="typing-text" class="text-gold font-english text-center text-lg md:text-2xl min-h-[40px] tracking-wide font-extrabold mb-8"></div>
+        <div id="typing-text" class="text-gold font-english text-center text-lg md:text-2xl min-h-[40px] tracking-wide font-extrabold mb-6"></div>
 
-        <!-- Full Student Registration Form -->
-        <div id="registration-box" class="hidden w-full max-w-lg bg-slate-900/90 backdrop-blur-xl border border-amber-400/30 p-6 md:p-8 rounded-3xl shadow-2xl transition-all duration-700">
-            <h3 class="text-xl md:text-2xl font-black text-center text-amber-400 mb-6">تسجيل حساب طالب جديد</h3>
+        <div id="registration-box" class="hidden w-full max-w-lg bg-slate-900/90 backdrop-blur-xl border border-amber-400/30 p-6 rounded-3xl shadow-2xl">
+            <h3 class="text-xl font-black text-center text-amber-400 mb-4">تسجيل حساب طالب جديد</h3>
             
-            <form id="register-form" class="space-y-4">
+            <form id="register-form" class="space-y-3">
                 <div>
-                    <label class="block text-xs font-bold text-slate-300 mb-1.5">الاسم بالكامل</label>
+                    <label class="block text-xs font-bold text-slate-300 mb-1">الاسم بالكامل</label>
                     <input type="text" id="reg-name" required placeholder="أدخل اسمك ثلاثي" class="form-input">
                 </div>
 
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
                     <div>
-                        <label class="block text-xs font-bold text-slate-300 mb-1.5">رقم الهاتف / الواتساب</label>
+                        <label class="block text-xs font-bold text-slate-300 mb-1">رقم الهاتف / الواتساب</label>
                         <input type="tel" id="reg-phone" required placeholder="01xxxxxxxxx" class="form-input" dir="ltr">
                     </div>
                     <div>
-                        <label class="block text-xs font-bold text-slate-300 mb-1.5">المدرسة</label>
-                        <select id="reg-school" required class="form-input bg-slate-950">
-                            <option value="" disabled selected>اختر المدرسة</option>
-                            <option value="مدرسة الشهيد محمد فؤاد الثانوية العسكرية بنين">مدرسة الشهيد محمد فؤاد العسكرية بنين</option>
-                            <option value="مدرسة الشهيد أحمد ياسر توفيق الثانوية للبنات">مدرسة الشهيد أحمد ياسر توفيق للبنات</option>
-                            <option value="سنتر Skill Up / مدرسة أخرى">سنتر Skill Up / مدرسة أخرى</option>
+                        <label class="block text-xs font-bold text-slate-300 mb-1">الصف الدراسي</label>
+                        <select id="reg-grade" required class="form-input bg-slate-950">
+                            <option value="" disabled selected>اختر الصف</option>
+                            <option value="الصف الأول الثانوي">الصف الأول الثانوي</option>
+                            <option value="الصف الثاني الثانوي">الصف الثاني الثانوي</option>
+                            <option value="الصف الثالث الثانوي">الصف الثالث الثانوي</option>
                         </select>
                     </div>
                 </div>
 
                 <div>
-                    <label class="block text-xs font-bold text-slate-300 mb-1.5">كلمة المرور الخاصة بك</label>
+                    <label class="block text-xs font-bold text-slate-300 mb-1">المدرسة</label>
+                    <select id="reg-school" required class="form-input bg-slate-950">
+                        <option value="" disabled selected>اختر المدرسة</option>
+                        <option value="مدرسة الشهيد محمد فؤاد الثانوية العسكرية بنين">مدرسة الشهيد محمد فؤاد العسكرية بنين</option>
+                        <option value="مدرسة الشهيد أحمد ياسر توفيق الثانوية للبنات">مدرسة الشهيد أحمد ياسر توفيق للبنات</option>
+                        <option value="سنتر Skill Up / مدرسة أخرى">سنتر Skill Up / مدرسة أخرى</option>
+                    </select>
+                </div>
+
+                <div>
+                    <label class="block text-xs font-bold text-slate-300 mb-1">كلمة المرور الخاصة بك</label>
                     <input type="password" id="reg-pass" required placeholder="أدخل كلمة مرور قوية" class="form-input">
                 </div>
 
-                <!-- Gender Selection Bubbles -->
                 <div>
-                    <label class="block text-xs font-bold text-slate-300 mb-2">تحديد النوع (يتحدد ثيم المنصة بناءً عليه)</label>
-                    <div class="grid grid-cols-2 gap-4">
-                        <button type="button" onclick="setGenderChoice('male')" id="btn-gender-male" class="gender-btn border-blue-500/30 hover:bg-blue-600/20">
-                            <svg class="w-6 h-6 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path></svg>
-                            <span class="font-bold text-sm">طالب (ولد)</span>
+                    <label class="block text-xs font-bold text-slate-300 mb-1.5">تحديد النوع</label>
+                    <div class="grid grid-cols-2 gap-3">
+                        <button type="button" onclick="setGenderChoice('male')" id="btn-gender-male" class="gender-btn border-blue-500/30">
+                            <span class="font-bold text-xs">طالب (ولد)</span>
                         </button>
-                        <button type="button" onclick="setGenderChoice('female')" id="btn-gender-female" class="gender-btn border-pink-500/30 hover:bg-pink-600/20">
-                            <svg class="w-6 h-6 text-pink-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path></svg>
-                            <span class="font-bold text-sm">طالبة (بنت)</span>
+                        <button type="button" onclick="setGenderChoice('female')" id="btn-gender-female" class="gender-btn border-pink-500/30">
+                            <span class="font-bold text-xs">طالبة (بنت)</span>
                         </button>
                     </div>
                 </div>
 
-                <button type="submit" class="w-full py-3.5 mt-2 bg-gradient-to-r from-amber-500 to-amber-400 hover:from-amber-400 hover:to-amber-300 text-slate-950 font-black rounded-xl shadow-lg transition-all text-sm">
+                <button type="submit" class="w-full py-3 mt-2 bg-amber-400 hover:bg-amber-300 text-slate-950 font-black rounded-xl text-sm transition-all">
                     دخول المنصة التعليمية
                 </button>
             </form>
@@ -109,44 +103,31 @@
     </div>
 
     <!-- 2. MAIN APP CONTENT -->
-    <div id="main-app" class="hidden opacity-0 transition-opacity duration-1000">
+    <div id="main-app" class="hidden opacity-0 transition-opacity duration-1000 pb-20 md:pb-0">
         
-        <!-- Professional SVG Navbar -->
-        <nav class="sticky top-0 z-40 bg-slate-950/85 backdrop-blur-md border-b border-white/10 px-6 py-4">
+        <!-- Sticky Navbar -->
+        <nav class="sticky top-0 z-40 bg-slate-900/90 backdrop-blur-md border-b border-white/10 px-6 py-4">
             <div class="max-w-7xl mx-auto flex justify-between items-center">
                 <div class="flex items-center gap-3">
                     <div class="w-3 h-3 rounded-full bg-amber-400 animate-pulse"></div>
                     <h1 class="text-xl font-black tracking-wider text-gold font-english">SKILL UP <span class="text-xs font-normal text-slate-400 font-kufi">CENTER</span></h1>
                 </div>
-                
-                <!-- Navigation Icons Links -->
-                <div class="hidden md:flex items-center gap-8 text-sm font-bold text-slate-300">
-                    <a href="#hero" class="nav-link">
-                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path></svg>
-                        <span>الرئيسية</span>
-                    </a>
-                    <a href="#courses" class="nav-link">
-                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path></svg>
-                        <span>المحاضرات</span>
-                    </a>
-                    <a href="#pdfs" class="nav-link">
-                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z"></path></svg>
-                        <span>الملازم (PDF)</span>
-                    </a>
-                    <a href="#quizzes" class="nav-link">
-                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
-                        <span>الاختبارات</span>
-                    </a>
-                    <a href="#contact" class="nav-link">
-                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z"></path></svg>
-                        <span>تواصل معنا</span>
-                    </a>
+
+                <!-- Desktop Navigation Links -->
+                <div class="hidden md:flex items-center gap-6 text-sm font-bold text-slate-300">
+                    <button onclick="showSection('hero')" class="nav-link">الرئيسية</button>
+                    <button onclick="showSection('courses')" class="nav-link">المحاضرات</button>
+                    <button onclick="showSection('pdfs')" class="nav-link">الملازم (PDF)</button>
+                    <button onclick="showSection('quizzes')" class="nav-link">الاختبارات</button>
+                    <button onclick="showSection('contact')" class="nav-link">تواصل معنا</button>
                 </div>
 
                 <div class="flex items-center gap-3">
-                    <button onclick="openAdminModal()" class="px-3.5 py-1.5 rounded-xl border border-amber-400/40 text-amber-300 hover:bg-amber-400/10 text-xs font-bold transition-all flex items-center gap-1.5">
-                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path></svg>
-                        <span>لوحة الأدمن</span>
+                    <button onclick="toggleThemeMode()" class="px-3 py-1.5 rounded-xl border border-slate-700 bg-slate-800 text-xs font-bold hover:bg-slate-700">
+                        🌓 <span id="theme-mode-text">الوضع الداكن</span>
+                    </button>
+                    <button onclick="openAdminModal()" class="px-3.5 py-1.5 rounded-xl border border-amber-400/40 text-amber-300 hover:bg-amber-400/10 text-xs font-bold">
+                        لوحة الأدمن
                     </button>
                     <div id="user-badge" class="px-3 py-1 rounded-full text-xs font-bold border"></div>
                 </div>
@@ -154,168 +135,116 @@
         </nav>
 
         <!-- Hero Section -->
-        <section id="hero" class="max-w-7xl mx-auto px-6 pt-16 pb-20 flex flex-col md:flex-row items-center justify-between gap-12">
-            
-            <!-- Rounded Master Ashraf Image -->
+        <section id="hero" class="app-section max-w-7xl mx-auto px-6 pt-12 pb-16 flex flex-col md:flex-row items-center justify-between gap-10">
             <div class="relative group">
-                <div class="absolute -inset-1 bg-gradient-to-r from-amber-500 via-amber-300 to-amber-600 rounded-[2.5rem] blur opacity-75 group-hover:opacity-100 transition duration-1000"></div>
-                <div class="relative w-72 h-72 md:w-96 md:h-96 rounded-[2.3rem] overflow-hidden border-2 border-amber-400/80 bg-slate-900">
-                    <img src="https://i.postimg.cc/13m7zN3B/IMG-20260828-WA0024.jpg" alt="مستر أشرف بسيوني علي أحمد" class="w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-500" />
+                <div class="absolute -inset-1 bg-gradient-to-r from-amber-500 via-amber-300 to-amber-600 rounded-[2.5rem] blur opacity-75"></div>
+                <div class="relative w-64 h-64 md:w-80 md:h-80 rounded-[2.3rem] overflow-hidden border-2 border-amber-400/80 bg-slate-900">
+                    <img src="https://i.postimg.cc/13m7zN3B/IMG-20260828-WA0024.jpg" alt="مستر أشرف بسيوني" class="w-full h-full object-cover" />
                 </div>
             </div>
 
-            <!-- Master Ashraf Credentials -->
-            <div class="flex-1 space-y-6 text-right">
-                <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-amber-400/30 text-amber-300 bg-amber-400/10 text-xs md:text-sm font-bold">
-                    <span>🏆</span> المعلم المثقف على مستوى محافظة كفر الشيخ (المشروع الوطني للقراءة 2024)
+            <div class="flex-1 space-y-4 text-right">
+                <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full border border-amber-400/30 text-amber-300 bg-amber-400/10 text-xs font-bold">
+                    🏆 المعلم المثقف على مستوى محافظة كفر الشيخ (المشروع الوطني للقراءة 2024)
                 </div>
-
-                <h2 class="text-3xl md:text-5xl font-black text-white leading-tight">
-                    مستر أشرف بسيوني <br><span class="text-amber-400">علي أحمد</span>
-                </h2>
-
-                <p class="text-xl md:text-2xl text-slate-300 font-bold">معلم خبير اللغة الإنجليزية</p>
-                
-                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-4 text-slate-300 text-xs md:text-sm">
-                    <div class="p-4 rounded-2xl bg-slate-900/60 border border-slate-800">
-                        <p class="text-amber-400 font-bold mb-1">📍 السنتر الخاص</p>
-                        <p class="font-bold">Skill Up Center</p>
-                    </div>
-                    <div class="p-4 rounded-2xl bg-slate-900/60 border border-slate-800">
-                        <p class="text-amber-400 font-bold mb-1">🏫 المدارس المعتمدة</p>
-                        <p>مدرسة الشهيد محمد فؤاد الثانوية العسكرية بنين</p>
-                        <p>مدرسة الشهيد أحمد ياسر توفيق الثانوية للبنات</p>
-                    </div>
-                </div>
+                <h2 class="text-3xl md:text-5xl font-black text-white">مستر أشرف بسيوني <span class="text-amber-400">علي أحمد</span></h2>
+                <p class="text-xl text-slate-300 font-bold">معلم خبير اللغة الإنجليزية</p>
             </div>
         </section>
 
-        <!-- Courses Section -->
-        <section id="courses" class="max-w-7xl mx-auto px-6 py-16 border-t border-slate-800/80">
-            <h3 class="text-2xl md:text-3xl font-black mb-8 text-amber-400">📚 المحاضرات والدروس</h3>
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-                <div class="p-6 rounded-2xl bg-slate-900/50 border border-slate-800">
-                    <span class="px-3 py-1 rounded-full text-xs font-bold bg-amber-400/10 text-amber-300">الصف الأول الثانوي</span>
-                    <h4 class="text-lg font-bold text-white mt-4 mb-2">مراجعات القواعد والمنهج</h4>
-                    <p class="text-slate-400 text-sm italic mb-4">قريباً سوف تكون المحاضرات متاحة للمشاهدة.</p>
-                </div>
-                <div class="p-6 rounded-2xl bg-slate-900/50 border border-slate-800">
-                    <span class="px-3 py-1 rounded-full text-xs font-bold bg-amber-400/10 text-amber-300">الصف الثاني الثانوي</span>
-                    <h4 class="text-lg font-bold text-white mt-4 mb-2">كورسات الترجمة والمهارات</h4>
-                    <p class="text-slate-400 text-sm italic mb-4">قريباً سوف تكون المحاضرات متاحة للمشاهدة.</p>
-                </div>
-                <div class="p-6 rounded-2xl bg-slate-900/50 border border-slate-800">
-                    <span class="px-3 py-1 rounded-full text-xs font-bold bg-amber-400/10 text-amber-300">الصف الثالث الثانوي</span>
-                    <h4 class="text-lg font-bold text-white mt-4 mb-2">معسكر الثانوية العامة الشامل</h4>
-                    <p class="text-slate-400 text-sm italic mb-4">قريباً سوف تكون المحاضرات متاحة للمشاهدة.</p>
-                </div>
+        <!-- Dynamic Page Sections (قريباً سوف تكون متاحة) -->
+        <section id="courses" class="app-section hidden max-w-4xl mx-auto px-6 py-24 text-center">
+            <div class="p-12 rounded-3xl bg-slate-900/80 border border-amber-400/30 shadow-2xl">
+                <h3 class="text-3xl font-black text-amber-400 mb-4">📚 قسم المحاضرات</h3>
+                <p class="text-xl font-bold text-slate-200">قريباً سوف تكون متاحة</p>
             </div>
         </section>
 
-        <!-- PDF Materials Section -->
-        <section id="pdfs" class="max-w-7xl mx-auto px-6 py-16 border-t border-slate-800/80">
-            <h3 class="text-2xl md:text-3xl font-black mb-8 text-amber-400">📄 المكتبة والملازم (PDF)</h3>
-            <div class="p-8 rounded-3xl bg-slate-900/40 border border-slate-800 text-center">
-                <p class="text-slate-300 font-bold text-lg mb-2">ملازم Skill Up والكتب الدراسية</p>
-                <p class="text-amber-400/80 italic">قريباً سوف تكون الملازم متاحة للتحميل المباشر بصيغة PDF.</p>
+        <section id="pdfs" class="app-section hidden max-w-4xl mx-auto px-6 py-24 text-center">
+            <div class="p-12 rounded-3xl bg-slate-900/80 border border-amber-400/30 shadow-2xl">
+                <h3 class="text-3xl font-black text-amber-400 mb-4">📄 قسم الملازم (PDF)</h3>
+                <p class="text-xl font-bold text-slate-200">قريباً سوف تكون متاحة</p>
             </div>
         </section>
 
-        <!-- Online Quizzes Section -->
-        <section id="quizzes" class="max-w-7xl mx-auto px-6 py-16 border-t border-slate-800/80">
-            <h3 class="text-2xl md:text-3xl font-black mb-8 text-amber-400">📝 الامتحانات الإلكترونية (Quizzes)</h3>
-            <div class="p-8 rounded-3xl bg-slate-900/40 border border-slate-800 text-center">
-                <p class="text-slate-300 font-bold text-lg mb-2">نظام الاختبارات التفاعلية</p>
-                <p class="text-amber-400/80 italic">قريباً سوف يتم نشر الامتحانات الإلكترونية وحساب الدرجات فوراً.</p>
+        <section id="quizzes" class="app-section hidden max-w-4xl mx-auto px-6 py-24 text-center">
+            <div class="p-12 rounded-3xl bg-slate-900/80 border border-amber-400/30 shadow-2xl">
+                <h3 class="text-3xl font-black text-amber-400 mb-4">📝 قسم الامتحانات الإلكترونية</h3>
+                <p class="text-xl font-bold text-slate-200">قريباً سوف تكون متاحة</p>
             </div>
         </section>
 
-        <!-- Student Direct Contact Section -->
-        <section id="contact" class="max-w-3xl mx-auto px-6 py-20 border-t border-slate-800/80">
-            <div class="bg-slate-900/80 p-8 rounded-3xl border border-slate-800 shadow-2xl">
-                <div class="text-center mb-8">
-                    <h3 class="text-2xl md:text-3xl font-black text-white mb-2">تواصل مباشر مع المستر</h3>
-                    <p class="text-slate-400 text-xs md:text-sm">أرسل استفسارك وسوف يصل مباشرة إلى لوحة تحكم الأدمن الخاصة بمستر أشرف</p>
-                </div>
-
+        <!-- Student Contact Section -->
+        <section id="contact" class="app-section max-w-3xl mx-auto px-6 py-12 border-t border-slate-800">
+            <div class="bg-slate-900/90 p-8 rounded-3xl border border-slate-800 shadow-2xl">
+                <h3 class="text-2xl font-black text-amber-400 text-center mb-6">تواصل مباشر مع المستر</h3>
                 <form id="student-msg-form" class="space-y-4">
                     <div>
                         <label class="block mb-1.5 text-xs font-bold text-slate-300">الرسالة أو السؤال</label>
-                        <textarea required id="student-msg-text" rows="4" placeholder="اكتب سؤالك أو استفسارك هنا..." class="form-input"></textarea>
+                        <textarea required id="student-msg-text" rows="4" placeholder="اكتب استفسارك هنا ليصل مباشرة للأدمن..." class="form-input"></textarea>
                     </div>
-                    <button type="submit" class="w-full py-3.5 bg-amber-400 hover:bg-amber-300 text-slate-950 font-black rounded-xl transition-all text-sm">
+                    <button type="submit" class="w-full py-3.5 bg-amber-400 text-slate-950 font-black rounded-xl text-sm hover:bg-amber-300">
                         إرسال الرسالة إلى الأدمن
                     </button>
                 </form>
             </div>
         </section>
 
-        <!-- Footer -->
-        <footer class="py-8 border-t border-slate-800 text-center text-slate-500 text-xs md:text-sm font-medium">
-            <p>© 2026 جميع الحقوق محفوظة لمنصة مستر أشرف بسيوني علي أحمد</p>
-        </footer>
+        <!-- Mobile Bottom Navigation Bar -->
+        <div class="md:hidden fixed bottom-0 inset-x-0 bg-slate-950/95 border-t border-slate-800 p-3 flex justify-around items-center z-40 text-xs font-bold">
+            <button onclick="showSection('hero')" class="text-amber-400">الرئيسية</button>
+            <button onclick="showSection('courses')" class="text-slate-300">المحاضرات</button>
+            <button onclick="showSection('pdfs')" class="text-slate-300">الملازم</button>
+            <button onclick="showSection('quizzes')" class="text-slate-300">الاختبارات</button>
+            <button onclick="showSection('contact')" class="text-slate-300">تواصل</button>
+        </div>
     </div>
 
-    <!-- 3. ADMIN DASHBOARD MODAL (Protected by password: 1122334455) -->
+    <!-- 3. ADMIN DASHBOARD MODAL -->
     <div id="admin-modal" class="fixed inset-0 bg-slate-950/95 backdrop-blur-xl z-50 hidden flex flex-col p-6 overflow-y-auto">
         <div class="max-w-6xl mx-auto w-full">
-            
-            <!-- Login State -->
             <div id="admin-auth" class="max-w-md mx-auto my-20 p-8 rounded-3xl bg-slate-900 border border-amber-400/30 text-center">
-                <h3 class="text-2xl font-black text-amber-400 mb-4">دخول لوحة تحكم الأدمن</h3>
-                <input type="password" id="admin-pass-input" placeholder="أدخل كلمة سر الأدمن" class="form-input mb-4 text-center">
+                <h3 class="text-2xl font-black text-amber-400 mb-4">دخول لوحة الأدمن</h3>
+                <input type="password" id="admin-pass-input" placeholder="أدخل كلمة السر" class="form-input mb-4 text-center">
                 <div class="flex gap-3">
                     <button onclick="verifyAdminPass()" class="flex-1 py-3 bg-amber-400 text-slate-950 font-bold rounded-xl">دخول</button>
                     <button onclick="closeAdminModal()" class="px-5 py-3 bg-slate-800 text-slate-300 font-bold rounded-xl">إلغاء</button>
                 </div>
             </div>
 
-            <!-- Dashboard Content State (After password verification) -->
-            <div id="admin-dashboard-content" class="hidden space-y-8">
+            <div id="admin-dashboard-content" class="hidden space-y-6">
                 <div class="flex justify-between items-center border-b border-slate-800 pb-4">
-                    <div>
-                        <h3 class="text-2xl font-black text-amber-400">لوحة إدارة المنصة (مستر أشرف بسيوني)</h3>
-                        <p class="text-slate-400 text-xs">عرض الطلاب المسجلين والرسائل الحقيقية المستلمة</p>
-                    </div>
-                    <button onclick="closeAdminModal()" class="px-4 py-2 bg-slate-800 hover:bg-slate-700 rounded-xl text-xs font-bold">إغلاق اللوحة</button>
+                    <h3 class="text-2xl font-black text-amber-400">لوحة الإدارة (رسائل وبيانات الطلاب)</h3>
+                    <button onclick="closeAdminModal()" class="px-4 py-2 bg-slate-800 rounded-xl text-xs font-bold">إغلاق</button>
                 </div>
 
-                <!-- Live Counter Card -->
-                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div class="grid grid-cols-2 gap-4">
                     <div class="p-6 rounded-2xl bg-slate-900 border border-slate-800">
-                        <p class="text-slate-400 text-xs font-bold mb-1">إجمالي عدد الطلاب المسجلين</p>
+                        <p class="text-slate-400 text-xs font-bold">إجمالي الطلاب المسجلين</p>
                         <p id="stat-students-count" class="text-4xl font-black text-amber-400">0</p>
                     </div>
                     <div class="p-6 rounded-2xl bg-slate-900 border border-slate-800">
-                        <p class="text-slate-400 text-xs font-bold mb-1">إجمالي الرسائل الواردة</p>
+                        <p class="text-slate-400 text-xs font-bold">إجمالي الرسائل الواردة</p>
                         <p id="stat-messages-count" class="text-4xl font-black text-blue-400">0</p>
                     </div>
                 </div>
 
-                <!-- Registered Students & Messages Table -->
-                <div class="bg-slate-900 rounded-2xl border border-slate-800 overflow-hidden">
-                    <div class="p-4 bg-slate-800/50 font-bold text-sm text-amber-400 border-b border-slate-800">
-                        سجل الحسابات والرسائل الواردة
-                    </div>
-                    <div class="overflow-x-auto">
-                        <table class="w-full text-right text-xs md:text-sm">
-                            <thead class="bg-slate-950 text-slate-400 border-b border-slate-800">
-                                <tr>
-                                    <th class="p-3">اسم الطالب</th>
-                                    <th class="p-3">رقم الواتساب</th>
-                                    <th class="p-3">المدرسة</th>
-                                    <th class="p-3">النوع</th>
-                                    <th class="p-3">الرسالة المستلمة</th>
-                                </tr>
-                            </thead>
-                            <tbody id="admin-table-body" class="divide-y divide-slate-800 text-slate-200">
-                                <!-- Dynamic rows inserted by JS -->
-                            </tbody>
-                        </table>
-                    </div>
+                <div class="bg-slate-900 rounded-2xl border border-slate-800 overflow-x-auto">
+                    <table class="w-full text-right text-xs md:text-sm">
+                        <thead class="bg-slate-950 text-slate-400 border-b border-slate-800">
+                            <tr>
+                                <th class="p-3">اسم الطالب</th>
+                                <th class="p-3">الصف الدراسي</th>
+                                <th class="p-3">الواتساب</th>
+                                <th class="p-3">المدرسة</th>
+                                <th class="p-3">النوع</th>
+                                <th class="p-3">الرسالة المستلمة</th>
+                            </tr>
+                        </thead>
+                        <tbody id="admin-table-body" class="divide-y divide-slate-800 text-slate-200"></tbody>
+                    </table>
                 </div>
             </div>
-
         </div>
     </div>
 
