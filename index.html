@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>منصة مستر أشرف بسيوني</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body class="bg-black text-slate-100 min-h-screen">
+
+  <!-- Intro Screen with Pyramid Animation -->
+  <div id="intro-screen" class="fixed inset-0 bg-black z-50 flex flex-col items-center justify-center p-4">
+    <div class="pyramid-container">
+      <div class="pyramid-line p-left"></div>
+      <div class="pyramid-line p-right"></div>
+      <div class="pyramid-line p-base"></div>
+      <div class="pyramid-line p-mid"></div>
+    </div>
+    
+    <div id="typing-text" class="text-gold font-mono text-center text-lg md:text-2xl mt-8 min-h-[40px]"></div>
+    
+    <div id="gender-selection" class="hidden flex gap-8 mt-10">
+      <button onclick="selectGender('male')" class="bubble-btn bg-blue-600">
+        <span class="text-3xl">👨‍🎓</span>
+        <span class="font-bold">طالب (ولد)</span>
+      </button>
+      <button onclick="selectGender('female')" class="bubble-btn bg-pink-500">
+        <span class="text-3xl">👩‍🎓</span>
+        <span class="font-bold">طالبة (بنت)</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- Main Website Interface -->
+  <div id="main-app" class="hidden">
+    <!-- Navigation Bar -->
+    <nav class="nav-bar px-6 py-4 border-b border-white/10 flex justify-between items-center sticky top-0 bg-slate-900/80 backdrop-blur z-40">
+      <h1 class="text-xl font-bold text-gold">منصة التعليم الإلكتروني</h1>
+      <div class="flex gap-4">
+        <a href="#hero" class="hover:text-amber-400">الرئيسية</a>
+        <a href="#courses" class="hover:text-amber-400">المحاضرات</a>
+        <a href="#contact" class="hover:text-amber-400">التواصل</a>
+      </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section id="hero" class="max-w-6xl mx-auto px-4 py-16 flex flex-col md:flex-row items-center gap-12">
+      
+      <!-- Master Ashraf Image Holder -->
+      <div class="w-64 h-64 md:w-80 md:h-80 rounded-3xl overflow-hidden border-4 border-amber-400/80 shadow-[0_0_30px_rgba(251,191,36,0.3)] bg-slate-900 flex-shrink-0 flex items-center justify-center">
+        <img src="https://i.postimg.cc/13m7zN3B/IMG-20260828-WA0024.jpg" alt="مستر أشرف بسيوني علي أحمد" class="w-full h-full object-cover" />
+      </div>
+
+      <div class="space-y-4 text-right">
+        <div class="inline-block px-4 py-1.5 rounded-full border border-amber-400/40 text-amber-300 bg-amber-400/10 text-sm font-semibold">
+          المعلم المثقف على مستوى محافظة كفر الشيخ 2024
+        </div>
+        <h2 class="text-3xl md:text-5xl font-extrabold text-white">مستر أشرف بسيوني علي أحمد</h2>
+        <p class="text-xl text-slate-300 font-medium">معلم خبير اللغة الإنجليزية</p>
+        
+        <div class="pt-4 space-y-2 text-slate-400 text-sm">
+          <p>📍 <strong>السنتر الخاص:</strong> Skill Up Center</p>
+          <p>🏫 <strong>المدارس:</strong> مدرسة الشهيد محمد فؤاد الثانوية العسكرية بنين | مدرسة الشهيد أحمد ياسر توفيق الثانوية للبنات</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Sections Divider -->
+    <div class="max-w-6xl mx-auto px-4 py-8">
+      <div class="border-t border-slate-800"></div>
+    </div>
+
+    <!-- Contact Form Section -->
+    <section id="contact" class="max-w-2xl mx-auto px-4 py-12">
+      <h3 class="text-2xl font-bold text-center mb-6">تواصل مباشر مع المستر</h3>
+      <form id="student-form" class="space-y-4 bg-slate-900/60 p-6 rounded-2xl border border-slate-800">
+        <div>
+          <label class="block mb-2 text-sm">الاسم بالكامل</label>
+          <input type="text" required id="student-name" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-amber-400">
+        </div>
+        <div>
+          <label class="block mb-2 text-sm">الرسالة أو الاستفسار</label>
+          <textarea required id="student-msg" rows="4" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-amber-400"></textarea>
+        </div>
+        <button type="submit" class="w-full py-3 bg-amber-500 hover:bg-amber-400 text-black font-bold rounded-xl transition-all">إرسال الرسالة</button>
+      </form>
+    </section>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
