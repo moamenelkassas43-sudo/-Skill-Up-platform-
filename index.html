@@ -32,23 +32,22 @@
                 </div>
             </div>
 
-            <!-- نموذج نشر خبر مع زر رفع صورة -->
-            <div class="p-4 rounded-xl bg-slate-900 border border-slate-800 space-y-3">
-                <h4 class="font-bold text-amber-400">نشر خبر / تنويه جديد للطلاب</h4>
+            <!--نموذج شر خبر مع زر رفع صوة او صورة->
+         <div>
+<h4 class="font-bold text-amber-400">نشر خبر / تنويه جديد للطلاب</h4>
                 
-                <input type="text" id="admin-news-input" placeholder="اكتب نص التنويه للطلاب..." class="form-input">
-                
-                <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
-                    <input type="text" id="admin-news-link" placeholder="رابط خارجي (اختياري)" class="form-input">
-                    <!-- زر اختيار ملف صورة من الجهاز -->
-                    <div class="flex items-center gap-2 bg-slate-950 p-1.5 rounded-lg border border-slate-800">
-                        <label class="text-slate-400 text-[11px] font-bold shrink-0">رفع صورة:</label>
-                        <input type="file" id="admin-news-file" accept="image/*" class="text-xs text-slate-400 file:mr-2 file:py-1 file:px-2 file:rounded-md file:border-0 file:bg-amber-400 file:text-slate-950 file:font-bold">
-                    </div>
-                </div>
+<input type="text" id="admin-news-input" placeholder="اكتب نص التنويه للطلاب..." class="form-input">
 
-                <button onclick="publishNews()" class="w-full py-2.5 bg-amber-400 text-slate-950 font-bold rounded-xl">نشر التنويه</button>
-            </div>
+<div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
+    <input type="text" id="admin-news-link" placeholder="رابط خارجي (اختياري)" class="form-input">
+    <!-- زر اختيار ملف صورة او فديو  من الجهاز -->
+    <div class="flex items-center gap-2 bg-slate-950 p-1.5 rounded-lg border border-slate-800">
+        <label class="text-slate-400 text-[11px] font-bold shrink-0">رفع صورة:</label>
+        <input type="file" id="admin-news-file" accept="image/*" class="text-xs text-slate-400 file:mr-2 file:py-1 file:px-2 file:rounded-md file:border-0 file:bg-amber-400 file:text-slate-950 file:font-bold">
+    </div>
+</div>
+
+<button onclick="publishNews()" class="w-full py-2.5 bg-amber-400 text-slate-950 font-bold rounded-xl">نشر التنويه</button>
 
             <!-- جدول الطلاب -->
             <div class="bg-slate-900 rounded-xl border border-slate-800 overflow-x-auto">
