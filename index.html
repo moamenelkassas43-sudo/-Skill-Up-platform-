@@ -47,7 +47,7 @@
 
     <!-- المنصة الرئيسية -->
     <div id="main-app" class="hidden opacity-0 transition-opacity duration-500 min-h-screen flex flex-col">
-        <!-- الهيدر العلوي -->
+        <!-- الهيدر العلوي الأصلي -->
         <header class="p-4 bg-slate-900 border-b border-slate-800 flex justify-between items-center sticky top-0 z-40">
             <div class="flex items-center gap-2">
                 <span class="font-extrabold text-amber-400 text-base md:text-lg">Mr. Ashraf Bassiouny</span>
@@ -63,57 +63,50 @@
             </div>
         </header>
 
-        <!-- قائمة التنقل للأقسام -->
+        <!-- نافيجيشن التنقل بين الأقسام -->
         <nav class="bg-slate-950 border-b border-slate-800 px-4 py-2 flex gap-2 overflow-x-auto text-xs font-bold">
-            <button onclick="showSection('news')" class="px-4 py-2 rounded-lg bg-amber-400 text-slate-950 whitespace-nowrap">📢 التنويهات والأخار</button>
-            <button onclick="showSection('lectures')" class="px-4 py-2 rounded-lg bg-slate-800 hover:bg-slate-700 whitespace-nowrap">🎥 المحاضرات والدروس</button>
-            <button onclick="showSection('books')" class="px-4 py-2 rounded-lg bg-slate-800 hover:bg-slate-700 whitespace-nowrap">📚 الملازم والمذكرات</button>
-            <button onclick="showSection('exams')" class="px-4 py-2 rounded-lg bg-slate-800 hover:bg-slate-700 whitespace-nowrap">📝 الاختبارات والأسئلة</button>
-            <button onclick="showSection('contact')" class="px-4 py-2 rounded-lg bg-slate-800 hover:bg-slate-700 whitespace-nowrap">💬 التواصل مع المستر</button>
+            <button onclick="showSection('news')" class="px-4 py-2 rounded-lg bg-amber-400 text-slate-950 whitespace-nowrap">📢 الأخبار والتنويهات</button>
+            <button onclick="showSection('lectures')" class="px-4 py-2 rounded-lg bg-slate-800 hover:bg-slate-700 whitespace-nowrap">🎥 المحاضرات</button>
+            <button onclick="showSection('books')" class="px-4 py-2 rounded-lg bg-slate-800 hover:bg-slate-700 whitespace-nowrap">📚 الملازم</button>
+            <button onclick="showSection('exams')" class="px-4 py-2 rounded-lg bg-slate-800 hover:bg-slate-700 whitespace-nowrap">📝 الاختبارات</button>
         </nav>
 
-        <!-- المحتوى المتغير والأقسام -->
+        <!-- المحتوى الرئيسي -->
         <main class="flex-1 p-4 max-w-4xl mx-auto w-full space-y-4">
             
-            <!-- شريط البحث الفوري -->
+            <!-- شريط البحث الفوري التفاعلي -->
             <div class="relative">
-                <input type="text" id="search-input" oninput="handleSearch()" placeholder="🔍 ابحث في المحتوى والملازم والدروس..." class="w-full p-3 rounded-xl bg-slate-900 border border-slate-800 text-sm focus:outline-none focus:border-amber-400">
+                <input type="text" id="search-input" oninput="handleSearch()" placeholder="🔍 ابحث بالكلمات في الأخبار، المحاضرات، أو الملازم..." class="w-full p-3 rounded-xl bg-slate-900 border border-slate-800 text-sm focus:outline-none focus:border-amber-400">
             </div>
 
-            <!-- قسم الأخبار والتنويهات -->
-            <section id="section-news" class="app-section space-y-3">
-                <h3 class="font-bold text-amber-400 text-sm">📢 آخر الأخبار والتنويهات</h3>
-                <div id="container-news" class="space-y-3"></div>
+            <!-- قسم الأخبار والتنويهات (الترتيب الأصلي) -->
+            <section id="news" class="app-section space-y-3">
+                <div id="news-container" class="space-y-3"></div>
             </section>
 
             <!-- قسم المحاضرات -->
-            <section id="section-lectures" class="app-section hidden space-y-3">
-                <h3 class="font-bold text-amber-400 text-sm">🎥 المحاضرات والشروحات</h3>
-                <div id="container-lectures" class="space-y-3"></div>
+            <section id="lectures" class="app-section hidden space-y-3">
+                <div id="lectures-container" class="space-y-3"></div>
             </section>
 
             <!-- قسم الملازم -->
-            <section id="section-books" class="app-section hidden space-y-3">
-                <h3 class="font-bold text-amber-400 text-sm">📚 الملازم والملفات (PDF)</h3>
-                <div id="container-books" class="space-y-3"></div>
+            <section id="books" class="app-section hidden space-y-3">
+                <div id="books-container" class="space-y-3"></div>
             </section>
 
             <!-- قسم الاختبارات -->
-            <section id="section-exams" class="app-section hidden space-y-3">
-                <h3 class="font-bold text-amber-400 text-sm">📝 الاختبارات والتطبيقات</h3>
-                <div id="container-exams" class="space-y-3"></div>
+            <section id="exams" class="app-section hidden space-y-3">
+                <div id="exams-container" class="space-y-3"></div>
             </section>
 
-            <!-- قسم التواصل -->
-            <section id="section-contact" class="app-section hidden space-y-3">
-                <div class="bg-slate-900 p-4 rounded-xl border border-slate-800 space-y-3">
-                    <h3 class="font-bold text-amber-400 text-sm">💬 إرسال استفسار أو رسالة للمستر</h3>
-                    <form id="student-msg-form" class="space-y-2">
-                        <textarea id="student-msg-text" rows="3" required placeholder="اكتب استفسارك هنا..." class="w-full p-3 rounded-lg bg-slate-800 border border-slate-700 text-xs focus:outline-none focus:border-amber-400"></textarea>
-                        <button type="submit" class="px-4 py-2 bg-amber-400 text-slate-950 font-bold rounded-lg text-xs">إرسال الرسالة</button>
-                    </form>
-                </div>
-            </section>
+            <!-- كارت تواصل الطالب المباشر مع المستر (القديم) -->
+            <div class="bg-slate-900 p-4 rounded-xl border border-slate-800 space-y-3">
+                <h3 class="font-bold text-amber-400 text-xs">💬 إرسال استفسار أو رسالة للمستر</h3>
+                <form id="student-msg-form" class="space-y-2">
+                    <textarea id="student-msg-text" rows="3" required placeholder="اكتب استفسارك هنا..." class="w-full p-3 rounded-lg bg-slate-800 border border-slate-700 text-xs focus:outline-none focus:border-amber-400"></textarea>
+                    <button type="submit" class="px-4 py-2 bg-amber-400 text-slate-950 font-bold rounded-lg text-xs">إرسال الرسالة</button>
+                </form>
+            </div>
 
         </main>
     </div>
@@ -134,7 +127,7 @@
         </div>
     </div>
 
-    <!-- مودال لوحة تحكم الأدمن المتقدمة -->
+    <!-- مودال لوحة تحكم الأدمن (مع الحفاظ على النمط الأصلي) -->
     <div id="admin-modal" class="hidden fixed inset-0 z-50 bg-black/80 flex items-center justify-center p-4 overflow-y-auto">
         <div class="bg-slate-900 p-6 rounded-2xl max-w-2xl w-full border border-slate-800 space-y-4 my-8">
             <div class="flex justify-between items-center border-b border-slate-800 pb-3">
@@ -154,33 +147,31 @@
 
             <!-- محتوى لوحة الأدمن بعد الدخول -->
             <div id="admin-dashboard-content" class="hidden space-y-6">
-                <!-- قسم إنشاء نشر جديد -->
+                <!-- قسم إنشاء منشور بالنظام المطور -->
                 <div class="p-4 bg-slate-950 rounded-xl border border-slate-800 space-y-3">
-                    <h4 class="font-bold text-xs text-amber-400">➕ إضافة نشر جديد في قسم معين</h4>
+                    <h4 class="font-bold text-xs text-amber-400">➕ النشر في القسم والوسائط</h4>
                     
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-2">
-                        <select id="admin-post-category" class="p-2 rounded-lg bg-slate-800 border border-slate-700 text-xs font-bold">
+                        <select id="admin-target-section" class="p-2.5 rounded-lg bg-slate-800 border border-slate-700 text-xs font-bold text-amber-400">
                             <option value="news">📢 قسم الأخبار والتنويهات</option>
                             <option value="lectures">🎥 قسم المحاضرات والشروحات</option>
-                            <option value="books">📚 قسم الملازم (PDF)</option>
+                            <option value="books">📚 قسم الملازم والمذكرات</option>
                             <option value="exams">📝 قسم الاختبارات والأسئلة</option>
                         </select>
-                        <input type="text" id="admin-post-title" placeholder="عنوان المنشور / الدرس" class="p-2 rounded-lg bg-slate-800 border border-slate-700 text-xs">
+                        <input type="text" id="admin-news-input" placeholder="اكتب النص / التفاصيل هنا..." class="p-2.5 rounded-lg bg-slate-800 border border-slate-700 text-xs">
                     </div>
 
-                    <textarea id="admin-post-text" rows="2" placeholder="تفاصيل أو تفاصيل إضافية..." class="w-full p-2.5 rounded-lg bg-slate-800 border border-slate-700 text-xs"></textarea>
-                    
-                    <input type="text" id="admin-post-link" placeholder="رابط خارجي (يوتيوب / موقع / drive)" class="w-full p-2 rounded-lg bg-slate-800 border border-slate-700 text-xs">
+                    <input type="text" id="admin-news-link" placeholder="رابط خارجي (يوتيوب / موقع / Drive)" class="w-full p-2.5 rounded-lg bg-slate-800 border border-slate-700 text-xs">
 
                     <div class="space-y-1">
-                        <label class="text-[10px] text-slate-400">اختر ملف أو صورة أو فيديو من جهازك:</label>
-                        <input type="file" id="admin-post-file" accept="image/*,video/*,application/pdf" class="w-full p-1.5 rounded-lg bg-slate-800 border border-slate-700 text-xs text-slate-400">
+                        <label class="text-[10px] text-slate-400">ارفع صورة / فيديو / ملف PDF من جهازك المباشر:</label>
+                        <input type="file" id="admin-news-file" accept="image/*,video/*,application/pdf" class="w-full p-1.5 rounded-lg bg-slate-800 border border-slate-700 text-xs text-slate-400">
                     </div>
 
-                    <button onclick="publishContent()" class="w-full py-2.5 bg-amber-400 text-slate-950 font-bold rounded-lg text-xs hover:bg-amber-300 transition">🚀 نشر المحتوى الآن</button>
+                    <button onclick="publishNews()" class="w-full py-2.5 bg-amber-400 text-slate-950 font-bold rounded-lg text-xs hover:bg-amber-300 transition">🚀 نشر المحتوى فوراً</button>
                 </div>
 
-                <!-- جدول إشعار وتواصل الطلاب -->
+                <!-- جدول إشعارات ورسائل الطلاب الأصلي -->
                 <div class="space-y-2">
                     <h4 class="font-bold text-xs text-amber-400">👥 رسائل واستفسارات الطلاب</h4>
                     <div class="overflow-x-auto">
