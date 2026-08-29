@@ -3,39 +3,63 @@
 .font-cairo { font-family: 'Cairo', sans-serif; }
 .font-modern-en { font-family: 'Space Grotesk', sans-serif; }
 
-/* Dark Mode (Default) */
+/* Dark Mode (Default) - خلفية داكنة غير شفافة وبدون تداخل مزعج */
 body.theme-dark {
   background-color: #020617;
   color: #f8fafc;
-  background-image: linear-gradient(to bottom, rgba(2, 6, 23, 0.94), rgba(2, 6, 23, 0.97)), url("https://i.postimg.cc/SKNW8WBH/cd2dcf5d05d298548db59eeb6905a00f.jpg");
+  background-image: linear-gradient(to bottom, rgba(2, 6, 23, 0.98), rgba(2, 6, 23, 0.99)), url("https://i.postimg.cc/SKNW8WBH/cd2dcf5d05d298548db59eeb6905a00f.jpg");
   background-size: cover;
   background-position: center;
   background-attachment: fixed;
 }
 
-/* Light Mode */
+/* Light Mode - خلفية فاتحة صلبة ونظيفة تماماً بلا شفافية مفرطة وألوان مريحة للعين */
 body.theme-light {
-  background-color: #f8fafc;
+  background-color: #f1f5f9;
   color: #0f172a;
-  background-image: linear-gradient(to bottom, rgba(248, 250, 252, 0.93), rgba(241, 245, 249, 0.96)), url("https://i.postimg.cc/SKNW8WBH/cd2dcf5d05d298548db59eeb6905a00f.jpg");
+  background-image: linear-gradient(to bottom, rgba(241, 245, 249, 0.98), rgba(226, 232, 240, 0.99)), url("https://i.postimg.cc/SKNW8WBH/cd2dcf5d05d298548db59eeb6905a00f.jpg");
   background-size: cover;
   background-position: center;
   background-attachment: fixed;
 }
 
-body.theme-light .bg-slate-950,
-body.theme-light .bg-slate-900 {
+/* تخصيص العناصر في الوضع الفاتح لتكون صلبة وواضحة (بدون شفافية عالية) */
+body.theme-light .bg-slate-950 {
   background-color: #ffffff !important;
-  color: #0f172a !important;
-  border-color: #e2e8f0 !important;
-}
-
-body.theme-light .form-input {
-  background-color: #f1f5f9 !important;
   color: #0f172a !important;
   border-color: #cbd5e1 !important;
 }
 
+body.theme-light .bg-slate-900 {
+  background-color: #f8fafc !important;
+  color: #0f172a !important;
+  border-color: #cbd5e1 !important;
+}
+
+body.theme-light .bg-slate-800 {
+  background-color: #e2e8f0 !important;
+  color: #0f172a !important;
+  border-color: #94a3b8 !important;
+}
+
+body.theme-light .text-slate-100,
+body.theme-light .text-slate-200,
+body.theme-light .text-slate-300 {
+  color: #1e293b !important;
+}
+
+body.theme-light .text-slate-400,
+body.theme-light .text-slate-500 {
+  color: #475569 !important;
+}
+
+body.theme-light .form-input {
+  background-color: #ffffff !important;
+  color: #0f172a !important;
+  border-color: #94a3b8 !important;
+}
+
+/* الأهرامات الثلاثية */
 .triple-pyramid-stage { display: flex; align-items: flex-end; justify-content: center; gap: 1rem; perspective: 1000px; }
 .pyramid-wrapper { position: relative; width: 60px; height: 60px; }
 .pyramid-main { width: 85px; height: 85px; }
@@ -46,10 +70,11 @@ body.theme-light .form-input {
 .side-right { border-bottom-color: #fbbf24; transform: rotateY(-30deg) skewY(10deg); }
 .side-left { transform: rotateY(30deg) skewY(-10deg); }
 
-.form-input { width: 100%; padding: 0.6rem 0.8rem; background-color: rgba(15, 23, 42, 0.9); border: 1px solid rgba(255, 255, 255, 0.12); border-radius: 0.6rem; color: #f8fafc; font-size: 0.75rem; outline: none; }
+/* الحقول والأزرار */
+.form-input { width: 100%; padding: 0.6rem 0.8rem; border: 1px solid rgba(255, 255, 255, 0.12); border-radius: 0.6rem; font-size: 0.75rem; outline: none; }
 .form-input:focus { border-color: #fbbf24; }
-.gender-btn { display: flex; align-items: center; justify-content: center; padding: 0.6rem; border-width: 1px; border-radius: 0.6rem; background-color: rgba(15, 23, 42, 0.6); }
+
+.gender-btn { display: flex; align-items: center; justify-content: center; padding: 0.6rem; border-width: 1px; border-radius: 0.6rem; }
 .gender-btn.active-male { background-color: rgba(59, 130, 246, 0.25); border-color: #3b82f6; }
 .gender-btn.active-female { background-color: rgba(236, 72, 153, 0.25); border-color: #ec4899; }
 .nav-link { font-weight: 700; transition: color 0.2s; }
-.nav-link:hover { color: #fbbf24; }
