@@ -1,361 +1,238 @@
 <!DOCTYPE html>
-<html lang="ar" dir="rtl" class="scroll-smooth">
+<html lang="ar" dir="rtl" class="dark">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>منصة مستر أشرف بسيوني | Mr. Ashraf Bassiouny Platform</title>
-    
-    <!-- External Fonts & Libraries -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800;900&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
-    
+    <title>منصة مستر أشرف بسيوني التعليمية</title>
+    <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="stylesheet" href="style.css">
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        amber: { 300: '#fcd34d', 400: '#fbbf24', 500: '#f59e0b' }
+                    }
+                }
+            }
+        }
+    </script>
 </head>
-<body id="app-body" class="theme-dark bg-slate-950 text-slate-100 min-h-screen font-cairo text-xs sm:text-sm selection:bg-amber-400 selection:text-black overflow-x-hidden">
+<body class="bg-slate-950 text-slate-100 font-sans antialiased min-h-screen pb-20 md:pb-6">
 
-    <!-- 1. INTRO SCREEN & REGISTRATION -->
-    <div id="intro-screen" class="fixed inset-0 bg-slate-950 z-50 flex flex-col items-center justify-center p-4 overflow-y-auto">
-        <div class="triple-pyramid-stage mb-4 mt-2">
-            <div class="pyramid-wrapper pyramid-small opacity-75">
-                <div class="pyramid-3d"><div class="side side-left"></div><div class="side side-right"></div></div>
+    <!-- Header / Navbar Desktop -->
+    <header class="bg-slate-900 border-b border-slate-800 sticky top-0 z-30 shadow-lg">
+        <div class="max-w-6xl mx-auto px-4 py-3 flex justify-between items-center">
+            <div class="flex items-center space-x-3 space-x-reverse cursor-pointer" onclick="showSection('hero')">
+                <div class="w-10 h-10 rounded-full bg-gradient-to-tr from-amber-500 to-amber-300 flex items-center justify-center font-black text-slate-950 text-xl shadow-md">
+                    أ
+                </div>
+                <div>
+                    <h1 class="font-bold text-sm md:text-base text-amber-400">مستر أشرف بسيوني</h1>
+                    <p class="text-[10px] text-slate-400">منصة اللغة الإنجليزية للثانوية العامة</p>
+                </div>
             </div>
-            <div class="pyramid-wrapper pyramid-main z-10">
-                <div class="pyramid-3d"><div class="side side-left"></div><div class="side side-right"></div></div>
-            </div>
-            <div class="pyramid-wrapper pyramid-small opacity-75">
-                <div class="pyramid-3d"><div class="side side-left"></div><div class="side side-right"></div></div>
-            </div>
+
+            <nav class="hidden md:flex items-center space-x-6 space-x-reverse text-xs font-bold">
+                <button onclick="showSection('hero')" class="hover:text-amber-400 transition">الرئيسية</button>
+                
+                <button onclick="showSection('news'); clearNotificationBadge('news');" class="relative hover:text-amber-400 transition">
+                    <span>الأخبار</span>
+                    <span id="badge-news-nav" class="hidden absolute -top-1 -right-2 w-2.5 h-2.5 bg-red-500 rounded-full animate-pulse"></span>
+                </button>
+
+                <button onclick="showSection('courses'); clearNotificationBadge('courses');" class="relative hover:text-amber-400 transition">
+                    <span>المحاضرات</span>
+                    <span id="badge-courses-nav" class="hidden absolute -top-1 -right-2 w-2.5 h-2.5 bg-red-500 rounded-full animate-pulse"></span>
+                </button>
+
+                <button onclick="showSection('pdfs'); clearNotificationBadge('pdfs');" class="relative hover:text-amber-400 transition">
+                    <span>الملازم</span>
+                    <span id="badge-pdfs-nav" class="hidden absolute -top-1 -right-2 w-2.5 h-2.5 bg-red-500 rounded-full animate-pulse"></span>
+                </button>
+
+                <button onclick="showSection('quizzes'); clearNotificationBadge('quizzes');" class="relative hover:text-amber-400 transition">
+                    <span>الاختبارات</span>
+                    <span id="badge-quizzes-nav" class="hidden absolute -top-1 -right-2 w-2.5 h-2.5 bg-red-500 rounded-full animate-pulse"></span>
+                </button>
+
+                <button onclick="openAdminModal()" class="px-3 py-1.5 border border-amber-400/40 text-amber-300 rounded-xl hover:bg-amber-400/10 transition">
+                    لوحة الأدمن ⚙️
+                </button>
+            </nav>
         </div>
+    </header>
 
-        <div id="typing-text" class="font-modern-en text-amber-400 text-center text-xl md:text-3xl font-bold tracking-tight mb-4 min-h-[40px]"></div>
+    <!-- Main Container -->
+    <main class="max-w-4xl mx-auto px-4 py-6">
 
-        <div id="registration-box" class="w-full max-w-md bg-slate-900/95 backdrop-blur-2xl border border-amber-400/30 p-5 rounded-2xl shadow-2xl relative">
-            <h3 class="text-xl font-black text-center text-amber-400 mb-4">انضمام عضو جديد للمنصة</h3>
+        <!-- 1. Hero Section -->
+        <section id="sec-hero" class="space-y-6">
+            <div class="bg-gradient-to-br from-slate-900 to-slate-950 border border-amber-400/20 p-6 md:p-8 rounded-3xl shadow-2xl text-center space-y-4">
+                <span class="inline-block px-3 py-1 bg-amber-400/10 border border-amber-400/30 text-amber-400 text-xs font-bold rounded-full">
+                    مرحباً بكم في الموسم الجديد 🎓
+                </span>
+                <h2 class="text-2xl md:text-4xl font-black text-slate-100">
+                    طريقك للتفوق في <span class="text-amber-400">اللغة الإنجليزية</span>
+                </h2>
+                <p class="text-slate-400 text-xs md:text-sm max-w-xl mx-auto leading-relaxed">
+                    منصة تعليمية متكاملة تشمل محاضرات شروحات مميزة، ملازم PDF جاهزة للتحميل، واختبارات إلكترونية تفاعلية مجابة تلقائياً.
+                </p>
+                <div class="flex justify-center gap-3 pt-2">
+                    <button onclick="showSection('quizzes')" class="px-5 py-2.5 bg-amber-400 text-slate-950 font-bold rounded-xl text-xs hover:bg-amber-300 transition shadow-lg shadow-amber-400/10">
+                        ابدأ الاختبار التجريبي 📝
+                    </button>
+                    <button onclick="showSection('courses')" class="px-5 py-2.5 bg-slate-900 border border-slate-700 text-slate-200 font-bold rounded-xl text-xs hover:bg-slate-800 transition">
+                        عرض المحاضرات 🎥
+                    </button>
+                </div>
+            </div>
+
+            <!-- تجرِبة إرسال الإشعار -->
+            <div class="p-4 bg-slate-900 border border-slate-800 rounded-2xl flex justify-between items-center text-xs">
+                <span class="text-slate-400 font-semibold">تجرِبة إرسال تنبيه جديد للطالب:</span>
+                <button onclick="triggerNewNotification('quizzes')" class="px-3 py-1.5 bg-red-500/20 border border-red-500/40 text-red-400 font-bold rounded-lg hover:bg-red-500/30 transition">
+                    🔔 إرسال تنبيه امتحان جديد
+                </button>
+            </div>
+        </section>
+
+        <!-- 2. News Section -->
+        <section id="sec-news" class="hidden space-y-4">
+            <h3 class="text-lg font-bold text-amber-400 flex items-center gap-2">📢 أحدث الأخبار والتنبيهات</h3>
+            <div id="news-container" class="space-y-3">
+                <!-- يتم التحميل هنا عبر JS -->
+            </div>
+        </section>
+
+        <!-- 3. Courses Section -->
+        <section id="sec-courses" class="hidden space-y-4">
+            <h3 class="text-lg font-bold text-amber-400 flex items-center gap-2">🎥 محاضرات الشرح</h3>
+            <div id="courses-container" class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div class="bg-slate-900 border border-slate-800 p-4 rounded-2xl space-y-2">
+                    <div class="aspect-video bg-slate-950 rounded-xl flex items-center justify-center border border-slate-800">
+                        <span class="text-3xl">▶️</span>
+                    </div>
+                    <h4 class="font-bold text-xs text-slate-200">شرح زمن الماضي البسيط والماضي المستمر</h4>
+                    <p class="text-[10px] text-slate-400">الوحدة الأولى - الجزء الأول</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- 4. PDFs Section -->
+        <section id="sec-pdfs" class="hidden space-y-4">
+            <h3 class="text-lg font-bold text-amber-400 flex items-center gap-2">📚 الملازم والمذكرات (PDF)</h3>
+            <div id="pdfs-container" class="space-y-3">
+                <div class="p-4 bg-slate-900 border border-slate-800 rounded-2xl flex justify-between items-center">
+                    <div>
+                        <h4 class="font-bold text-xs text-slate-200">ملزمة القواعد الشاملة - Unit 1</h4>
+                        <p class="text-[10px] text-slate-400">حجم الملف: 2.4 MB</p>
+                    </div>
+                    <button class="px-3 py-1.5 bg-amber-400/10 border border-amber-400/30 text-amber-400 font-bold text-xs rounded-xl hover:bg-amber-400/20 transition">
+                        تحميل PDF ⬇️
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- 5. Quizzes Section -->
+        <section id="sec-quizzes" class="hidden space-y-4">
+            <div id="quizzes-container">
+                <!-- يتم توليد واجهة الامتحان والمؤقت ديناميكياً هنا عبر JS -->
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Admin Panel Modal (محدث بالتبويبات الكاملة للحذف والإدارة) -->
+    <div id="admin-modal" class="hidden fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+        <div class="bg-slate-900 border border-amber-400/30 rounded-3xl p-6 w-full max-w-2xl space-y-4 shadow-2xl max-h-[90vh] overflow-y-auto">
+            <div class="flex justify-between items-center border-b border-slate-800 pb-3">
+                <h3 class="font-black text-amber-400 text-sm md:text-base">لوحة تحكم الأدمن الشاملة ⚙️</h3>
+                <button onclick="closeAdminModal()" class="text-slate-400 hover:text-slate-200 font-bold text-lg">✕</button>
+            </div>
             
-            <form id="register-form" onsubmit="handleRegister(event)" class="space-y-3 text-xs">
-                <div>
-                    <label for="reg-name" class="block font-bold text-slate-300 mb-1">الاسم بالكامل</label>
-                    <input type="text" id="reg-name" required placeholder="أدخل اسمك ثلاثي" class="form-input w-full p-2.5 bg-slate-800 border border-slate-700 rounded-lg focus:outline-none focus:border-amber-400">
-                </div>
+            <!-- أزرار التبديل بين أطوار الأدمن -->
+            <div class="flex gap-2 border-b border-slate-800 pb-3 text-xs font-bold">
+                <button onclick="switchAdminTab('publish')" id="tab-btn-publish" class="px-3 py-1.5 rounded-lg bg-amber-400 text-slate-950">نشر محتوى</button>
+                <button onclick="switchAdminTab('news')" id="tab-btn-news" class="px-3 py-1.5 rounded-lg bg-slate-800 text-slate-300">إدارة الأخبار</button>
+                <button onclick="switchAdminTab('quizzes')" id="tab-btn-quizzes" class="px-3 py-1.5 rounded-lg bg-slate-800 text-slate-300">إدارة الامتحانات</button>
+                <button onclick="switchAdminTab('members')" id="tab-btn-members" class="px-3 py-1.5 rounded-lg bg-slate-800 text-slate-300">إدارة الأعضاء والطلاب</button>
+            </div>
 
-                <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
-                    <div>
-                        <label for="reg-phone" class="block font-bold text-slate-300 mb-1">رقم الواتساب</label>
-                        <input type="tel" id="reg-phone" required placeholder="01xxxxxxxxx" class="form-input w-full p-2.5 bg-slate-800 border border-slate-700 rounded-lg focus:outline-none focus:border-amber-400" dir="ltr">
-                    </div>
-                    <div>
-                        <label for="reg-grade" class="block font-bold text-slate-300 mb-1">الصف الدراسي</label>
-                        <select id="reg-grade" required class="form-input w-full p-2.5 bg-slate-950 border border-slate-700 rounded-lg focus:outline-none focus:border-amber-400">
-                            <option value="" disabled selected>اختر الصف</option>
-                            <option value="الصف الأول الثانوي">الأول الثانوي</option>
-                            <option value="الصف الثاني الثانوي (عام)">الثاني الثانوي (عام)</option>
-                            <option value="الصف الثاني الثانوي (بكالوريا)">الثاني الثانوي (بكالوريا)</option>
-                            <option value="الصف الثالث الثانوي">الثالث الثانوي</option>
-                        </select>
-                    </div>
-                </div>
-
+            <!-- Tab 1: نشر محتوى جديد -->
+            <div id="admin-tab-publish" class="space-y-3 text-xs">
                 <div>
-                    <label for="reg-school" class="block font-bold text-slate-300 mb-1">المدرسة / المركز</label>
-                    <select id="reg-school" required class="form-input w-full p-2.5 bg-slate-950 border border-slate-700 rounded-lg focus:outline-none focus:border-amber-400">
-                        <option value="" disabled selected>اختر المدرسة</option>
-                        <option value="مدرسة الشهيد محمد فؤاد الثانوية العسكرية بنين">الشهيد محمد فؤاد العسكرية (بنين)</option>
-                        <option value="مدرسة الشهيد أحمد ياسر توفيق الثانوية للبنات">الشهيد أحمد ياسر توفيق (بنات)</option>
-                        <option value="سنتر Skill Up / مدرسة أخرى">سنتر Skill Up / مدرسة أخرى</option>
+                    <label class="block font-bold text-slate-300 mb-1">عنوان المحتوى:</label>
+                    <input type="text" id="admin-item-title" class="w-full bg-slate-950 border border-slate-800 rounded-xl p-2.5 text-slate-200 focus:outline-none focus:border-amber-400">
+                </div>
+                <div>
+                    <label class="block font-bold text-slate-300 mb-1">القسم المستهدف:</label>
+                    <select id="admin-target-section" class="w-full bg-slate-950 border border-slate-800 rounded-xl p-2.5 text-slate-200 focus:outline-none focus:border-amber-400">
+                        <option value="news">قسم الأخبار</option>
+                        <option value="courses">قسم المحاضرات</option>
+                        <option value="pdfs">قسم الملازم</option>
                     </select>
                 </div>
-
-                <div>
-                    <label for="reg-pass" class="block font-bold text-slate-300 mb-1">كلمة السر</label>
-                    <input type="password" id="reg-pass" required placeholder="أدخل كلمة المرور" class="form-input w-full p-2.5 bg-slate-800 border border-slate-700 rounded-lg focus:outline-none focus:border-amber-400">
-                </div>
-
-                <div>
-                    <label class="block font-bold text-slate-300 mb-1">النوع</label>
-                    <div class="grid grid-cols-2 gap-2">
-                        <button type="button" onclick="setGenderChoice('male')" id="btn-gender-male" class="gender-btn border p-2 rounded-lg border-blue-500/30 hover:bg-blue-500/10 transition">
-                            <span class="font-bold">طالب (ولد)</span>
-                        </button>
-                        <button type="button" onclick="setGenderChoice('female')" id="btn-gender-female" class="gender-btn border p-2 rounded-lg border-pink-500/30 hover:bg-pink-500/10 transition">
-                            <span class="font-bold">طالبة (بنت)</span>
-                        </button>
-                    </div>
-                </div>
-
-                <button type="submit" class="w-full py-3 bg-gradient-to-r from-amber-500 to-amber-400 text-slate-950 font-black rounded-xl text-xs transition-all shadow-md hover:brightness-110 active:scale-95">
-                    إنشاء الحساب ودخول المنصة
-                </button>
-            </form>
-
-            <div class="mt-4 pt-3 border-t border-slate-800 text-center">
-                <button onclick="openAdminModal()" class="text-xs text-amber-400/80 hover:text-amber-400 font-bold underline">
-                    🔑 تسجيل دخول الأدمن
+                <button onclick="publishAdminContent()" class="w-full py-3 bg-amber-400 text-slate-950 font-black rounded-xl hover:bg-amber-300 transition">
+                    نشر فوراً وتنبيه الطلاب بالنقطة الحمراء 🔔
                 </button>
             </div>
-        </div>
-    </div>
 
-    <!-- 2. MAIN APP CONTENT -->
-    <div id="main-app" class="hidden opacity-0 transition-opacity duration-700 pb-20 md:pb-0">
-        
-        <nav class="sticky top-0 z-40 bg-slate-950/90 backdrop-blur-md border-b border-slate-800 px-4 py-3">
-            <div class="max-w-6xl mx-auto flex justify-between items-center">
-                <div class="flex items-center gap-2 cursor-pointer" onclick="showSection('hero')">
-                    <div class="w-2.5 h-2.5 rounded-full bg-amber-400 animate-pulse"></div>
-                    <h1 class="text-lg font-modern-en font-bold text-amber-400 tracking-tight">SKILL UP <span class="text-[10px] font-cairo text-slate-400">CENTER</span></h1>
-                </div>
-
-                <div class="hidden md:flex items-center gap-5 text-xs font-bold text-slate-300">
-                    <button onclick="showSection('hero')" class="nav-link hover:text-amber-400 transition">الرئيسية</button>
-                    <button onclick="showSection('news')" class="nav-link relative hover:text-amber-400 transition">
-                        الأخبار
-                        <span id="badge-news-nav" class="hidden absolute -top-1 -right-2 w-2 h-2 bg-red-500 rounded-full animate-ping"></span>
-                    </button>
-                    <button onclick="showSection('courses')" class="nav-link hover:text-amber-400 transition">المحاضرات</button>
-                    <button onclick="showSection('pdfs')" class="nav-link hover:text-amber-400 transition">الملازم</button>
-                    <button onclick="showSection('quizzes')" class="nav-link hover:text-amber-400 transition">الاختبارات</button>
-                    <button onclick="showSection('contact')" class="nav-link hover:text-amber-400 transition">تواصل</button>
-                </div>
-
-                <div class="flex items-center gap-2">
-                    <button onclick="toggleTheme()" class="px-2.5 py-1.5 rounded-lg border border-slate-700 bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs font-bold transition">
-                        <span id="theme-btn-text">🌙 الداكن</span>
-                    </button>
-
-                    <button onclick="openUserAccountModal()" class="relative px-2.5 py-1.5 rounded-lg border border-amber-400/40 bg-amber-400/10 hover:bg-amber-400/20 text-amber-300 text-xs font-bold flex items-center gap-1.5 transition">
-                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path></svg>
-                        <span id="nav-user-name">حسابي</span>
-                        <span id="badge-user-nav" class="hidden absolute -top-1 -right-1 w-2.5 h-2.5 bg-red-500 rounded-full"></span>
-                    </button>
-
-                    <button onclick="openAdminModal()" class="px-2.5 py-1.5 rounded-lg border border-slate-700 bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs font-bold transition">
-                        الأدمن
-                    </button>
-                </div>
-            </div>
-        </nav>
-
-        <!-- Hero Section -->
-        <section id="hero" class="app-section max-w-6xl mx-auto px-4 pt-8 pb-12 flex flex-col md:flex-row items-center justify-between gap-8">
-            <div class="relative shrink-0">
-                <div class="absolute -inset-1 bg-amber-500/20 rounded-3xl blur-md"></div>
-                <div class="relative w-48 h-48 md:w-64 md:h-64 rounded-2xl overflow-hidden border border-amber-400/40 bg-slate-900 shadow-xl">
-                    <img src="https://i.postimg.cc/13m7zN3B/IMG-20260828-WA0024.jpg" alt="مستر أشرف بسيوني" class="w-full h-full object-cover" />
-                </div>
+            <!-- Tab 2: إدارة الأخبار (إظهار وحذف الأخبار) -->
+            <div id="admin-tab-news" class="hidden space-y-3 text-xs">
+                <h4 class="font-bold text-amber-400">قائمة الأخبار المنشورة:</h4>
+                <div id="admin-news-list" class="space-y-2"></div>
             </div>
 
-            <div class="flex-1 space-y-3 text-right">
-                <span class="inline-block px-3 py-1 rounded-full border border-amber-400/30 text-amber-300 bg-amber-400/10 text-[11px] font-bold">
-                    🏆 المعلم المثقف بمحافظة كفر الشيخ (المشروع الوطـ2024ـني للقراءة)
-                </span>
-                <h2 class="text-2xl md:text-4xl font-black">مستر أشرف بسيوني <span class="text-amber-400">علي أحمد</span></h2>
-                <p class="text-sm md:text-base text-slate-300 font-bold">معلم خبير اللغة الإنجليزية</p>
+            <!-- Tab 3: إدارة الامتحانات (حذف وتعديل الامتحانات) -->
+            <div id="admin-tab-quizzes" class="hidden space-y-3 text-xs">
+                <h4 class="font-bold text-amber-400">الامتحانات المتاحة على المنصة:</h4>
+                <div id="admin-quizzes-list" class="space-y-2"></div>
             </div>
-        </section>
 
-        <!-- Instant Search Bar -->
-        <div class="max-w-3xl mx-auto px-4 mb-4">
-            <input type="text" id="search-input" oninput="handleSearch()" placeholder="🔍 ابحث بالكلمات في الأخبار، المحاضرات، أو الملازم..." class="w-full p-3 rounded-xl bg-slate-900 border border-slate-800 text-xs focus:outline-none focus:border-amber-400 transition">
-        </div>
-
-        <!-- News Section -->
-        <section id="news" class="app-section max-w-3xl mx-auto px-4 py-6">
-            <h3 class="text-lg font-bold text-amber-400 mb-4 text-center">📢 آخر الأخبار والتنويهات</h3>
-            <div id="news-container" class="space-y-3"></div>
-        </section>
-
-        <!-- Dynamic Sections -->
-        <section id="courses" class="app-section hidden max-w-3xl mx-auto px-4 py-6">
-            <h3 class="text-lg font-bold text-amber-400 mb-4 text-center">📚 قسم المحاضرات والشروحات</h3>
-            <div id="courses-container" class="space-y-3"></div>
-        </section>
-
-        <section id="pdfs" class="app-section hidden max-w-3xl mx-auto px-4 py-6">
-            <h3 class="text-lg font-bold text-amber-400 mb-4 text-center">📄 قسم الملازم والمذكرات (PDF)</h3>
-            <div id="pdfs-container" class="space-y-3"></div>
-        </section>
-
-        <section id="quizzes" class="app-section hidden max-w-3xl mx-auto px-4 py-6">
-            <h3 class="text-lg font-bold text-amber-400 mb-4 text-center">📝 قسم الامتحانات الإلكترونية</h3>
-            <div id="quizzes-container" class="space-y-3"></div>
-        </section>
-
-        <!-- Contact Section -->
-        <section id="contact" class="app-section hidden max-w-2xl mx-auto px-4 py-8">
-            <div class="bg-slate-900/90 p-6 rounded-2xl border border-slate-800 shadow-xl">
-                <h3 class="text-base font-bold text-amber-400 text-center mb-4">أرسل استفسارك للمستر</h3>
-                <form id="student-msg-form" onsubmit="sendStudentMessage(event)" class="space-y-3">
-                    <div>
-                        <textarea required id="student-msg-text" rows="3" placeholder="اكتب رسالتك هنا..." class="form-input w-full p-3 bg-slate-800 border border-slate-700 rounded-xl text-xs focus:outline-none focus:border-amber-400"></textarea>
-                    </div>
-                    <button type="submit" class="w-full py-2.5 bg-amber-400 text-slate-950 font-bold rounded-xl text-xs hover:bg-amber-300 transition">
-                        إرسال الرسالة للأدمن
-                    </button>
-                </form>
-            </div>
-        </section>
-
-        <!-- Mobile Bottom Nav Bar -->
-        <div class="md:hidden fixed bottom-0 inset-x-0 bg-slate-950/95 border-t border-slate-800 p-2 flex justify-around items-center z-40 text-[10px] font-bold backdrop-blur-md">
-            <button onclick="showSection('hero')" class="flex flex-col items-center gap-1 text-amber-400">
-                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path></svg>
-                <span>الرئيسية</span>
-            </button>
-            <button onclick="showSection('news')" class="flex flex-col items-center gap-1 text-slate-300 relative">
-                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z"></path></svg>
-                <span>الأخبار</span>
-                <span id="badge-news-mobile" class="hidden absolute top-0 right-1 w-2 h-2 bg-red-500 rounded-full"></span>
-            </button>
-            <button onclick="showSection('courses')" class="flex flex-col items-center gap-1 text-slate-300">
-                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path></svg>
-                <span>المحاضرات</span>
-            </button>
-            <button onclick="showSection('pdfs')" class="flex flex-col items-center gap-1 text-slate-300">
-                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z"></path></svg>
-                <span>الملازم</span>
-            </button>
-            <button onclick="showSection('quizzes')" class="flex flex-col items-center gap-1 text-slate-300">
-                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"></path></svg>
-                <span>الاختبارات</span>
-            </button>
-            <button onclick="openUserAccountModal()" class="flex flex-col items-center gap-1 text-slate-300 relative">
-                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path></svg>
-                <span>حسابي</span>
-                <span id="badge-user-mobile" class="hidden absolute top-0 right-1 w-2 h-2 bg-red-500 rounded-full"></span>
-            </button>
-        </div>
-    </div>
-
-    <!-- Mobile Bottom Nav Bar with Red Dot Notification Badges -->
-<div class="md:hidden fixed bottom-0 inset-x-0 bg-slate-950/95 border-t border-slate-800 p-2 flex justify-around items-center z-40 text-[10px] font-bold backdrop-blur-md">
-    <button onclick="showSection('hero')" class="flex flex-col items-center gap-1 text-amber-400 relative">
-        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path></svg>
-        <span>الرئيسية</span>
-    </button>
-    <button onclick="showSection('news'); clearNotificationBadge('news');" class="flex flex-col items-center gap-1 text-slate-300 relative">
-        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z"></path></svg>
-        <span>الأخبار</span>
-        <span id="badge-news-mobile" class="hidden absolute top-0 right-1 w-2 h-2 bg-red-500 rounded-full"></span>
-    </button>
-    <button onclick="showSection('courses'); clearNotificationBadge('courses');" class="flex flex-col items-center gap-1 text-slate-300 relative">
-        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path></svg>
-        <span>المحاضرات</span>
-        <span id="badge-courses-mobile" class="hidden absolute top-0 right-1 w-2 h-2 bg-red-500 rounded-full"></span>
-    </button>
-    <button onclick="showSection('pdfs'); clearNotificationBadge('pdfs');" class="flex flex-col items-center gap-1 text-slate-300 relative">
-        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z"></path></svg>
-        <span>الملازم</span>
-        <span id="badge-pdfs-mobile" class="hidden absolute top-0 right-1 w-2 h-2 bg-red-500 rounded-full"></span>
-    </button>
-    <button onclick="showSection('quizzes'); clearNotificationBadge('quizzes');" class="flex flex-col items-center gap-1 text-slate-300 relative">
-        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"></path></svg>
-        <span>الاختبارات</span>
-        <span id="badge-quizzes-mobile" class="hidden absolute top-0 right-1 w-2 h-2 bg-red-500 rounded-full"></span>
-    </button>
-    <button onclick="openUserAccountModal(); clearNotificationBadge('user');" class="flex flex-col items-center gap-1 text-slate-300 relative">
-        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path></svg>
-        <span>حسابي</span>
-        <span id="badge-user-mobile" class="hidden absolute top-0 right-1 w-2 h-2 bg-red-500 rounded-full"></span>
-    </button>
-</div>
-
-    <!-- 3. USER ACCOUNT MODAL -->
-    <div id="user-account-modal" class="fixed inset-0 bg-slate-950/90 backdrop-blur-md z-50 hidden flex items-center justify-center p-4">
-        <div class="bg-slate-900 border border-slate-800 w-full max-w-lg rounded-2xl p-5 relative text-xs">
-            <button onclick="closeUserAccountModal()" class="absolute top-4 left-4 text-slate-400 hover:text-white font-bold">✕ إغلاق</button>
-            
-            <h3 class="text-lg font-bold text-amber-400 mb-4">بيانات حسابي والإشعارات</h3>
-            
-            <div id="user-info-card" class="mb-4 p-3 bg-slate-950 rounded-xl border border-slate-800 space-y-1"></div>
-
-            <div class="space-y-4">
-                <div class="p-3 rounded-xl bg-slate-950 border border-slate-800">
-                    <h4 class="font-bold text-amber-400 mb-1">💬 رد الأدمن على رسالتك:</h4>
-                    <p id="user-reply-box" class="text-slate-300 italic">لا يوجد رد بعد.</p>
-                </div>
-
-                <button onclick="logoutUser()" class="w-full py-2 bg-red-500/20 text-red-400 hover:bg-red-500/30 border border-red-500/30 rounded-xl font-bold transition">
-                    تسجيل الخروج من الحساب
-                </button>
+            <!-- Tab 4: إدارة الطلاب والأعضاء (حذف الطالب/الربط) -->
+            <div id="admin-tab-members" class="hidden space-y-3 text-xs">
+                <h4 class="font-bold text-amber-400">قائمة الأعضاء المسجلين:</h4>
+                <div id="admin-members-list" class="space-y-2"></div>
             </div>
         </div>
     </div>
 
-    <!-- 4. ADMIN DASHBOARD MODAL -->
-    <div id="admin-modal" class="fixed inset-0 bg-slate-950/95 backdrop-blur-md z-50 hidden flex flex-col p-4 overflow-y-auto text-xs">
-        <div class="max-w-5xl mx-auto w-full">
-            <div id="admin-auth" class="max-w-sm mx-auto my-16 p-6 rounded-2xl bg-slate-900 border border-amber-400/30 text-center space-y-3 shadow-2xl">
-                <h3 class="text-xl font-bold text-amber-400">دخول لوحة الأدمن</h3>
-                <input type="password" id="admin-pass-input" placeholder="أدخل كلمة المرور للأدمن" class="form-input w-full p-2.5 bg-slate-800 border border-slate-700 rounded-xl text-center focus:outline-none focus:border-amber-400">
-                
-                <div class="flex gap-2">
-                    <button onclick="verifyAdminPass()" class="flex-1 py-2.5 bg-amber-400 text-slate-950 font-bold rounded-xl hover:bg-amber-300 transition">دخول بكلمة السر</button>
-                    <button onclick="loginWithBiometrics()" class="px-3 py-2.5 bg-slate-800 text-amber-400 border border-amber-400/30 font-bold rounded-xl flex items-center gap-1 hover:bg-slate-700 transition">
-                        ☝️ البصمة
-                    </button>
-                </div>
-                <button onclick="closeAdminModal()" class="w-full py-2 bg-slate-800 text-slate-300 font-bold rounded-xl hover:bg-slate-700 transition">إلغاء</button>
-            </div>
+    <!-- Mobile Navigation -->
+    <div class="md:hidden fixed bottom-0 inset-x-0 bg-slate-950/95 border-t border-slate-800 p-2 flex justify-around items-center z-40 text-[10px] font-bold backdrop-blur-md">
+        <button onclick="showSection('hero')" class="flex flex-col items-center gap-1 text-amber-400 relative">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path></svg>
+            <span>الرئيسية</span>
+        </button>
 
-            <div id="admin-dashboard-content" class="hidden space-y-4">
-                <div class="flex justify-between items-center border-b border-slate-800 pb-3">
-                    <div class="flex items-center gap-3">
-                        <h3 class="text-lg font-bold text-amber-400">لوحة إدارة الطلاب والنشر</h3>
-                        <button onclick="registerAdminBiometrics()" class="px-2.5 py-1 bg-amber-400/10 text-amber-300 border border-amber-400/30 rounded-lg text-[11px] font-bold hover:bg-amber-400/20 transition">
-                            ☝️ تفعيل البصمة
-                        </button>
-                    </div>
-                    <button onclick="closeAdminModal()" class="px-3 py-1.5 bg-slate-800 hover:bg-slate-700 rounded-lg font-bold transition">إغلاق</button>
-                </div>
+        <button onclick="showSection('news'); clearNotificationBadge('news');" class="flex flex-col items-center gap-1 text-slate-300 relative">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z"></path></svg>
+            <span>الأخبار</span>
+            <span id="badge-news-mobile" class="hidden absolute top-0 right-1 w-2.5 h-2.5 bg-red-500 rounded-full animate-pulse"></span>
+        </button>
 
-                <!-- Admin Publishing Form -->
-                <div class="p-4 rounded-xl bg-slate-900 border border-slate-800 space-y-3">
-                    <h4 class="font-bold text-amber-400">➕ نشر محتوى جديد وتحديد القسم والمرفقات</h4>
-                    
-                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
-                        <select id="admin-target-section" class="w-full p-2.5 bg-slate-950 border border-slate-700 rounded-xl text-amber-400 font-bold focus:outline-none focus:border-amber-400">
-                            <option value="news">📢 قسم الأخبار والتنويهات</option>
-                            <option value="courses">📚 قسم المحاضرات والشروحات</option>
-                            <option value="pdfs">📄 قسم الملازم والمذكرات (PDF)</option>
-                            <option value="quizzes">📝 قسم الامتحانات الإلكترونية</option>
-                        </select>
-                        <input type="text" id="admin-news-input" placeholder="عنوان المحتوى أو نص التنويه..." class="w-full p-2.5 bg-slate-800 border border-slate-700 rounded-xl focus:outline-none focus:border-amber-400">
-                    </div>
+        <button onclick="showSection('courses'); clearNotificationBadge('courses');" class="flex flex-col items-center gap-1 text-slate-300 relative">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path></svg>
+            <span>المحاضرات</span>
+            <span id="badge-courses-mobile" class="hidden absolute top-0 right-1 w-2.5 h-2.5 bg-red-500 rounded-full animate-pulse"></span>
+        </button>
 
-                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
-                        <input type="text" id="admin-news-link" placeholder="رابط خارجي (يوتيوب / Drive / موقع)" class="w-full p-2.5 bg-slate-800 border border-slate-700 rounded-xl focus:outline-none focus:border-amber-400">
-                        <div class="flex items-center gap-2 bg-slate-950 p-1.5 rounded-xl border border-slate-800">
-                            <label for="admin-news-file" class="text-slate-400 text-[11px] font-bold shrink-0">رفع (صورة/فيديو/PDF):</label>
-                            <input type="file" id="admin-news-file" accept="image/*,video/*,application/pdf" class="text-xs text-slate-400 file:mr-2 file:py-1 file:px-2 file:rounded-md file:border-0 file:bg-amber-400 file:text-slate-950 file:font-bold cursor-pointer">
-                        </div>
-                    </div>
+        <button onclick="showSection('pdfs'); clearNotificationBadge('pdfs');" class="flex flex-col items-center gap-1 text-slate-300 relative">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z"></path></svg>
+            <span>الملازم</span>
+            <span id="badge-pdfs-mobile" class="hidden absolute top-0 right-1 w-2.5 h-2.5 bg-red-500 rounded-full animate-pulse"></span>
+        </button>
 
-                    <button onclick="publishNews()" class="w-full py-2.5 bg-amber-400 text-slate-950 font-bold rounded-xl hover:bg-amber-300 transition">🚀 نشر المحتوى فوراً</button>
-                </div>
-
-                <!-- Student Management Table -->
-                <div class="bg-slate-900 rounded-xl border border-slate-800 overflow-x-auto">
-                    <table class="w-full text-right">
-                        <thead class="bg-slate-950 text-slate-400 border-b border-slate-800">
-                            <tr>
-                                <th class="p-2.5">العضو / الطالب</th>
-                                <th class="p-2.5">الصف</th>
-                                <th class="p-2.5">الهاتف</th>
-                                <th class="p-2.5">الرسالة</th>
-                                <th class="p-2.5">الرد الحالي</th>
-                                <th class="p-2.5 text-center">الإجراءات</th>
-                            </tr>
-                        </thead>
-                        <tbody id="admin-table-body" class="divide-y divide-slate-800 text-slate-200"></tbody>
-                    </table>
-                </div>
-            </div>
-        </div>
+        <button onclick="showSection('quizzes'); clearNotificationBadge('quizzes');" class="flex flex-col items-center gap-1 text-slate-300 relative">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"></path></svg>
+            <span>الاختبارات</span>
+            <span id="badge-quizzes-mobile" class="hidden absolute top-0 right-1 w-2.5 h-2.5 bg-red-500 rounded-full animate-pulse"></span>
+        </button>
     </div>
 
-    <!-- Script File Reference -->
+    <!-- Script Import -->
     <script src="script.js"></script>
 </body>
 </html>
