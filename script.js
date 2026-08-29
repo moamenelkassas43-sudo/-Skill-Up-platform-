@@ -17,7 +17,8 @@ let appContents = JSON.parse(localStorage.getItem('app_contents')) || [
 
 let selectedGender = '';
 let isDarkMode = true;
-const ADMIN_PASSWORD_DEFAULT = '123456';
+// كلمة السر الخاصة بك محفوضة في الخلفية بأمان دون إظهارها في شريط الكتابة
+const ADMIN_PASSWORD_DEFAULT = '1122334455';
 
 /* ==========================================================================
    2. INITIALIZATION ON DOM LOAD
@@ -188,7 +189,7 @@ function toggleTheme() {
 }
 
 /* ==========================================================================
-   6. USER ACCOUNT MODAL & MESSAGING
+   6. USER ACCOUNT MODAL & MESSAGING & NOTIFICATIONS
    ========================================================================== */
 function openUserAccountModal() {
     if (!currentUser) return;
@@ -240,6 +241,7 @@ function sendStudentMessage(event) {
         localStorage.setItem('app_current_user', JSON.stringify(currentUser));
     }
 
+    triggerVibration();
     alert('تم إرسال رسالتك بنجاح إلى المستر!');
     document.getElementById('student-msg-text').value = '';
 }
@@ -251,6 +253,13 @@ function updateUserReplyNotification() {
         document.querySelectorAll('#badge-user-nav, #badge-user-mobile').forEach(badge => {
             badge.classList.remove('hidden');
         });
+        triggerVibration();
+    }
+}
+
+function triggerVibration() {
+    if ("vibrate" in navigator) {
+        navigator.vibrate([100, 50, 100]);
     }
 }
 
@@ -276,7 +285,7 @@ function renderAllContents(filterQuery = '') {
         if (!targetContainer) return;
 
         const card = document.createElement('div');
-        card.className = "bg-slate-900/90 border border-slate-800 p-4 rounded-xl shadow-md space-y-2";
+        card.className = "bg-slate-900/90 border border-slate-800 p-4 rounded-xl shadow-md space-y-2 relative group";
 
         let mediaHtml = '';
         if (item.fileData) {
@@ -297,7 +306,10 @@ function renderAllContents(filterQuery = '') {
         card.innerHTML = `
             <div class="flex justify-between items-start">
                 <h4 class="font-bold text-amber-300 text-sm md:text-base">${item.title}</h4>
-                <span class="text-[10px] text-slate-500">${item.date || ''}</span>
+                <div class="flex items-center gap-2">
+                    <span class="text-[10px] text-slate-500">${item.date || ''}</span>
+                    <button onclick="deleteContent(${item.id})" class="text-red-400 hover:text-red-300 font-bold text-xs bg-red-500/10 p-1 rounded border border-red-500/20" title="حذف الإشعار/المحتوى">🗑️</button>
+                </div>
             </div>
             ${mediaHtml}
             ${linkHtml}
@@ -305,6 +317,19 @@ function renderAllContents(filterQuery = '') {
 
         targetContainer.appendChild(card);
     });
+}
+
+function deleteContent(id) {
+    const adminPass = localStorage.getItem('app_admin_pass') || ADMIN_PASSWORD_DEFAULT;
+    const inputPass = prompt("أدخل كلمة مرور الأدمن لتأكيد حذف هذا المحتوى:");
+    if (inputPass === adminPass) {
+        appContents = appContents.filter(item => item.id !== id);
+        localStorage.setItem('app_contents', JSON.stringify(appContents));
+        renderAllContents();
+        alert("تم حذف المحتوى بنجاح!");
+    } else if (inputPass !== null) {
+        alert("كلمة المرور غير صحيحة!");
+    }
 }
 
 function handleSearch() {
@@ -353,9 +378,12 @@ function renderAdminTable() {
             <td class="p-2.5" dir="ltr">${u.phone}</td>
             <td class="p-2.5 italic text-slate-300">${u.message || 'لا توجد رسالة'}</td>
             <td class="p-2.5 text-amber-300">${u.reply || 'لم يتم الرد'}</td>
-            <td class="p-2.5 text-center">
+            <td class="p-2.5 text-center flex justify-center gap-1">
                 <button onclick="replyToStudent(${index})" class="px-2 py-1 bg-amber-400/20 text-amber-300 border border-amber-400/30 rounded-lg hover:bg-amber-400/30 transition text-[11px] font-bold">
                     الرد
+                </button>
+                <button onclick="deleteStudent(${index})" class="px-2 py-1 bg-red-500/20 text-red-400 border border-red-500/30 rounded-lg hover:bg-red-500/30 transition text-[11px] font-bold">
+                    حذف العضو
                 </button>
             </td>
         `;
@@ -364,7 +392,7 @@ function renderAdminTable() {
 }
 
 function replyToStudent(index) {
-    const replyMsg = prompt(`اكتب ردك للفي الطالب: ${usersList[index].name}`);
+    const replyMsg = prompt(`اكتب ردك للطالب: ${usersList[index].name}`);
     if (replyMsg !== null) {
         usersList[index].reply = replyMsg;
         localStorage.setItem('app_users_list', JSON.stringify(usersList));
@@ -375,6 +403,14 @@ function replyToStudent(index) {
             localStorage.setItem('app_current_user', JSON.stringify(currentUser));
             updateUserReplyNotification();
         }
+    }
+}
+
+function deleteStudent(index) {
+    if (confirm(`هل أنت تأكد من إزالة هذا العضو (${usersList[index].name}) من المنصة؟`)) {
+        usersList.splice(index, 1);
+        localStorage.setItem('app_users_list', JSON.stringify(usersList));
+        renderAdminTable();
     }
 }
 
@@ -417,12 +453,12 @@ function saveAndRenderPublishedContent(content) {
     appContents.unshift(content);
     localStorage.setItem('app_contents', JSON.stringify(appContents));
     
-    // Clear Admin Inputs
     document.getElementById('admin-news-input').value = '';
     document.getElementById('admin-news-link').value = '';
     document.getElementById('admin-news-file').value = '';
 
     renderAllContents();
+    triggerVibration();
     alert('تم نشر المحتوى بنجاح!');
 }
 
