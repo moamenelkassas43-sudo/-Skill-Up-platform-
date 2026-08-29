@@ -7,7 +7,7 @@
     
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Noto+Kufi+Arabic:wght@400;600;700;900&family=Plus+Jakarta+Sans:wght@500;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Aref+Ruqaa:wght@400;700&family=Great+Vibes&family=Noto+Kufi+Arabic:wght@400;600;700;900&display=swap" rel="stylesheet">
     
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="style.css">
@@ -16,37 +16,24 @@
 
     <!-- 1. INTRO SCREEN & REGISTRATION -->
     <div id="intro-screen" class="fixed inset-0 bg-slate-950 z-50 flex flex-col items-center justify-center p-4 overflow-y-auto">
-        
         <div class="triple-pyramid-stage mb-6 mt-4">
             <div class="pyramid-wrapper pyramid-small opacity-75">
-                <div class="pyramid-3d">
-                    <div class="side side-left"></div>
-                    <div class="side side-right"></div>
-                    <div class="pyramid-glow"></div>
-                </div>
+                <div class="pyramid-3d"><div class="side side-left"></div><div class="side side-right"></div><div class="pyramid-glow"></div></div>
             </div>
             <div class="pyramid-wrapper pyramid-main z-10">
-                <div class="pyramid-3d">
-                    <div class="side side-left"></div>
-                    <div class="side side-right"></div>
-                    <div class="pyramid-glow"></div>
-                </div>
+                <div class="pyramid-3d"><div class="side side-left"></div><div class="side side-right"></div><div class="pyramid-glow"></div></div>
             </div>
             <div class="pyramid-wrapper pyramid-small opacity-75">
-                <div class="pyramid-3d">
-                    <div class="side side-left"></div>
-                    <div class="side side-right"></div>
-                    <div class="pyramid-glow"></div>
-                </div>
+                <div class="pyramid-3d"><div class="side side-left"></div><div class="side side-right"></div><div class="pyramid-glow"></div></div>
             </div>
         </div>
 
-        <div id="typing-text" class="text-gold font-english text-center text-lg md:text-2xl min-h-[40px] tracking-wide font-extrabold mb-6"></div>
+        <div id="typing-text" class="font-cursive text-gold text-center text-3xl md:text-5xl min-h-[50px] tracking-wide mb-6"></div>
 
-        <div id="registration-box" class="hidden w-full max-w-lg bg-slate-900/90 backdrop-blur-xl border border-amber-400/30 p-6 rounded-3xl shadow-2xl">
-            <h3 class="text-xl font-black text-center text-amber-400 mb-4">تسجيل حساب طالب جديد</h3>
+        <div id="registration-box" class="hidden w-full max-w-lg bg-slate-900/95 backdrop-blur-2xl border border-amber-400/40 p-6 md:p-8 rounded-3xl shadow-2xl">
+            <h3 class="font-ruqaa text-3xl font-bold text-center text-amber-400 mb-6">تسجيل حساب طالب جديد</h3>
             
-            <form id="register-form" class="space-y-3">
+            <form id="register-form" class="space-y-4">
                 <div>
                     <label class="block text-xs font-bold text-slate-300 mb-1">الاسم بالكامل</label>
                     <input type="text" id="reg-name" required placeholder="أدخل اسمك ثلاثي" class="form-input">
@@ -62,7 +49,8 @@
                         <select id="reg-grade" required class="form-input bg-slate-950">
                             <option value="" disabled selected>اختر الصف</option>
                             <option value="الصف الأول الثانوي">الصف الأول الثانوي</option>
-                            <option value="الصف الثاني الثانوي">الصف الثاني الثانوي</option>
+                            <option value="الصف الثاني الثانوي (عام)">الصف الثاني الثانوي (عام)</option>
+                            <option value="الصف الثاني الثانوي (بكالوريا)">الصف الثاني الثانوي (بكالوريا)</option>
                             <option value="الصف الثالث الثانوي">الصف الثالث الثانوي</option>
                         </select>
                     </div>
@@ -79,7 +67,7 @@
                 </div>
 
                 <div>
-                    <label class="block text-xs font-bold text-slate-300 mb-1">كلمة المرور الخاصة بك</label>
+                    <label class="block text-xs font-bold text-slate-300 mb-1">كلمة المرور الخاص بك</label>
                     <input type="password" id="reg-pass" required placeholder="أدخل كلمة مرور قوية" class="form-input">
                 </div>
 
@@ -95,7 +83,7 @@
                     </div>
                 </div>
 
-                <button type="submit" class="w-full py-3 mt-2 bg-amber-400 hover:bg-amber-300 text-slate-950 font-black rounded-xl text-sm transition-all">
+                <button type="submit" class="w-full py-3.5 bg-gradient-to-r from-amber-500 to-amber-400 text-slate-950 font-black rounded-xl text-sm transition-all shadow-lg">
                     دخول المنصة التعليمية
                 </button>
             </form>
@@ -105,17 +93,16 @@
     <!-- 2. MAIN APP CONTENT -->
     <div id="main-app" class="hidden opacity-0 transition-opacity duration-1000 pb-20 md:pb-0">
         
-        <!-- Sticky Navbar -->
-        <nav class="sticky top-0 z-40 bg-slate-900/90 backdrop-blur-md border-b border-white/10 px-6 py-4">
+        <nav class="sticky top-0 z-40 bg-slate-950/90 backdrop-blur-md border-b border-amber-400/20 px-6 py-4">
             <div class="max-w-7xl mx-auto flex justify-between items-center">
                 <div class="flex items-center gap-3">
                     <div class="w-3 h-3 rounded-full bg-amber-400 animate-pulse"></div>
-                    <h1 class="text-xl font-black tracking-wider text-gold font-english">SKILL UP <span class="text-xs font-normal text-slate-400 font-kufi">CENTER</span></h1>
+                    <h1 class="text-2xl font-cursive text-gold">SKILL UP <span class="text-xs font-kufi text-slate-400">CENTER</span></h1>
                 </div>
 
-                <!-- Desktop Navigation Links -->
-                <div class="hidden md:flex items-center gap-6 text-sm font-bold text-slate-300">
+                <div class="hidden md:flex items-center gap-6 text-xs font-bold text-slate-300">
                     <button onclick="showSection('hero')" class="nav-link">الرئيسية</button>
+                    <button onclick="showSection('news')" class="nav-link">آخر الأخبار</button>
                     <button onclick="showSection('courses')" class="nav-link">المحاضرات</button>
                     <button onclick="showSection('pdfs')" class="nav-link">الملازم (PDF)</button>
                     <button onclick="showSection('quizzes')" class="nav-link">الاختبارات</button>
@@ -123,13 +110,20 @@
                 </div>
 
                 <div class="flex items-center gap-3">
-                    <button onclick="toggleThemeMode()" class="px-3 py-1.5 rounded-xl border border-slate-700 bg-slate-800 text-xs font-bold hover:bg-slate-700">
-                        🌓 <span id="theme-mode-text">الوضع الداكن</span>
+                    <!-- My Account & Notifications Button -->
+                    <button onclick="openUserAccountModal()" class="relative px-3 py-1.5 rounded-xl border border-amber-400/50 bg-amber-400/10 text-amber-300 text-xs font-bold flex items-center gap-1.5 hover:bg-amber-400/20">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"></path></svg>
+                        <span>حسابي والإشعارات</span>
+                        <span id="notif-badge" class="hidden absolute -top-1 -right-1 w-3 h-3 bg-red-500 rounded-full"></span>
                     </button>
-                    <button onclick="openAdminModal()" class="px-3.5 py-1.5 rounded-xl border border-amber-400/40 text-amber-300 hover:bg-amber-400/10 text-xs font-bold">
-                        لوحة الأدمن
+
+                    <button onclick="toggleThemeMode()" class="px-3 py-1.5 rounded-xl border border-slate-700 bg-slate-800 text-xs font-bold">
+                        <span id="theme-mode-text">الوضع الداكن</span>
                     </button>
-                    <div id="user-badge" class="px-3 py-1 rounded-full text-xs font-bold border"></div>
+
+                    <button onclick="openAdminModal()" class="px-3.5 py-1.5 rounded-xl border border-amber-400/40 text-amber-300 text-xs font-bold">
+                        الأدمن
+                    </button>
                 </div>
             </div>
         </nav>
@@ -147,37 +141,45 @@
                 <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full border border-amber-400/30 text-amber-300 bg-amber-400/10 text-xs font-bold">
                     🏆 المعلم المثقف على مستوى محافظة كفر الشيخ (المشروع الوطني للقراءة 2024)
                 </div>
-                <h2 class="text-3xl md:text-5xl font-black text-white">مستر أشرف بسيوني <span class="text-amber-400">علي أحمد</span></h2>
-                <p class="text-xl text-slate-300 font-bold">معلم خبير اللغة الإنجليزية</p>
+                <h2 class="font-ruqaa text-4xl md:text-6xl font-bold text-white">مستر أشرف بسيوني <span class="text-amber-400">علي أحمد</span></h2>
+                <p class="font-ruqaa text-2xl text-slate-300">معلم خبير اللغة الإنجليزية</p>
             </div>
         </section>
 
-        <!-- Dynamic Page Sections (قريباً سوف تكون متاحة) -->
+        <!-- News Section -->
+        <section id="news" class="app-section max-w-4xl mx-auto px-6 py-12">
+            <h3 class="font-ruqaa text-3xl font-bold text-amber-400 mb-6 text-center">📢 آخر الأخبار التنويهات</h3>
+            <div id="news-container" class="space-y-4">
+                <!-- News loaded dynamically -->
+            </div>
+        </section>
+
+        <!-- Clean Sections -->
         <section id="courses" class="app-section hidden max-w-4xl mx-auto px-6 py-24 text-center">
             <div class="p-12 rounded-3xl bg-slate-900/80 border border-amber-400/30 shadow-2xl">
-                <h3 class="text-3xl font-black text-amber-400 mb-4">📚 قسم المحاضرات</h3>
-                <p class="text-xl font-bold text-slate-200">قريباً سوف تكون متاحة</p>
+                <h3 class="font-ruqaa text-4xl font-bold text-amber-400 mb-4">📚 قسم المحاضرات</h3>
+                <p class="font-ruqaa text-2xl text-slate-200">قريباً سوف تكون متاحة</p>
             </div>
         </section>
 
         <section id="pdfs" class="app-section hidden max-w-4xl mx-auto px-6 py-24 text-center">
             <div class="p-12 rounded-3xl bg-slate-900/80 border border-amber-400/30 shadow-2xl">
-                <h3 class="text-3xl font-black text-amber-400 mb-4">📄 قسم الملازم (PDF)</h3>
-                <p class="text-xl font-bold text-slate-200">قريباً سوف تكون متاحة</p>
+                <h3 class="font-ruqaa text-4xl font-bold text-amber-400 mb-4">📄 قسم الملازم (PDF)</h3>
+                <p class="font-ruqaa text-2xl text-slate-200">قريباً سوف تكون متاحة</p>
             </div>
         </section>
 
         <section id="quizzes" class="app-section hidden max-w-4xl mx-auto px-6 py-24 text-center">
             <div class="p-12 rounded-3xl bg-slate-900/80 border border-amber-400/30 shadow-2xl">
-                <h3 class="text-3xl font-black text-amber-400 mb-4">📝 قسم الامتحانات الإلكترونية</h3>
-                <p class="text-xl font-bold text-slate-200">قريباً سوف تكون متاحة</p>
+                <h3 class="font-ruqaa text-4xl font-bold text-amber-400 mb-4">📝 قسم الامتحانات الإلكترونية</h3>
+                <p class="font-ruqaa text-2xl text-slate-200">قريباً سوف تكون متاحة</p>
             </div>
         </section>
 
-        <!-- Student Contact Section -->
+        <!-- Contact Section -->
         <section id="contact" class="app-section max-w-3xl mx-auto px-6 py-12 border-t border-slate-800">
             <div class="bg-slate-900/90 p-8 rounded-3xl border border-slate-800 shadow-2xl">
-                <h3 class="text-2xl font-black text-amber-400 text-center mb-6">تواصل مباشر مع المستر</h3>
+                <h3 class="font-ruqaa text-3xl font-bold text-amber-400 text-center mb-6">تواصل مباشر مع المستر</h3>
                 <form id="student-msg-form" class="space-y-4">
                     <div>
                         <label class="block mb-1.5 text-xs font-bold text-slate-300">الرسالة أو السؤال</label>
@@ -189,22 +191,36 @@
                 </form>
             </div>
         </section>
+    </div>
 
-        <!-- Mobile Bottom Navigation Bar -->
-        <div class="md:hidden fixed bottom-0 inset-x-0 bg-slate-950/95 border-t border-slate-800 p-3 flex justify-around items-center z-40 text-xs font-bold">
-            <button onclick="showSection('hero')" class="text-amber-400">الرئيسية</button>
-            <button onclick="showSection('courses')" class="text-slate-300">المحاضرات</button>
-            <button onclick="showSection('pdfs')" class="text-slate-300">الملازم</button>
-            <button onclick="showSection('quizzes')" class="text-slate-300">الاختبارات</button>
-            <button onclick="showSection('contact')" class="text-slate-300">تواصل</button>
+    <!-- 3. USER ACCOUNT & NOTIFICATIONS MODAL -->
+    <div id="user-account-modal" class="fixed inset-0 bg-slate-950/90 backdrop-blur-xl z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-slate-900 border border-amber-400/30 w-full max-w-2xl rounded-3xl p-6 relative">
+            <button onclick="closeUserAccountModal()" class="absolute top-4 left-4 text-slate-400 hover:text-white font-bold">✕ إغلاق</button>
+            
+            <h3 class="font-ruqaa text-3xl font-bold text-amber-400 mb-6">حسابي والإشعارات الواردة</h3>
+            
+            <div class="space-y-6">
+                <!-- Received Admin Reply -->
+                <div class="p-4 rounded-2xl bg-slate-950 border border-slate-800">
+                    <h4 class="text-sm font-bold text-amber-400 mb-2">💬 رد الأدمن على رسائلك:</h4>
+                    <p id="user-reply-box" class="text-slate-300 text-xs italic">لا توجد ردود جديدة حتى الآن.</p>
+                </div>
+
+                <!-- Latest Notifications -->
+                <div>
+                    <h4 class="text-sm font-bold text-amber-400 mb-2">🔔 التنويهات والإشعارات العامة:</h4>
+                    <div id="user-notifications-list" class="space-y-2 max-h-48 overflow-y-auto"></div>
+                </div>
+            </div>
         </div>
     </div>
 
-    <!-- 3. ADMIN DASHBOARD MODAL -->
+    <!-- 4. ADMIN DASHBOARD MODAL WITH REPLY AND NEWS CREATION -->
     <div id="admin-modal" class="fixed inset-0 bg-slate-950/95 backdrop-blur-xl z-50 hidden flex flex-col p-6 overflow-y-auto">
         <div class="max-w-6xl mx-auto w-full">
             <div id="admin-auth" class="max-w-md mx-auto my-20 p-8 rounded-3xl bg-slate-900 border border-amber-400/30 text-center">
-                <h3 class="text-2xl font-black text-amber-400 mb-4">دخول لوحة الأدمن</h3>
+                <h3 class="font-ruqaa text-3xl font-bold text-amber-400 mb-4">دخول لوحة الأدمن</h3>
                 <input type="password" id="admin-pass-input" placeholder="أدخل كلمة السر" class="form-input mb-4 text-center">
                 <div class="flex gap-3">
                     <button onclick="verifyAdminPass()" class="flex-1 py-3 bg-amber-400 text-slate-950 font-bold rounded-xl">دخول</button>
@@ -214,31 +230,30 @@
 
             <div id="admin-dashboard-content" class="hidden space-y-6">
                 <div class="flex justify-between items-center border-b border-slate-800 pb-4">
-                    <h3 class="text-2xl font-black text-amber-400">لوحة الإدارة (رسائل وبيانات الطلاب)</h3>
+                    <h3 class="font-ruqaa text-3xl font-bold text-amber-400">لوحة الإدارة الشاملة</h3>
                     <button onclick="closeAdminModal()" class="px-4 py-2 bg-slate-800 rounded-xl text-xs font-bold">إغلاق</button>
                 </div>
 
-                <div class="grid grid-cols-2 gap-4">
-                    <div class="p-6 rounded-2xl bg-slate-900 border border-slate-800">
-                        <p class="text-slate-400 text-xs font-bold">إجمالي الطلاب المسجلين</p>
-                        <p id="stat-students-count" class="text-4xl font-black text-amber-400">0</p>
-                    </div>
-                    <div class="p-6 rounded-2xl bg-slate-900 border border-slate-800">
-                        <p class="text-slate-400 text-xs font-bold">إجمالي الرسائل الواردة</p>
-                        <p id="stat-messages-count" class="text-4xl font-black text-blue-400">0</p>
+                <!-- Add News Form -->
+                <div class="p-6 rounded-2xl bg-slate-900 border border-slate-800 space-y-3">
+                    <h4 class="font-bold text-amber-400 text-sm">إضافة خبر أو تنويه جديد للطلاب</h4>
+                    <div class="flex gap-2">
+                        <input type="text" id="admin-news-input" placeholder="اكتب التنويه هنا..." class="form-input flex-1">
+                        <button onclick="publishNews()" class="px-5 py-2 bg-amber-400 text-slate-950 font-bold rounded-xl text-xs">نشر الخبر</button>
                     </div>
                 </div>
 
+                <!-- Table for Students & Reply Action -->
                 <div class="bg-slate-900 rounded-2xl border border-slate-800 overflow-x-auto">
                     <table class="w-full text-right text-xs md:text-sm">
                         <thead class="bg-slate-950 text-slate-400 border-b border-slate-800">
                             <tr>
                                 <th class="p-3">اسم الطالب</th>
-                                <th class="p-3">الصف الدراسي</th>
+                                <th class="p-3">الصف</th>
                                 <th class="p-3">الواتساب</th>
-                                <th class="p-3">المدرسة</th>
-                                <th class="p-3">النوع</th>
                                 <th class="p-3">الرسالة المستلمة</th>
+                                <th class="p-3">رد الأدمن الحالية</th>
+                                <th class="p-3">إجراء الرد</th>
                             </tr>
                         </thead>
                         <tbody id="admin-table-body" class="divide-y divide-slate-800 text-slate-200"></tbody>
