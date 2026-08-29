@@ -1,173 +1,39 @@
-/* 1. Global Setup & Custom Fonts */
 @import url('https://fonts.googleapis.com/css2?family=Noto+Kufi+Arabic:wght@400;600;700;900&family=Plus+Jakarta+Sans:wght@500;700;800&display=swap');
 
-:root {
-  --gold-glow: #fbbf24;
-  --theme-color: #3b82f6;
-  --theme-border: rgba(59, 130, 246, 0.4);
-}
-
-/* Dynamic Gender Themes */
-body.theme-male {
-  --theme-color: #3b82f6;
-  --theme-border: rgba(59, 130, 246, 0.4);
-}
-
-body.theme-female {
-  --theme-color: #ec4899;
-  --theme-border: rgba(236, 72, 153, 0.4);
-}
-
-/* Full Page Background Image Integration */
-body {
-  font-family: 'Noto Kufi Arabic', sans-serif;
-  background-image: linear-gradient(to bottom, rgba(2, 6, 23, 0.88), rgba(2, 6, 23, 0.95)), url("https://i.postimg.cc/SKNW8WBH/cd2dcf5d05d298548db59eeb6905a00f.jpg");
+/* Dynamic Brightness & Themes */
+body.theme-light {
+  background-image: linear-gradient(to bottom, rgba(15, 23, 42, 0.75), rgba(15, 23, 42, 0.85)), url("https://i.postimg.cc/SKNW8WBH/cd2dcf5d05d298548db59eeb6905a00f.jpg");
   background-size: cover;
   background-position: center;
   background-attachment: fixed;
-  background-repeat: no-repeat;
 }
 
-.font-english {
-  font-family: 'Plus Jakarta Sans', sans-serif;
+body.theme-dark {
+  background-image: linear-gradient(to bottom, rgba(2, 6, 23, 0.92), rgba(2, 6, 23, 0.97)), url("https://i.postimg.cc/SKNW8WBH/cd2dcf5d05d298548db59eeb6905a00f.jpg");
+  background-size: cover;
+  background-position: center;
+  background-attachment: fixed;
 }
 
-.text-gold {
-  color: #fbbf24;
-  text-shadow: 0 0 15px rgba(251, 191, 36, 0.4);
-}
+.font-english { font-family: 'Plus Jakarta Sans', sans-serif; }
+.text-gold { color: #fbbf24; text-shadow: 0 0 15px rgba(251, 191, 36, 0.4); }
 
-/* 2. Realistic 3D Triple Pyramids CSS Animation */
-.triple-pyramid-stage {
-  display: flex;
-  align-items: flex-end;
-  justify-content: center;
-  gap: 1.5rem;
-  perspective: 1000px;
-}
+/* 3D Golden Pyramids */
+.triple-pyramid-stage { display: flex; align-items: flex-end; justify-content: center; gap: 1.5rem; perspective: 1000px; }
+.pyramid-wrapper { position: relative; width: 80px; height: 80px; }
+.pyramid-main { width: 110px; height: 110px; }
+.pyramid-3d { width: 100%; height: 100%; transform-style: preserve-3d; animation: floatPyramid 4s ease-in-out infinite alternate; }
+@keyframes floatPyramid { 0% { transform: translateY(0px) rotateY(-5deg); } 100% { transform: translateY(-10px) rotateY(15deg); } }
+.side { position: absolute; width: 0; height: 0; border-left: 40px solid transparent; border-right: 40px solid transparent; border-bottom: 70px solid #d97706; }
+.pyramid-main .side { border-left-width: 55px; border-right-width: 55px; border-bottom-width: 95px; }
+.side-right { border-bottom-color: #fbbf24; transform: rotateY(-30deg) skewY(10deg); }
+.side-left { transform: rotateY(30deg) skewY(-10deg); }
 
-.pyramid-wrapper {
-  position: relative;
-  width: 90px;
-  height: 90px;
-}
-
-.pyramid-main {
-  width: 130px;
-  height: 130px;
-}
-
-.pyramid-3d {
-  width: 100%;
-  height: 100%;
-  position: relative;
-  transform-style: preserve-3d;
-  animation: floatPyramid 4s ease-in-out infinite alternate;
-}
-
-.pyramid-main .pyramid-3d {
-  animation-delay: -2s;
-}
-
-@keyframes floatPyramid {
-  0% {
-    transform: translateY(0px) rotateY(-5deg);
-  }
-  100% {
-    transform: translateY(-10px) rotateY(15deg);
-  }
-}
-
-.side {
-  position: absolute;
-  width: 0;
-  height: 0;
-  border-left: 45px solid transparent;
-  border-right: 45px solid transparent;
-  border-bottom: 78px solid rgba(245, 158, 11, 0.85);
-  transform-origin: 50% 100%;
-}
-
-.pyramid-main .side {
-  border-left-width: 65px;
-  border-right-width: 65px;
-  border-bottom-width: 112px;
-}
-
-.side-left {
-  transform: rotateY(30deg) skewY(-10deg);
-  border-bottom-color: #d97706;
-}
-
-.side-right {
-  transform: rotateY(-30deg) skewY(10deg);
-  border-bottom-color: #fbbf24;
-  filter: drop-shadow(0 0 8px rgba(251, 191, 36, 0.6));
-}
-
-.pyramid-glow {
-  position: absolute;
-  bottom: 0;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 80%;
-  height: 15px;
-  background: radial-gradient(ellipse at center, rgba(251, 191, 36, 0.6) 0%, transparent 70%);
-  filter: blur(5px);
-}
-
-/* 3. Form Control Elements */
-.form-input {
-  width: 100%;
-  padding: 0.75rem 1rem;
-  background-color: rgba(15, 23, 42, 0.8);
-  border: 1px solid rgba(255, 255, 255, 0.15);
-  border-radius: 0.75rem;
-  color: #f8fafc;
-  font-size: 0.875rem;
-  outline: none;
-  transition: all 0.3s ease;
-}
-
-.form-input:focus {
-  border-color: #fbbf24;
-  box-shadow: 0 0 12px rgba(251, 191, 36, 0.25);
-}
-
-/* Gender Buttons */
-.gender-btn {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 0.5rem;
-  padding: 0.75rem;
-  border-width: 1px;
-  border-radius: 0.75rem;
-  background-color: rgba(15, 23, 42, 0.6);
-  transition: all 0.3s ease;
-  cursor: pointer;
-}
-
-.gender-btn.active-male {
-  background-color: rgba(59, 130, 246, 0.25);
-  border-color: #3b82f6;
-  box-shadow: 0 0 15px rgba(59, 130, 246, 0.4);
-}
-
-.gender-btn.active-female {
-  background-color: rgba(236, 72, 153, 0.25);
-  border-color: #ec4899;
-  box-shadow: 0 0 15px rgba(236, 72, 153, 0.4);
-}
-
-/* Navigation Links */
-.nav-link {
-  display: flex;
-  align-items: center;
-  gap: 0.4rem;
-  transition: color 0.3s ease;
-}
-
-.nav-link:hover {
-  color: #fbbf24;
-}
+/* Form Elements */
+.form-input { width: 100%; padding: 0.75rem 1rem; background-color: rgba(15, 23, 42, 0.85); border: 1px solid rgba(255, 255, 255, 0.15); border-radius: 0.75rem; color: #f8fafc; font-size: 0.875rem; outline: none; }
+.form-input:focus { border-color: #fbbf24; }
+.gender-btn { display: flex; align-items: center; justify-content: center; padding: 0.75rem; border-width: 1px; border-radius: 0.75rem; background-color: rgba(15, 23, 42, 0.6); }
+.gender-btn.active-male { background-color: rgba(59, 130, 246, 0.3); border-color: #3b82f6; }
+.gender-btn.active-female { background-color: rgba(236, 72, 153, 0.3); border-color: #ec4899; }
+.nav-link { font-weight: 700; transition: color 0.2s; }
+.nav-link:hover { color: #fbbf24; }
