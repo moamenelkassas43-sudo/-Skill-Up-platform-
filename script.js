@@ -1,693 +1,495 @@
-// Typing effect
-const typingTextElement = document.getElementById('typing-text');
-const fullText = "Mr. Ashraf Bassiouny: An Expert Teacher in English";
-let charIndex = 0;
-
-function typeWriter() {
-    if (typingTextElement && charIndex < fullText.length) {
-        typingTextElement.textContent += fullText.charAt(charIndex);
-        charIndex++;
-        setTimeout(typeWriter, 35);
-    } else {
-        const regBox = document.getElementById('registration-box');
-        if (regBox) regBox.classList.remove('hidden');
+/* ==========================================================================
+   1. GLOBAL STATE & LOCAL STORAGE INITIALIZATION
+   ========================================================================== */
+let currentUser = JSON.parse(localStorage.getItem('app_current_user')) || null;
+let usersList = JSON.parse(localStorage.getItem('app_users_list')) || [];
+let appContents = JSON.parse(localStorage.getItem('app_contents')) || [
+    {
+        id: Date.now(),
+        section: 'news',
+        title: 'مرحباً بكم في منصة مستر أشرف بسيوني التعليمية!',
+        link: '',
+        fileData: '',
+        fileType: '',
+        date: new Date().toLocaleDateString('ar-EG')
     }
-}
+];
 
-// Sound & Vibration Trigger
-function triggerNotificationAlert() {
-    try {
-        const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-        const osc = audioCtx.createOscillator();
-        const gain = audioCtx.createGain();
-        osc.connect(gain);
-        gain.connect(audioCtx.destination);
-        osc.frequency.value = 587.33;
-        gain.gain.setValueAtTime(0.1, audioCtx.currentTime);
-        osc.start();
-        osc.stop(audioCtx.currentTime + 0.2);
-    } catch (e) {}
+let selectedGender = '';
+let isDarkMode = true;
+const ADMIN_PASSWORD_DEFAULT = '123456';
 
-    if (navigator.vibrate) {
-        navigator.vibrate([100, 50, 100]);
+/* ==========================================================================
+   2. INITIALIZATION ON DOM LOAD
+   ========================================================================== */
+document.addEventListener('DOMContentLoaded', () => {
+    initTypingEffect();
+    renderAllContents();
+
+    if (currentUser) {
+        showMainApp();
     }
-}
-
-// Check Session & Badges on load
-window.addEventListener('load', () => {
-    const savedUser = JSON.parse(localStorage.getItem('current_user'));
-    
-    if (savedUser) {
-        const introScreen = document.getElementById('intro-screen');
-        if (introScreen) introScreen.classList.add('hidden');
-        showMainApp(savedUser);
-    } else {
-        typeWriter();
-    }
-    loadNews();
-    loadQuizzes();
-    checkNotificationBadges();
 });
 
-// Theme Toggle Mechanism
-function toggleTheme() {
-    const body = document.getElementById('app-body');
-    const themeBtnText = document.getElementById('theme-btn-text');
-    if (!body || !themeBtnText) return;
+/* ==========================================================================
+   3. INTRO SCREEN & TYPING EFFECT
+   ========================================================================== */
+function initTypingEffect() {
+    const textContainer = document.getElementById('typing-text');
+    if (!textContainer) return;
 
-    if (body.classList.contains('theme-dark')) {
-        body.classList.remove('theme-dark');
-        body.classList.add('theme-light');
-        themeBtnText.textContent = '☀️ الفاتح';
-    } else {
-        body.classList.remove('theme-light');
-        body.classList.add('theme-dark');
-        themeBtnText.textContent = '🌙 الداكن';
+    const phrases = [
+        "WELCOME TO MR. ASHRAF BASSIOUNY PLATFORM",
+        "SKILL UP CENTER - EXCELLENCE IN ENGLISH",
+        "طريقك للتميز والتقفيل في اللغة الإنجليزية"
+    ];
+
+    let phraseIdx = 0;
+    let charIdx = 0;
+    let isDeleting = false;
+
+    function type() {
+        const currentPhrase = phrases[phraseIdx];
+        
+        if (isDeleting) {
+            textContainer.textContent = currentPhrase.substring(0, charIdx - 1);
+            charIdx--;
+        } else {
+            textContainer.textContent = currentPhrase.substring(0, charIdx + 1);
+            charIdx++;
+        }
+
+        let typeSpeed = isDeleting ? 40 : 80;
+
+        if (!isDeleting && charIdx === currentPhrase.length) {
+            typeSpeed = 2000;
+            isDeleting = true;
+        } else if (isDeleting && charIdx === 0) {
+            isDeleting = false;
+            phraseIdx = (phraseIdx + 1) % phrases.length;
+            typeSpeed = 500;
+        }
+
+        setTimeout(type, typeSpeed);
     }
+
+    type();
 }
 
-function showMainApp(user) {
-    const navUser = document.getElementById('nav-user-name');
-    if (navUser) navUser.textContent = user.name.split(' ')[0];
-    const mainApp = document.getElementById('main-app');
-    if (mainApp) {
-        mainApp.classList.remove('hidden');
-        setTimeout(() => mainApp.classList.remove('opacity-0'), 50);
-    }
-}
-
-// Gender Choice
-let selectedGender = 'male';
+/* ==========================================================================
+   4. USER AUTHENTICATION & REGISTRATION
+   ========================================================================== */
 function setGenderChoice(gender) {
     selectedGender = gender;
     const btnMale = document.getElementById('btn-gender-male');
     const btnFemale = document.getElementById('btn-gender-female');
-    if (btnMale) btnMale.classList.toggle('active-male', gender === 'male');
-    if (btnFemale) btnFemale.classList.toggle('active-female', gender === 'female');
-}
 
-function showSection(sectionId) {
-    document.querySelectorAll('.app-section').forEach(sec => sec.classList.add('hidden'));
-    const activeSection = document.getElementById(sectionId);
-    if (activeSection) activeSection.classList.remove('hidden');
-
-    if (sectionId === 'news') {
-        const navBadge = document.getElementById('badge-news-nav');
-        const mobileBadge = document.getElementById('badge-news-mobile');
-        if (navBadge) navBadge.classList.add('hidden');
-        if (mobileBadge) mobileBadge.classList.add('hidden');
-    }
-}
-
-// Registration Submit
-const regForm = document.getElementById('register-form');
-if (regForm) {
-    regForm.addEventListener('submit', function(e) {
-        e.preventDefault();
-
-        const studentData = {
-            id: Date.now(),
-            name: document.getElementById('reg-name').value,
-            phone: document.getElementById('reg-phone').value,
-            grade: document.getElementById('reg-grade').value,
-            school: document.getElementById('reg-school').value,
-            pass: document.getElementById('reg-pass').value,
-            gender: selectedGender,
-            message: 'عضو مُسجّل بالمنصة',
-            adminReply: 'أهلاً بك في المنصة'
-        };
-
-        let studentsList = JSON.parse(localStorage.getItem('platform_students')) || [];
-        studentsList.push(studentData);
-        localStorage.setItem('platform_students', JSON.stringify(studentsList));
-        localStorage.setItem('current_user', JSON.stringify(studentData));
-
-        const introScreen = document.getElementById('intro-screen');
-        if (introScreen) introScreen.classList.add('hidden');
-        showMainApp(studentData);
-    });
-}
-
-function checkNotificationBadges() {
-    const currentUser = JSON.parse(localStorage.getItem('current_user'));
-    if (!currentUser) return;
-
-    const studentsList = JSON.parse(localStorage.getItem('platform_students')) || [];
-    const myData = studentsList.find(st => st.phone === currentUser.phone);
-
-    if (myData && myData.hasNewReply) {
-        const userNav = document.getElementById('badge-user-nav');
-        const userMobile = document.getElementById('badge-user-mobile');
-        if (userNav) userNav.classList.remove('hidden');
-        if (userMobile) userMobile.classList.remove('hidden');
-    }
-}
-
-function openUserAccountModal() {
-    const currentUser = JSON.parse(localStorage.getItem('current_user'));
-    if (!currentUser) return;
-
-    const modal = document.getElementById('user-account-modal');
-    if (modal) modal.classList.remove('hidden');
-    
-    const userNav = document.getElementById('badge-user-nav');
-    const userMobile = document.getElementById('badge-user-mobile');
-    if (userNav) userNav.classList.add('hidden');
-    if (userMobile) userMobile.classList.add('hidden');
-
-    const infoCard = document.getElementById('user-info-card');
-    if (infoCard) {
-        infoCard.innerHTML = `
-            <p class="font-bold text-slate-100">${currentUser.name}</p>
-            <p class="text-amber-400 font-semibold">${currentUser.grade}</p>
-            <p class="text-slate-400 text-[11px]">${currentUser.school}</p>
-        `;
-    }
-
-    let studentsList = JSON.parse(localStorage.getItem('platform_students')) || [];
-    const myData = studentsList.find(st => st.phone === currentUser.phone);
-    if (myData) {
-        const replyBox = document.getElementById('user-reply-box');
-        if (replyBox) replyBox.textContent = myData.adminReply || 'لا يوجد رد بعد.';
-        myData.hasNewReply = false;
-        localStorage.setItem('platform_students', JSON.stringify(studentsList));
-    }
-}
-
-function closeUserAccountModal() { 
-    const modal = document.getElementById('user-account-modal');
-    if (modal) modal.classList.add('hidden'); 
-}
-
-function logoutUser() { localStorage.removeItem('current_user'); location.reload(); }
-
-const studentForm = document.getElementById('student-msg-form');
-if (studentForm) {
-    studentForm.addEventListener('submit', function(e) {
-        e.preventDefault();
-        const msgText = document.getElementById('student-msg-text').value;
-        const currentUser = JSON.parse(localStorage.getItem('current_user'));
-
-        if (!currentUser) return;
-
-        let studentsList = JSON.parse(localStorage.getItem('platform_students')) || [];
-        studentsList = studentsList.map(st => {
-            if (st.phone === currentUser.phone) st.message = msgText;
-            return st;
-        });
-
-        localStorage.setItem('platform_students', JSON.stringify(studentsList));
-        alert('تم إرسال الرسالة للأدمن!');
-        document.getElementById('student-msg-text').value = '';
-    });
-}
-
-function openAdminModal() { 
-    const modal = document.getElementById('admin-modal');
-    if (modal) modal.classList.remove('hidden'); 
-}
-
-function closeAdminModal() { 
-    const modal = document.getElementById('admin-modal');
-    const adminAuth = document.getElementById('admin-auth');
-    const adminContent = document.getElementById('admin-dashboard-content');
-    if (modal) modal.classList.add('hidden'); 
-    if (adminAuth) adminAuth.classList.remove('hidden');
-    if (adminContent) adminContent.classList.add('hidden');
-}
-
-function verifyAdminPass() {
-    const inputPass = document.getElementById('admin-pass-input');
-    if (inputPass && inputPass.value === '1122334455') {
-        const adminAuth = document.getElementById('admin-auth');
-        const adminContent = document.getElementById('admin-dashboard-content');
-        if (adminAuth) adminAuth.classList.add('hidden');
-        if (adminContent) adminContent.classList.remove('hidden');
-        loadDashboardData();
+    if (gender === 'male') {
+        btnMale.classList.add('bg-blue-500/20', 'border-blue-500');
+        btnFemale.classList.remove('bg-pink-500/20', 'border-pink-500');
     } else {
-        alert('كلمة السر خاطئة!');
+        btnFemale.classList.add('bg-pink-500/20', 'border-pink-500');
+        btnMale.classList.remove('bg-blue-500/20', 'border-blue-500');
     }
 }
 
-function replyToStudent(phone) {
-    const replyText = prompt("أدخل رد الأدمن/المستر للطالب:");
-    if (!replyText) return;
+function handleRegister(event) {
+    event.preventDefault();
 
-    let studentsList = JSON.parse(localStorage.getItem('platform_students')) || [];
-    studentsList = studentsList.map(st => {
-        if (st.phone === phone) {
-            st.adminReply = replyText;
-            st.hasNewReply = true;
-        }
-        return st;
-    });
+    const name = document.getElementById('reg-name').value.trim();
+    const phone = document.getElementById('reg-phone').value.trim();
+    const grade = document.getElementById('reg-grade').value;
+    const school = document.getElementById('reg-school').value;
+    const pass = document.getElementById('reg-pass').value;
 
-    localStorage.setItem('platform_students', JSON.stringify(studentsList));
-    triggerNotificationAlert();
-    loadDashboardData();
-}
-
-function deleteStudentData(phone) {
-    if (!confirm('هل تريد حذف هذا العضو/الطالب نهائياً؟')) return;
-
-    let studentsList = JSON.parse(localStorage.getItem('platform_students')) || [];
-    studentsList = studentsList.filter(st => st.phone !== phone);
-
-    localStorage.setItem('platform_students', JSON.stringify(studentsList));
-    loadDashboardData();
-}
-
-function deleteNewsItem(id) {
-    if (!confirm('هل تريد حذف هذا الخبر/المحتوى؟')) return;
-    let newsList = JSON.parse(localStorage.getItem('platform_news')) || [];
-    newsList = newsList.filter(item => item.id !== id);
-    localStorage.setItem('platform_news', JSON.stringify(newsList));
-    loadNews();
-    loadDashboardData();
-}
-
-function loadDashboardData() {
-    // تحميل الأعضاء
-    const studentsList = JSON.parse(localStorage.getItem('platform_students')) || [];
-    const tableBody = document.getElementById('admin-table-body');
-    if (tableBody) {
-        tableBody.innerHTML = '';
-        studentsList.forEach(st => {
-            const tr = document.createElement('tr');
-            tr.innerHTML = `
-                <td class="p-2.5 font-bold">${st.name}</td>
-                <td class="p-2.5 text-amber-400">${st.grade || 'عام'}</td>
-                <td class="p-2.5 font-mono" dir="ltr">${st.phone}</td>
-                <td class="p-2.5">${st.message}</td>
-                <td class="p-2.5 text-amber-400 font-bold">${st.adminReply || '-'}</td>
-                <td class="p-2.5 flex justify-center gap-1">
-                    <button onclick="replyToStudent('${st.phone}')" class="px-2 py-1 bg-amber-400 text-slate-950 rounded font-bold text-[11px]">رد</button>
-                    <button onclick="deleteStudentData('${st.phone}')" class="px-2 py-1 bg-red-500/20 text-red-400 border border-red-500/30 rounded font-bold text-[11px]">إزالة العضو</button>
-                </td>
-            `;
-            tableBody.appendChild(tr);
-        });
-    }
-
-    // تحميل إدارة الأخبار المنشورة
-    const newsList = JSON.parse(localStorage.getItem('platform_news')) || [];
-    const manageList = document.getElementById('admin-news-manage-list');
-    if (manageList) {
-        manageList.innerHTML = newsList.length === 0 ? '<p class="text-slate-500">لا يوجد محتوى مرفوع حالياً.</p>' : '';
-        newsList.forEach(item => {
-            manageList.innerHTML += `
-                <div class="flex justify-between items-center p-2 bg-slate-950 rounded border border-slate-800">
-                    <span class="truncate max-w-xs font-bold text-slate-300">${item.text || 'محتوى بدون نص'}</span>
-                    <button onclick="deleteNewsItem(${item.id})" class="px-2 py-1 bg-red-500/20 text-red-400 rounded text-[10px] font-bold">حذف الخبر</button>
-                </div>
-            `;
-        });
-    }
-}
-
-// النشر الشامل وإدارة المرفقات للأقسام المختلفة
-async function publishNews() {
-    const textInput = document.getElementById('admin-news-input');
-    const linkInput = document.getElementById('admin-news-link');
-    const fileInput = document.getElementById('admin-news-file');
-    const targetSection = document.getElementById('admin-target-section') ? document.getElementById('admin-target-section').value : 'news';
-
-    const text = textInput ? textInput.value.trim() : '';
-    const link = linkInput ? linkInput.value.trim() : '';
-    let fileData = "";
-    let fileType = "";
-
-    if (fileInput && fileInput.files && fileInput.files[0]) {
-        const file = fileInput.files[0];
-        fileType = file.type;
-        fileData = await new Promise((resolve) => {
-            const reader = new FileReader();
-            reader.onload = (e) => resolve(e.target.result);
-            reader.readAsDataURL(file);
-        });
-    }
-
-    if (!text && !link && !fileData) {
-        alert('يرجى كتابة نص، إضافة رابط، أو اختيار ملف للنشر!');
+    if (!selectedGender) {
+        alert('يرجى تحديد النوع (طالب / طالبة)');
         return;
     }
 
-    const now = new Date();
-    const formattedDate = now.toLocaleDateString('ar-EG', { year: 'numeric', month: 'short', day: 'numeric' }) + 
-                          ' - ' + now.toLocaleTimeString('ar-EG', { hour: '2-digit', minute: '2-digit' });
-
-    const newsItem = {
-        id: Date.now(),
-        section: targetSection,
-        text: text,
-        link: link,
-        fileData: fileData,
-        fileType: fileType,
-        date: formattedDate
-    };
-
-    let newsList = JSON.parse(localStorage.getItem('platform_news')) || [];
-    newsList.unshift(newsItem);
-    localStorage.setItem('platform_news', JSON.stringify(newsList));
-
-    if (textInput) textInput.value = '';
-    if (linkInput) linkInput.value = '';
-    if (fileInput) fileInput.value = '';
-
-    const navBadge = document.getElementById('badge-news-nav');
-    const mobileBadge = document.getElementById('badge-news-mobile');
-    if (navBadge) navBadge.classList.remove('hidden');
-    if (mobileBadge) mobileBadge.classList.remove('hidden');
-    
-    triggerNotificationAlert();
-    alert('تم نشر المحتوى بنجاح في القسم المختار!');
-    loadNews();
-    loadDashboardData();
-}
-
-function loadNews(filterKeyword = '') {
-    const defaultNews = [{
-        id: 1,
-        section: "news",
-        text: "مرحباً بكم في منصة مستر أشرف بسيوني الرسمية.",
-        link: "",
-        fileData: "",
-        fileType: "",
-        date: "تنويه عام"
-    }];
-
-    const rawNewsList = JSON.parse(localStorage.getItem('platform_news')) || defaultNews;
-    const sections = ['news', 'courses', 'pdfs'];
-
-    sections.forEach(sec => {
-        const container = document.getElementById(`${sec}-container`);
-        if (!container) return;
-
-        let filteredItems = rawNewsList.filter(item => {
-            const matchesSection = (item.section || 'news') === sec;
-            const itemText = (typeof item === 'object' ? item.text : item) || '';
-            const matchesSearch = itemText.toLowerCase().includes(filterKeyword.toLowerCase());
-            return matchesSection && matchesSearch;
-        });
-
-        if (filteredItems.length === 0) {
-            container.innerHTML = `<p class="text-xs text-slate-500 py-3 text-center">لا يوجد محتوى متوفر حالياً في هذا القسم.</p>`;
+    const existingUser = usersList.find(u => u.phone === phone);
+    if (existingUser) {
+        if (existingUser.pass === pass) {
+            currentUser = existingUser;
+        } else {
+            alert('رقم الهاتف مسجل بالفعل وكلمة السر غير صحيحة!');
             return;
         }
+    } else {
+        currentUser = {
+            id: Date.now(),
+            name,
+            phone,
+            grade,
+            school,
+            pass,
+            gender: selectedGender,
+            message: '',
+            reply: ''
+        };
+        usersList.push(currentUser);
+        localStorage.setItem('app_users_list', JSON.stringify(usersList));
+    }
 
-        container.innerHTML = filteredItems.map(item => {
-            const isObject = typeof item === 'object' && item !== null;
-            const text = isObject ? item.text : item;
-            const link = isObject ? item.link : '';
-            const fileData = isObject ? item.fileData : '';
-            const fileType = isObject ? item.fileType : '';
-            const date = isObject ? (item.date || '') : '';
+    localStorage.setItem('app_current_user', JSON.stringify(currentUser));
+    showMainApp();
+}
 
-            let mediaHTML = '';
-            if (fileData) {
-                if (fileType.startsWith('image/')) {
-                    mediaHTML = `
-                        <div class="rounded-lg overflow-hidden border border-slate-700 max-h-72 my-2">
-                            <img src="${fileData}" alt="صورة مرفقة" class="w-full h-full object-cover" />
-                        </div>
-                    `;
-                } else if (fileType.startsWith('video/')) {
-                    mediaHTML = `
-                        <div class="rounded-lg overflow-hidden border border-slate-700 my-2">
-                            <video src="${fileData}" controls class="w-full max-h-72 bg-black"></video>
-                        </div>
-                    `;
-                } else if (fileType === 'application/pdf') {
-                    mediaHTML = `
-                        <div class="my-2">
-                            <a href="${fileData}" download="attachment_${item.id || Date.now()}.pdf" class="inline-flex items-center gap-2 p-2.5 bg-red-500/10 text-red-400 border border-red-500/30 rounded-lg text-xs font-bold hover:bg-red-500/20">
-                                📄 تحميل ملف الـ PDF المرفق
-                            </a>
-                        </div>
-                    `;
-                }
+function showMainApp() {
+    const introScreen = document.getElementById('intro-screen');
+    const mainApp = document.getElementById('main-app');
+    const navUserName = document.getElementById('nav-user-name');
+
+    if (introScreen) introScreen.classList.add('hidden');
+    if (mainApp) {
+        mainApp.classList.remove('hidden');
+        setTimeout(() => mainApp.classList.remove('opacity-0'), 50);
+    }
+
+    if (navUserName && currentUser) {
+        navUserName.textContent = currentUser.name.split(' ')[0];
+    }
+
+    updateUserReplyNotification();
+}
+
+function logoutUser() {
+    localStorage.removeItem('app_current_user');
+    currentUser = null;
+    location.reload();
+}
+
+/* ==========================================================================
+   5. NAVIGATION & SECTION CONTROLS
+   ========================================================================== */
+function showSection(sectionId) {
+    const sections = document.querySelectorAll('.app-section');
+    sections.forEach(sec => sec.classList.add('hidden'));
+
+    const target = document.getElementById(sectionId);
+    if (target) {
+        target.classList.remove('hidden');
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+}
+
+function toggleTheme() {
+    isDarkMode = !isDarkMode;
+    const body = document.getElementById('app-body');
+    const themeBtnText = document.getElementById('theme-btn-text');
+
+    if (isDarkMode) {
+        body.className = "theme-dark bg-slate-950 text-slate-100 min-h-screen font-cairo text-xs sm:text-sm selection:bg-amber-400 selection:text-black overflow-x-hidden";
+        if (themeBtnText) themeBtnText.textContent = "🌙 الداكن";
+    } else {
+        body.className = "theme-light bg-slate-100 text-slate-900 min-h-screen font-cairo text-xs sm:text-sm selection:bg-amber-400 selection:text-black overflow-x-hidden";
+        if (themeBtnText) themeBtnText.textContent = "☀️ المضيء";
+    }
+}
+
+/* ==========================================================================
+   6. USER ACCOUNT MODAL & MESSAGING
+   ========================================================================== */
+function openUserAccountModal() {
+    if (!currentUser) return;
+
+    const modal = document.getElementById('user-account-modal');
+    const userInfoCard = document.getElementById('user-info-card');
+    const replyBox = document.getElementById('user-reply-box');
+
+    if (userInfoCard) {
+        userInfoCard.innerHTML = `
+            <p><strong>الاسم:</strong> ${currentUser.name}</p>
+            <p><strong>الهاتف:</strong> <span dir="ltr">${currentUser.phone}</span></p>
+            <p><strong>الصف:</strong> ${currentUser.grade}</p>
+            <p><strong>المدرسة/السنتر:</strong> ${currentUser.school}</p>
+        `;
+    }
+
+    if (replyBox) {
+        const latestUserData = usersList.find(u => u.phone === currentUser.phone);
+        replyBox.textContent = (latestUserData && latestUserData.reply) 
+            ? latestUserData.reply 
+            : 'لا يوجد رد بعد من إدارة المنصة.';
+    }
+
+    if (modal) modal.classList.remove('hidden');
+}
+
+function closeUserAccountModal() {
+    const modal = document.getElementById('user-account-modal');
+    if (modal) modal.classList.add('hidden');
+}
+
+function sendStudentMessage(event) {
+    event.preventDefault();
+    const msgText = document.getElementById('student-msg-text').value.trim();
+
+    if (!msgText) return;
+
+    if (!currentUser) {
+        alert('يرجى تسجيل الدخول أولاً لإرسال رسالة.');
+        return;
+    }
+
+    currentUser.message = msgText;
+    const uIndex = usersList.findIndex(u => u.phone === currentUser.phone);
+    if (uIndex !== -1) {
+        usersList[uIndex].message = msgText;
+        localStorage.setItem('app_users_list', JSON.stringify(usersList));
+        localStorage.setItem('app_current_user', JSON.stringify(currentUser));
+    }
+
+    alert('تم إرسال رسالتك بنجاح إلى المستر!');
+    document.getElementById('student-msg-text').value = '';
+}
+
+function updateUserReplyNotification() {
+    if (!currentUser) return;
+    const latestUserData = usersList.find(u => u.phone === currentUser.phone);
+    if (latestUserData && latestUserData.reply) {
+        document.querySelectorAll('#badge-user-nav, #badge-user-mobile').forEach(badge => {
+            badge.classList.remove('hidden');
+        });
+    }
+}
+
+/* ==========================================================================
+   7. DYNAMIC CONTENT RENDERING & SEARCH
+   ========================================================================== */
+function renderAllContents(filterQuery = '') {
+    const containers = {
+        news: document.getElementById('news-container'),
+        courses: document.getElementById('courses-container'),
+        pdfs: document.getElementById('pdfs-container'),
+        quizzes: document.getElementById('quizzes-container')
+    };
+
+    Object.values(containers).forEach(c => { if (c) c.innerHTML = ''; });
+
+    const filtered = appContents.filter(item => 
+        item.title.toLowerCase().includes(filterQuery.toLowerCase())
+    );
+
+    filtered.forEach(item => {
+        const targetContainer = containers[item.section];
+        if (!targetContainer) return;
+
+        const card = document.createElement('div');
+        card.className = "bg-slate-900/90 border border-slate-800 p-4 rounded-xl shadow-md space-y-2";
+
+        let mediaHtml = '';
+        if (item.fileData) {
+            if (item.fileType.startsWith('image/')) {
+                mediaHtml = `<img src="${item.fileData}" class="w-full max-h-60 object-cover rounded-lg my-2" alt="مرفق">`;
+            } else if (item.fileType.startsWith('video/')) {
+                mediaHtml = `<video src="${item.fileData}" controls class="w-full max-h-60 rounded-lg my-2"></video>`;
+            } else if (item.fileType === 'application/pdf') {
+                mediaHtml = `<a href="${item.fileData}" download="ملف_المسطر.pdf" class="inline-block my-2 text-amber-400 underline font-bold">📄 تحميل الملازمة (PDF)</a>`;
             }
+        }
 
-            return `
-                <div class="p-4 rounded-xl bg-slate-900 border border-slate-800 space-y-2 text-right">
-                    ${date ? `<div class="text-[10px] text-amber-400/80 font-mono">📅 ${date}</div>` : ''}
-                    ${text ? `<p class="font-bold text-xs text-slate-100">📌 ${text}</p>` : ''}
-                    ${mediaHTML}
-                    ${link ? `
-                        <div class="pt-1">
-                            <a href="${link}" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-1 text-xs font-bold text-amber-400 hover:text-amber-300 underline">
-                                🔗 اضغط هنا لفتح الرابط / المرفق
-                            </a>
-                        </div>
-                    ` : ''}
-                </div>
-            `;
-        }).join('');
+        let linkHtml = '';
+        if (item.link) {
+            linkHtml = `<a href="${item.link}" target="_blank" rel="noopener noreferrer" class="inline-block mt-1 text-xs text-amber-400 font-bold hover:underline">🔗 فتح الرابط الخارجي</a>`;
+        }
+
+        card.innerHTML = `
+            <div class="flex justify-between items-start">
+                <h4 class="font-bold text-amber-300 text-sm md:text-base">${item.title}</h4>
+                <span class="text-[10px] text-slate-500">${item.date || ''}</span>
+            </div>
+            ${mediaHtml}
+            ${linkHtml}
+        `;
+
+        targetContainer.appendChild(card);
     });
 }
 
 function handleSearch() {
-    const searchVal = document.getElementById('search-input')?.value.trim() || '';
-    loadNews(searchVal);
+    const query = document.getElementById('search-input').value;
+    renderAllContents(query);
 }
 
-// ------------------------------------------------------------------
-// --- نظام إدارة ونشر الاختبارات الإلكترونية وتصحيحها ---
-// ------------------------------------------------------------------
-
-let questionCount = 0;
-
-function addQuestionField() {
-    const builder = document.getElementById('quiz-questions-builder');
-    if (!builder) return;
-    questionCount++;
-
-    const qDiv = document.createElement('div');
-    qDiv.className = "p-3 bg-slate-950 rounded-xl border border-slate-800 space-y-2 question-block";
-    qDiv.setAttribute('data-q-index', questionCount);
-
-    qDiv.innerHTML = `
-        <div class="flex justify-between items-center">
-            <span class="font-bold text-amber-400">السؤال ${questionCount}</span>
-            <button onclick="this.parentElement.parentElement.remove()" class="text-red-400 font-bold">✕ حذف السؤال</button>
-        </div>
-        <input type="text" class="q-text w-full p-2 bg-slate-800 border border-slate-700 rounded-lg" placeholder="نص السؤال">
-        
-        <p class="text-[10px] text-slate-400 font-bold">الخيارات (حدد الدائرة بجانب الإجابة الصحيحة):</p>
-        <div class="space-y-1">
-            <div class="flex items-center gap-2">
-                <input type="radio" name="correct_${questionCount}" value="0" checked>
-                <input type="text" class="opt-0 w-full p-1.5 bg-slate-800 border border-slate-700 rounded" placeholder="الخيار الأول">
-            </div>
-            <div class="flex items-center gap-2">
-                <input type="radio" name="correct_${questionCount}" value="1">
-                <input type="text" class="opt-1 w-full p-1.5 bg-slate-800 border border-slate-700 rounded" placeholder="الخيار الثاني">
-            </div>
-            <div class="flex items-center gap-2">
-                <input type="radio" name="correct_${questionCount}" value="2">
-                <input type="text" class="opt-2 w-full p-1.5 bg-slate-800 border border-slate-700 rounded" placeholder="الخيار الثالث">
-            </div>
-            <div class="flex items-center gap-2">
-                <input type="radio" name="correct_${questionCount}" value="3">
-                <input type="text" class="opt-3 w-full p-1.5 bg-slate-800 border border-slate-700 rounded" placeholder="الخيار الرابع">
-            </div>
-        </div>
-    `;
-    builder.appendChild(qDiv);
+/* ==========================================================================
+   8. ADMIN DASHBOARD & MANAGEMENT
+   ========================================================================== */
+function openAdminModal() {
+    const modal = document.getElementById('admin-modal');
+    if (modal) modal.classList.remove('hidden');
 }
 
-function publishQuiz() {
-    const title = document.getElementById('quiz-title-input')?.value.trim();
-    const duration = document.getElementById('quiz-duration-input')?.value.trim() || 15;
-    const blocks = document.querySelectorAll('.question-block');
+function closeAdminModal() {
+    const modal = document.getElementById('admin-modal');
+    if (modal) modal.classList.add('hidden');
+}
 
-    if (!title || blocks.length === 0) {
-        alert('يرجى إضافة عنوان للاختبار وسؤال واحد على الأقل!');
-        return;
+function verifyAdminPass() {
+    const passInput = document.getElementById('admin-pass-input').value;
+    const adminPass = localStorage.getItem('app_admin_pass') || ADMIN_PASSWORD_DEFAULT;
+
+    if (passInput === adminPass) {
+        document.getElementById('admin-auth').classList.add('hidden');
+        document.getElementById('admin-dashboard-content').classList.remove('hidden');
+        renderAdminTable();
+    } else {
+        alert('كلمة المرور غير صحيحة!');
     }
+}
 
-    const questions = [];
-    blocks.forEach((block) => {
-        const index = block.getAttribute('data-q-index');
-        const qText = block.querySelector('.q-text').value.trim();
-        const opts = [
-            block.querySelector('.opt-0').value.trim(),
-            block.querySelector('.opt-1').value.trim(),
-            block.querySelector('.opt-2').value.trim(),
-            block.querySelector('.opt-3').value.trim()
-        ];
-        const correctOpt = block.querySelector(`input[name="correct_${index}"]:checked`).value;
+function renderAdminTable() {
+    const tbody = document.getElementById('admin-table-body');
+    if (!tbody) return;
 
-        if (qText && opts[0] && opts[1]) {
-            questions.push({
-                question: qText,
-                options: opts.filter(o => o !== ''),
-                correct: parseInt(correctOpt)
-            });
-        }
+    tbody.innerHTML = '';
+
+    usersList.forEach((u, index) => {
+        const tr = document.createElement('tr');
+        tr.className = "hover:bg-slate-800/50 transition";
+        tr.innerHTML = `
+            <td class="p-2.5 font-bold">${u.name}</td>
+            <td class="p-2.5">${u.grade}</td>
+            <td class="p-2.5" dir="ltr">${u.phone}</td>
+            <td class="p-2.5 italic text-slate-300">${u.message || 'لا توجد رسالة'}</td>
+            <td class="p-2.5 text-amber-300">${u.reply || 'لم يتم الرد'}</td>
+            <td class="p-2.5 text-center">
+                <button onclick="replyToStudent(${index})" class="px-2 py-1 bg-amber-400/20 text-amber-300 border border-amber-400/30 rounded-lg hover:bg-amber-400/30 transition text-[11px] font-bold">
+                    الرد
+                </button>
+            </td>
+        `;
+        tbody.appendChild(tr);
     });
+}
 
-    if (questions.length === 0) {
-        alert('يرجى ملء بيانات الأسئلة والخيارات بشكل صحيح!');
+function replyToStudent(index) {
+    const replyMsg = prompt(`اكتب ردك للفي الطالب: ${usersList[index].name}`);
+    if (replyMsg !== null) {
+        usersList[index].reply = replyMsg;
+        localStorage.setItem('app_users_list', JSON.stringify(usersList));
+        renderAdminTable();
+
+        if (currentUser && currentUser.phone === usersList[index].phone) {
+            currentUser.reply = replyMsg;
+            localStorage.setItem('app_current_user', JSON.stringify(currentUser));
+            updateUserReplyNotification();
+        }
+    }
+}
+
+function publishNews() {
+    const targetSection = document.getElementById('admin-target-section').value;
+    const title = document.getElementById('admin-news-input').value.trim();
+    const link = document.getElementById('admin-news-link').value.trim();
+    const fileInput = document.getElementById('admin-news-file');
+
+    if (!title) {
+        alert('يرجى إدخال عنوان أو نص المحتوى!');
         return;
     }
 
-    const quizItem = {
+    const newContent = {
         id: Date.now(),
+        section: targetSection,
         title: title,
-        duration: parseInt(duration),
-        questions: questions
+        link: link,
+        fileData: '',
+        fileType: '',
+        date: new Date().toLocaleDateString('ar-EG')
     };
 
-    let quizzesList = JSON.parse(localStorage.getItem('platform_quizzes')) || [];
-    quizzesList.unshift(quizItem);
-    localStorage.setItem('platform_quizzes', JSON.stringify(quizzesList));
-
-    document.getElementById('quiz-title-input').value = '';
-    document.getElementById('quiz-questions-builder').innerHTML = '';
-    questionCount = 0;
-
-    alert('تم نشر الاختبار الإلكتروني بنجاح!');
-    loadQuizzes();
-}
-
-function deleteQuiz(id) {
-    if (!confirm('هل أنت تأكد من حذف هذا الاختبار؟')) return;
-    let quizzesList = JSON.parse(localStorage.getItem('platform_quizzes')) || [];
-    quizzesList = quizzesList.filter(q => q.id !== id);
-    localStorage.setItem('platform_quizzes', JSON.stringify(quizzesList));
-    loadQuizzes();
-}
-
-function loadQuizzes() {
-    const container = document.getElementById('quizzes-container');
-    if (!container) return;
-
-    const quizzesList = JSON.parse(localStorage.getItem('platform_quizzes')) || [];
-
-    if (quizzesList.length === 0) {
-        container.innerHTML = `<p class="text-xs text-slate-500 py-3 text-center">لا توجد اختبارات إلكترونية مضافة حالياً.</p>`;
-        return;
-    }
-
-    const isAdmin = !document.getElementById('admin-dashboard-content')?.classList.contains('hidden');
-
-    container.innerHTML = quizzesList.map(quiz => `
-        <div class="p-4 rounded-xl bg-slate-900 border border-slate-800 space-y-3 text-right">
-            <div class="flex justify-between items-center">
-                <h4 class="font-bold text-sm text-amber-400">📋 ${quiz.title}</h4>
-                <span class="text-[10px] text-slate-400 bg-slate-950 px-2 py-1 rounded-lg border border-slate-800">⏱️ ${quiz.duration} دقيقة</span>
-            </div>
-
-            <form id="quiz-form-${quiz.id}" class="space-y-3 pt-2">
-                ${quiz.questions.map((q, qIndex) => `
-                    <div class="p-3 bg-slate-950 rounded-lg border border-slate-800/80 space-y-1.5">
-                        <p class="font-bold text-slate-200">س${qIndex + 1}: ${q.question}</p>
-                        <div class="space-y-1 pr-2">
-                            ${q.options.map((opt, oIndex) => `
-                                <label class="flex items-center gap-2 cursor-pointer text-slate-300">
-                                    <input type="radio" name="q_${quiz.id}_${qIndex}" value="${oIndex}" class="accent-amber-400">
-                                    <span>${opt}</span>
-                                </label>
-                            `).join('')}
-                        </div>
-                    </div>
-                `).join('')}
-
-                <button type="button" onclick="submitQuizAnswers(${quiz.id})" class="w-full py-2 bg-amber-400 text-slate-950 font-bold rounded-xl hover:bg-amber-300 transition">
-                    تسليم الاختبار وعرض النتيجة
-                </button>
-            </form>
-
-            <div id="quiz-result-${quiz.id}" class="hidden p-3 rounded-lg text-center font-bold"></div>
-
-            ${isAdmin ? `
-                <div class="pt-2 border-t border-slate-800">
-                    <button onclick="deleteQuiz(${quiz.id})" class="text-xs text-red-400 hover:underline font-bold">🗑️ حذف الاختبار من الأدمن</button>
-                </div>
-            ` : ''}
-        </div>
-    `).join('');
-}
-
-function submitQuizAnswers(quizId) {
-    const quizzesList = JSON.parse(localStorage.getItem('platform_quizzes')) || [];
-    const quiz = quizzesList.find(q => q.id === quizId);
-    if (!quiz) return;
-
-    let score = 0;
-    let total = quiz.questions.length;
-    let unanswered = false;
-
-    quiz.questions.forEach((q, qIndex) => {
-        const selected = document.querySelector(`input[name="q_${quizId}_${qIndex}"]:checked`);
-        if (!selected) {
-            unanswered = true;
-        } else if (parseInt(selected.value) === q.correct) {
-            score++;
-        }
-    });
-
-    if (unanswered) {
-        if (!confirm('لم تقم بالإجابة على جميع الأسئلة! هل تريد التسليم على أي حال؟')) return;
-    }
-
-    const resultBox = document.getElementById(`quiz-result-${quizId}`);
-    if (resultBox) {
-        resultBox.classList.remove('hidden');
-        const percentage = Math.round((score / total) * 100);
-
-        if (percentage >= 50) {
-            resultBox.className = "p-3 rounded-lg text-center font-bold bg-green-500/20 text-green-400 border border-green-500/30";
-            resultBox.innerHTML = `🎉 أحسنت! النتيجة: ${score} من ${total} (${percentage}%)`;
-        } else {
-            resultBox.className = "p-3 rounded-lg text-center font-bold bg-red-500/20 text-red-400 border border-red-500/30";
-            resultBox.innerHTML = `⚠️ حاول مرة أخرى. النتيجة: ${score} من ${total} (${percentage}%)`;
-        }
+    const file = fileInput.files[0];
+    if (file) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            newContent.fileData = e.target.result;
+            newContent.fileType = file.type;
+            saveAndRenderPublishedContent(newContent);
+        };
+        reader.readAsDataURL(file);
+    } else {
+        saveAndRenderPublishedContent(newContent);
     }
 }
 
-// البصمة للأدمن
+function saveAndRenderPublishedContent(content) {
+    appContents.unshift(content);
+    localStorage.setItem('app_contents', JSON.stringify(appContents));
+    
+    // Clear Admin Inputs
+    document.getElementById('admin-news-input').value = '';
+    document.getElementById('admin-news-link').value = '';
+    document.getElementById('admin-news-file').value = '';
+
+    renderAllContents();
+    alert('تم نشر المحتوى بنجاح!');
+}
+
+/* ==========================================================================
+   9. BIOMETRICS / WEBAUTHN API INTEGRATION
+   ========================================================================== */
 async function registerAdminBiometrics() {
     if (!window.PublicKeyCredential) {
-        alert("متصفحك لا يدعم تفعيل البصمة.");
+        alert('عذراً، متصفحك لا يدعم المصادقة بالبصمة (WebAuthn).');
         return;
     }
+
     try {
-        const challenge = new Uint8Array(32);
-        window.crypto.getRandomValues(challenge);
+        const publicKeyCredentialCreationOptions = {
+            challenge: new Uint8Array([1, 2, 3, 4, 5, 6, 7, 8]),
+            rp: { name: "Mr. Ashraf Bassiouny Platform", id: window.location.hostname || "localhost" },
+            user: {
+                id: new Uint8Array([9, 8, 7, 6]),
+                name: "admin@platform.com",
+                displayName: "Admin Master"
+            },
+            pubKeyCredParams: [{ alg: -7, type: "public-key" }],
+            authenticatorSelection: { authenticatorAttachment: "platform" },
+            timeout: 60000,
+            attestation: "direct"
+        };
+
         const credential = await navigator.credentials.create({
-            publicKey: {
-                challenge: challenge,
-                rp: { name: "منصة مستر أشرف بسيوني" },
-                user: { id: Uint8Array.from("ADMIN_ID", c => c.charCodeAt(0)), name: "admin", displayName: "Mr. Ashraf Bassiouny" },
-                pubKeyCredParams: [{ alg: -7, type: "public-key" }],
-                authenticatorSelection: { authenticatorAttachment: "platform" },
-                timeout: 60000
-            }
+            publicKey: publicKeyCredentialCreationOptions
         });
+
         if (credential) {
-            localStorage.setItem('admin_biometric_enabled', 'true');
-            alert('تم ربط بصمة الجهاز بنجاح!');
+            localStorage.setItem('app_admin_biometrics_enabled', 'true');
+            alert('تم تفعيل دخول الأدمن بالبصمة بنجاح على هذا الجهاز!');
         }
-    } catch (err) { alert('تعذر إعداد البصمة.'); }
+    } catch (err) {
+        console.error(err);
+        alert('تعذر تسجيل البصمة أو تم إلغاء العملية.');
+    }
 }
 
 async function loginWithBiometrics() {
-    if (!localStorage.getItem('admin_biometric_enabled')) {
-        alert('قم بالدخول بكلمة السر أولاً ثم اضغط على تفعيل البصمة.');
+    const isBiometricsEnabled = localStorage.getItem('app_admin_biometrics_enabled');
+    
+    if (!isBiometricsEnabled) {
+        alert('لم يتم تفعيل البصمة بعد. يرجى الدخول بكلمة السر أولاً ثم الضغط على "تفعيل البصمة".');
         return;
     }
+
     try {
-        const challenge = new Uint8Array(32);
-        window.crypto.getRandomValues(challenge);
-        const assertion = await navigator.credentials.get({ publicKey: { challenge: challenge, timeout: 60000 } });
+        const publicKeyCredentialRequestOptions = {
+            challenge: new Uint8Array([1, 2, 3, 4, 5, 6, 7, 8]),
+            timeout: 60000,
+            userVerification: "required"
+        };
+
+        const assertion = await navigator.credentials.get({
+            publicKey: publicKeyCredentialRequestOptions
+        });
+
         if (assertion) {
-            const adminAuth = document.getElementById('admin-auth');
-            const adminContent = document.getElementById('admin-dashboard-content');
-            if (adminAuth) adminAuth.classList.add('hidden');
-            if (adminContent) adminContent.classList.remove('hidden');
-            loadDashboardData();
+            document.getElementById('admin-auth').classList.add('hidden');
+            document.getElementById('admin-dashboard-content').classList.remove('hidden');
+            renderAdminTable();
         }
-    } catch (err) { alert('فشل التحقق من البصمة.'); }
+    } catch (err) {
+        console.error(err);
+        alert('فشلت عملية التحقق من البصمة.');
+    }
 }
