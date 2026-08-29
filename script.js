@@ -1,4 +1,4 @@
-// Typing Animation using modern English Font
+// Typing effect
 const typingTextElement = document.getElementById('typing-text');
 const fullText = "Mr. Ashraf Bassiouny: An Expert Teacher in English";
 let charIndex = 0;
@@ -13,21 +13,56 @@ function typeWriter() {
     }
 }
 
-// Auto Session Check (Remember Login)
+// Sound & Vibration Trigger
+function triggerNotificationAlert() {
+    // Play Notification Sound
+    try {
+        const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+        osc.connect(gain);
+        gain.connect(audioCtx.destination);
+        osc.frequency.value = 587.33; // D5 Note
+        gain.gain.setValueAtTime(0.1, audioCtx.currentTime);
+        osc.start();
+        osc.stop(audioCtx.currentTime + 0.2);
+    } catch (e) {}
+
+    // Phone Vibration
+    if (navigator.vibrate) {
+        navigator.vibrate([100, 50, 100]);
+    }
+}
+
+// Check Session & Badges on load
 window.addEventListener('load', () => {
     const savedUser = JSON.parse(localStorage.getItem('current_user'));
     
     if (savedUser) {
-        // User already logged in -> bypass intro screen
         document.getElementById('intro-screen').classList.add('hidden');
         showMainApp(savedUser);
     } else {
         typeWriter();
     }
     loadNews();
+    checkNotificationBadges();
 });
 
-// Show App View
+// Theme Toggle Mechanism
+function toggleTheme() {
+    const body = document.getElementById('app-body');
+    const themeBtnText = document.getElementById('theme-btn-text');
+    if (body.classList.contains('theme-dark')) {
+        body.classList.remove('theme-dark');
+        body.classList.add('theme-light');
+        themeBtnText.textContent = '☀️ الفاتح';
+    } else {
+        body.classList.remove('theme-light');
+        body.classList.add('theme-dark');
+        themeBtnText.textContent = '🌙 الداكن';
+    }
+}
+
 function showMainApp(user) {
     document.getElementById('nav-user-name').textContent = user.name.split(' ')[0];
     const mainApp = document.getElementById('main-app');
@@ -48,9 +83,15 @@ function showSection(sectionId) {
     document.querySelectorAll('.app-section').forEach(sec => sec.classList.add('hidden'));
     const activeSection = document.getElementById(sectionId);
     if (activeSection) activeSection.classList.remove('hidden');
+
+    // Remove Red Badge from News upon clicking
+    if (sectionId === 'news') {
+        document.getElementById('badge-news-nav').classList.add('hidden');
+        document.getElementById('badge-news-mobile').classList.add('hidden');
+    }
 }
 
-// Account Registration
+// Registration Submit
 document.getElementById('register-form').addEventListener('submit', function(e) {
     e.preventDefault();
 
@@ -75,37 +116,51 @@ document.getElementById('register-form').addEventListener('submit', function(e) 
     showMainApp(studentData);
 });
 
-// User Account & Info Modal
+// Check & Display Red Badges
+function checkNotificationBadges() {
+    const currentUser = JSON.parse(localStorage.getItem('current_user'));
+    if (!currentUser) return;
+
+    const studentsList = JSON.parse(localStorage.getItem('platform_students')) || [];
+    const myData = studentsList.find(st => st.phone === currentUser.phone);
+
+    if (myData && myData.hasNewReply) {
+        document.getElementById('badge-user-nav').classList.remove('hidden');
+        document.getElementById('badge-user-mobile').classList.remove('hidden');
+    }
+}
+
+// Account Modal Actions
 function openUserAccountModal() {
     const currentUser = JSON.parse(localStorage.getItem('current_user'));
     if (!currentUser) return;
 
     document.getElementById('user-account-modal').classList.remove('hidden');
     
+    // Clear Badge
+    document.getElementById('badge-user-nav').classList.add('hidden');
+    document.getElementById('badge-user-mobile').classList.add('hidden');
+
     const infoCard = document.getElementById('user-info-card');
     infoCard.innerHTML = `
-        <p class="font-bold text-white">${currentUser.name}</p>
+        <p class="font-bold">${currentUser.name}</p>
         <p class="text-amber-400 font-semibold">${currentUser.grade}</p>
         <p class="text-slate-400 text-[11px]">${currentUser.school}</p>
     `;
 
-    const studentsList = JSON.parse(localStorage.getItem('platform_students')) || [];
+    let studentsList = JSON.parse(localStorage.getItem('platform_students')) || [];
     const myData = studentsList.find(st => st.phone === currentUser.phone);
     if (myData) {
         document.getElementById('user-reply-box').textContent = myData.adminReply || 'لا يوجد رد بعد.';
+        myData.hasNewReply = false;
+        localStorage.setItem('platform_students', JSON.stringify(studentsList));
     }
 }
 
-function closeUserAccountModal() {
-    document.getElementById('user-account-modal').classList.add('hidden');
-}
+function closeUserAccountModal() { document.getElementById('user-account-modal').classList.add('hidden'); }
+function logoutUser() { localStorage.removeItem('current_user'); location.reload(); }
 
-function logoutUser() {
-    localStorage.removeItem('current_user');
-    location.reload();
-}
-
-// Send Message from Student
+// Send Message
 document.getElementById('student-msg-form').addEventListener('submit', function(e) {
     e.preventDefault();
     const msgText = document.getElementById('student-msg-text').value;
@@ -120,11 +175,11 @@ document.getElementById('student-msg-form').addEventListener('submit', function(
     });
 
     localStorage.setItem('platform_students', JSON.stringify(studentsList));
-    alert('تم إرسال الرسالة إلى الأدمن!');
+    alert('تم إرسال الرسالة للأدمن!');
     document.getElementById('student-msg-text').value = '';
 });
 
-// Admin Control Panel
+// Admin Control Panel Modal
 function openAdminModal() { document.getElementById('admin-modal').classList.remove('hidden'); }
 function closeAdminModal() { 
     document.getElementById('admin-modal').classList.add('hidden'); 
@@ -142,24 +197,27 @@ function verifyAdminPass() {
     }
 }
 
-// Reply to Student
+// Admin Reply & Delete Functions
 function replyToStudent(phone) {
-    const replyText = prompt("أدخل رد المستر للفيلم/الطالب:");
+    const replyText = prompt("أدخل رد الأدمن/المستر للطالب:");
     if (!replyText) return;
 
     let studentsList = JSON.parse(localStorage.getItem('platform_students')) || [];
     studentsList = studentsList.map(st => {
-        if (st.phone === phone) st.adminReply = replyText;
+        if (st.phone === phone) {
+            st.adminReply = replyText;
+            st.hasNewReply = true;
+        }
         return st;
     });
 
     localStorage.setItem('platform_students', JSON.stringify(studentsList));
+    triggerNotificationAlert();
     loadDashboardData();
 }
 
-// Delete Message / Student from Admin Panel
 function deleteStudentData(phone) {
-    if (!confirm('هل أنت تأكد من حذف هذا العضو/الرسالة؟')) return;
+    if (!confirm('هل تريد حذف هذه الرسالة/الطالب؟')) return;
 
     let studentsList = JSON.parse(localStorage.getItem('platform_students')) || [];
     studentsList = studentsList.filter(st => st.phone !== phone);
@@ -176,21 +234,21 @@ function loadDashboardData() {
     studentsList.forEach(st => {
         const tr = document.createElement('tr');
         tr.innerHTML = `
-            <td class="p-2.5 font-bold text-white">${st.name}</td>
-            <td class="p-2.5 text-amber-300">${st.grade || 'عام'}</td>
+            <td class="p-2.5 font-bold">${st.name}</td>
+            <td class="p-2.5 text-amber-400">${st.grade || 'عام'}</td>
             <td class="p-2.5 font-mono" dir="ltr">${st.phone}</td>
-            <td class="p-2.5 text-slate-200">${st.message}</td>
+            <td class="p-2.5">${st.message}</td>
             <td class="p-2.5 text-amber-400 font-bold">${st.adminReply || '-'}</td>
-            <td class="p-2.5 flex justify-center gap-1.5">
-                <button onclick="replyToStudent('${st.phone}')" class="px-2.5 py-1 bg-amber-400 text-slate-950 rounded-md font-bold text-[11px]">رد</button>
-                <button onclick="deleteStudentData('${st.phone}')" class="px-2 py-1 bg-red-500/20 text-red-400 border border-red-500/30 rounded-md font-bold text-[11px]">حذف</button>
+            <td class="p-2.5 flex justify-center gap-1">
+                <button onclick="replyToStudent('${st.phone}')" class="px-2 py-1 bg-amber-400 text-slate-950 rounded font-bold text-[11px]">رد</button>
+                <button onclick="deleteStudentData('${st.phone}')" class="px-2 py-1 bg-red-500/20 text-red-400 border border-red-500/30 rounded font-bold text-[11px]">حذف</button>
             </td>
         `;
         tableBody.appendChild(tr);
     });
 }
 
-// News Section Controls
+// News Functionality & Trigger Red Badges
 function publishNews() {
     const text = document.getElementById('admin-news-input').value;
     if (!text) return;
@@ -198,7 +256,13 @@ function publishNews() {
     newsList.unshift(text);
     localStorage.setItem('platform_news', JSON.stringify(newsList));
     document.getElementById('admin-news-input').value = '';
-    alert('تم نشر الخبر!');
+
+    // Show Red Badges
+    document.getElementById('badge-news-nav').classList.remove('hidden');
+    document.getElementById('badge-news-mobile').classList.remove('hidden');
+    
+    triggerNotificationAlert();
+    alert('تم نشر الخبر مع تفعيل صوت وإشعار التنبيه!');
     loadNews();
 }
 
@@ -207,7 +271,7 @@ function loadNews() {
     const newsContainer = document.getElementById('news-container');
     if (newsContainer) {
         newsContainer.innerHTML = newsList.map(n => `
-            <div class="p-3 rounded-xl bg-slate-900 border border-slate-800 font-bold text-xs text-slate-200">
+            <div class="p-3 rounded-xl bg-slate-900 border border-slate-800 font-bold text-xs">
                 📌 ${n}
             </div>
         `).join('');
