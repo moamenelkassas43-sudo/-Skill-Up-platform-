@@ -78,6 +78,173 @@ function initTypingEffect() {
 }
 
 /* ==========================================================================
+   GLOBAL NOTIFICATION BADGE SYSTEM (RED DOT ON ALL ICONS)
+   ========================================================================== */
+
+// استدعِ هذه الدالة عند إرسال أي محتوى أو إشعار جديد
+function triggerNewNotification(targetSection) {
+    // إظهار النقطة الحمراء على الأيقونة المحددة في شريط الموبايل والديسكتاوب
+    const navBadge = document.getElementById(`badge-${targetSection}-nav`);
+    const mobileBadge = document.getElementById(`badge-${targetSection}-mobile`);
+
+    if (navBadge) navBadge.classList.remove('hidden');
+    if (mobileBadge) mobileBadge.classList.remove('hidden');
+
+    // تشغيل الاهتزاز للتنبيه
+    if ("vibrate" in navigator) {
+        navigator.vibrate([150, 50, 150]);
+    }
+}
+
+// إخفاء النقطة الحمراء فور دخول الطالب إلى القسم
+function clearNotificationBadge(targetSection) {
+    const navBadge = document.getElementById(`badge-${targetSection}-nav`);
+    const mobileBadge = document.getElementById(`badge-${targetSection}-mobile`);
+
+    if (navBadge) navBadge.classList.add('hidden');
+    if (mobileBadge) mobileBadge.classList.add('hidden');
+}
+
+/* ==========================================================================
+   ADVANCED QUIZ SYSTEM WITH AUTO-GRADING & TIMED AUTO-SUBMIT
+   ========================================================================== */
+
+// الأدمن يرفع الامتحان بالتنسيق التالي (سؤال + خيارات + رقم الإجابة الصحيحة index)
+const rawQuizData = {
+    title: "اختبار الشامل - Unit 1 & 2",
+    timeLimitInMinutes: 15, // الوقت المسموح بالدقائق
+    questions: [
+        {
+            q: "While I ________ my homework, my brother was watching TV.",
+            options: ["was doing", "did", "have done", "am doing"],
+            correctAnswer: 0 // النظام يخفي هذا السطر تماماً عن الطالب
+        },
+        {
+            q: "She has ________ been to London, so she knows the city well.",
+            options: ["never", "already", "yet", "ever"],
+            correctAnswer: 1
+        }
+    ]
+};
+
+let quizTimer;
+let remainingTime = rawQuizData.timeLimitInMinutes * 60;
+let studentAnswers = {};
+
+function startExam() {
+    remainingTime = rawQuizData.timeLimitInMinutes * 60;
+    studentAnswers = {};
+    
+    renderFormattedExam();
+    startExamTimer();
+}
+
+// تنسيق الأسئلة وإخفاء الإجابات الصحيحة عن الواجهة
+function renderFormattedExam() {
+    const quizContainer = document.getElementById('quizzes-container');
+    if (!quizContainer) return;
+
+    let html = `
+        <div class="bg-slate-900 border border-amber-400/30 p-5 rounded-2xl shadow-xl space-y-4">
+            <div class="flex justify-between items-center border-b border-slate-800 pb-3">
+                <h4 class="font-bold text-amber-400 text-sm md:text-base">${rawQuizData.title}</h4>
+                <div id="exam-timer" class="bg-slate-950 px-3 py-1 rounded-lg border border-red-500/40 text-red-400 font-bold text-xs">
+                    ⏱️ جارٍ التحميل...
+                </div>
+            </div>
+            <form id="exam-form" onsubmit="submitExam(event)" class="space-y-4">
+    `;
+
+    rawQuizData.questions.forEach((qObj, index) => {
+        html += `
+            <div class="p-3 bg-slate-950 rounded-xl border border-slate-800 space-y-2">
+                <p class="font-bold text-slate-100 text-xs md:text-sm">${index + 1}. ${qObj.q}</p>
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
+        `;
+
+        qObj.options.forEach((opt, optIdx) => {
+            html += `
+                <label class="flex items-center gap-2 p-2 bg-slate-900 border border-slate-800 rounded-lg cursor-pointer hover:border-amber-400/50 transition text-xs">
+                    <input type="radio" name="question_${index}" value="${optIdx}" onchange="recordAnswer(${index}, ${optIdx})" required class="accent-amber-400">
+                    <span class="text-slate-300 font-semibold">${opt}</span>
+                </label>
+            `;
+        });
+
+        html += `</div></div>`;
+    });
+
+    html += `
+                <button type="submit" id="btn-submit-exam" class="w-full py-3 bg-amber-400 text-slate-950 font-black rounded-xl text-xs hover:bg-amber-300 transition">
+                    تسليم الامتحان وترسيل النتيجة
+                </button>
+            </form>
+        </div>
+    `;
+
+    quizContainer.innerHTML = html;
+}
+
+function recordAnswer(questionIndex, selectedOptionIndex) {
+    studentAnswers[questionIndex] = selectedOptionIndex;
+}
+
+function startExamTimer() {
+    clearInterval(quizTimer);
+    const timerElement = document.getElementById('exam-timer');
+
+    quizTimer = setInterval(() => {
+        const mins = Math.floor(remainingTime / 60);
+        const secs = remainingTime % 60;
+        
+        if (timerElement) {
+            timerElement.textContent = `⏱️ المتبقي: ${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+        }
+
+        if (remainingTime <= 0) {
+            clearInterval(quizTimer);
+            alert("⏰ انتهى الوقت المحدد للامتحان! يتم تسليم إجاباتك تلقائياً الآن.");
+            autoSubmitExam();
+        }
+        remainingTime--;
+    }, 1000);
+}
+
+function submitExam(e) {
+    if (e) e.preventDefault();
+    autoSubmitExam();
+}
+
+function autoSubmitExam() {
+    clearInterval(quizTimer);
+    
+    let score = 0;
+    const totalQuestions = rawQuizData.questions.length;
+
+    rawQuizData.questions.forEach((qObj, index) => {
+        if (studentAnswers[index] === qObj.correctAnswer) {
+            score++;
+        }
+    });
+
+    const percentage = Math.round((score / totalQuestions) * 100);
+    
+    // غلق الامتحان وإظهار النتيجة فوراً
+    const quizContainer = document.getElementById('quizzes-container');
+    quizContainer.innerHTML = `
+        <div class="bg-slate-900 border border-amber-400/40 p-6 rounded-2xl text-center space-y-3">
+            <h3 class="text-xl font-black text-amber-400">🔒 تم إغلاق الامتحان وتسليمه</h3>
+            <p class="text-slate-200 text-sm font-bold">درجتك في الامتحان هي: <span class="text-amber-400 text-lg">${score} / ${totalQuestions}</span> (${percentage}%)</p>
+            <p class="text-xs text-slate-400">تم تسجيل النتيجة وحفظها في لوحة تحكم الأدمن.</p>
+        </div>
+    `;
+
+    if ("vibrate" in navigator) {
+        navigator.vibrate([200, 100, 200]);
+    }
+}
+
+/* ==========================================================================
    4. USER AUTHENTICATION & REGISTRATION
    ========================================================================== */
 function setGenderChoice(gender) {
