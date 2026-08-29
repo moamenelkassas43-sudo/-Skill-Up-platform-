@@ -1,3 +1,124 @@
+// ==========================================
+// 1. ميزة البصمة (Biometric Authentication)
+// ==========================================
+
+// تفعيل البصمة من داخل لوحة الأدمن
+async function registerAdminBiometrics() {
+    if (!window.PublicKeyCredential) {
+        alert("متصفحك أو جهازك لا يدعم دخول البصمة.");
+        return;
+    }
+
+    try {
+        const challenge = new Uint8Array(32);
+        window.crypto.getRandomValues(challenge);
+
+        const createCredentialOptions = {
+            publicKey: {
+                challenge: challenge,
+                rp: { name: "منصة مستر أشرف بسيوني" },
+                user: {
+                    id: Uint8Array.from("ADMIN_ID", c => c.charCodeAt(0)),
+                    name: "admin",
+                    displayName: "Mr. Ashraf Bassiouny"
+                },
+                pubKeyCredParams: [{ alg: -7, type: "public-key" }],
+                authenticatorSelection: { authenticatorAttachment: "platform" },
+                timeout: 60000
+            }
+        };
+
+        const credential = await navigator.credentials.create(createCredentialOptions);
+        if (credential) {
+            localStorage.setItem('admin_biometric_enabled', 'true');
+            alert('تم ربط بصمة الجهاز بنجاح! يمكنك الآن الدخول بـ البصمة مباشرة.');
+        }
+    } catch (err) {
+        alert('تعذر إعداد البصمة أو تم إلغاء العملية.');
+    }
+}
+
+// الدخول بالبصمة
+async function loginWithBiometrics() {
+    const isBiometricEnabled = localStorage.getItem('admin_biometric_enabled');
+    
+    if (!isBiometricEnabled) {
+        alert('لم يتم تفعيل البصمة بعد! قم بالدخول بكلمة السر أولاً ثم اضغط على (تفعيل البصمة).');
+        return;
+    }
+
+    try {
+        const challenge = new Uint8Array(32);
+        window.crypto.getRandomValues(challenge);
+
+        const assertion = await navigator.credentials.get({
+            publicKey: {
+                challenge: challenge,
+                timeout: 60000
+            }
+        });
+
+        if (assertion) {
+            document.getElementById('admin-auth').classList.add('hidden');
+            document.getElementById('admin-dashboard-content').classList.remove('hidden');
+            loadDashboardData();
+        }
+    } catch (err) {
+        alert('فشل التحقق من البصمة.');
+    }
+}
+
+
+// ==========================================
+// 2. ميزة رفع الصور ونشر الأخبار المعدلة
+// ==========================================
+
+async function publishNews() {
+    const text = document.getElementById('admin-news-input').value.trim();
+    const link = document.getElementById('admin-news-link').value.trim();
+    const fileInput = document.getElementById('admin-news-file');
+    let imageUrl = "";
+
+    // تحويل الملف المرفوع إلى Base64
+    if (fileInput.files && fileInput.files[0]) {
+        const file = fileInput.files[0];
+        imageUrl = await new Promise((resolve) => {
+            const reader = new FileReader();
+            reader.onload = (e) => resolve(e.target.result);
+            reader.readAsDataURL(file);
+        });
+    }
+
+    if (!text && !link && !imageUrl) {
+        alert('يرجى كتابة نص، إضافة رابط، أو رفع صورة للنشر!');
+        return;
+    }
+
+    const newsItem = {
+        id: Date.now(),
+        text: text,
+        link: link,
+        imageUrl: imageUrl
+    };
+
+    let newsList = JSON.parse(localStorage.getItem('platform_news')) || [];
+    newsList.unshift(newsItem);
+    localStorage.setItem('platform_news', JSON.stringify(newsList));
+
+    // إعادة تصفير الحقول
+    document.getElementById('admin-news-input').value = '';
+    document.getElementById('admin-news-link').value = '';
+    document.getElementById('admin-news-file').value = '';
+
+    // إظهار الإشارات الحمراء
+    document.getElementById('badge-news-nav').classList.remove('hidden');
+    document.getElementById('badge-news-mobile').classList.remove('hidden');
+    
+    triggerNotificationAlert();
+    alert('تم نشر التنويه بنجاح!');
+    loadNews();
+}
+
 // Typing effect
 const typingTextElement = document.getElementById('typing-text');
 const fullText = "Mr. Ashraf Bassiouny: An Expert Teacher in English";
