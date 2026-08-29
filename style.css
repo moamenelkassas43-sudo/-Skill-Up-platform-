@@ -1,80 +1,498 @@
 @import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800;900&family=Space+Grotesk:wght@500;700&display=swap');
 
-.font-cairo { font-family: 'Cairo', sans-serif; }
-.font-modern-en { font-family: 'Space Grotesk', sans-serif; }
+/* =====================================================
+   GLOBAL
+===================================================== */
 
-/* Dark Mode (Default) - خلفية داكنة غير شفافة وبدون تداخل مزعج */
+* {
+    box-sizing: border-box;
+}
+
+html {
+    scroll-behavior: smooth;
+}
+
+body {
+    margin: 0;
+    font-family: 'Cairo', sans-serif;
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+button,
+input,
+textarea,
+select {
+    font-family: inherit;
+}
+
+button {
+    cursor: pointer;
+}
+
+.font-cairo {
+    font-family: 'Cairo', sans-serif;
+}
+
+.font-modern-en {
+    font-family: 'Space Grotesk', sans-serif;
+}
+
+
+/* =====================================================
+   DARK MODE
+===================================================== */
+
 body.theme-dark {
-  background-color: #020617;
-  color: #f8fafc;
-  background-image: linear-gradient(to bottom, rgba(2, 6, 23, 0.98), rgba(2, 6, 23, 0.99)), url("https://i.postimg.cc/SKNW8WBH/cd2dcf5d05d298548db59eeb6905a00f.jpg");
-  background-size: cover;
-  background-position: center;
-  background-attachment: fixed;
+    background-color: #020617;
+    color: #f8fafc;
+
+    background-image:
+        linear-gradient(
+            to bottom,
+            rgba(2, 6, 23, 0.98),
+            rgba(2, 6, 23, 0.99)
+        ),
+        url("https://i.postimg.cc/SKNW8WBH/cd2dcf5d05d298548db59eeb6905a00f.jpg");
+
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
 }
 
-/* Light Mode - خلفية فاتحة صلبة ونظيفة تماماً بلا شفافية مفرطة وألوان مريحة للعين */
+
+/* =====================================================
+   LIGHT MODE
+===================================================== */
+
 body.theme-light {
-  background-color: #f1f5f9;
-  color: #0f172a;
-  background-image: linear-gradient(to bottom, rgba(241, 245, 249, 0.98), rgba(226, 232, 240, 0.99)), url("https://i.postimg.cc/SKNW8WBH/cd2dcf5d05d298548db59eeb6905a00f.jpg");
-  background-size: cover;
-  background-position: center;
-  background-attachment: fixed;
+    background-color: #f1f5f9;
+    color: #0f172a;
+
+    background-image:
+        linear-gradient(
+            to bottom,
+            rgba(241, 245, 249, 0.98),
+            rgba(226, 232, 240, 0.99)
+        ),
+        url("https://i.postimg.cc/SKNW8WBH/cd2dcf5d05d298548db59eeb6905a00f.jpg");
+
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
 }
 
-/* تخصيص العناصر في الوضع الفاتح لتكون صلبة وواضحة (بدون شفافية عالية) */
-body.theme-light .bg-slate-950 {
-  background-color: #ffffff !important;
-  color: #0f172a !important;
-  border-color: #cbd5e1 !important;
+
+/* =====================================================
+   LIGHT MODE COMPONENTS
+===================================================== */
+
+body.theme-light .bg-slate-950,
+body.theme-light .bg-slate-950\/90,
+body.theme-light .bg-slate-950\/95 {
+    background-color: #ffffff !important;
+    color: #0f172a !important;
+    border-color: #cbd5e1 !important;
 }
 
-body.theme-light .bg-slate-900 {
-  background-color: #f8fafc !important;
-  color: #0f172a !important;
-  border-color: #cbd5e1 !important;
+body.theme-light .bg-slate-900,
+body.theme-light .bg-slate-900\/90,
+body.theme-light .bg-slate-900\/95 {
+    background-color: #f8fafc !important;
+    color: #0f172a !important;
+    border-color: #cbd5e1 !important;
 }
 
 body.theme-light .bg-slate-800 {
-  background-color: #e2e8f0 !important;
-  color: #0f172a !important;
-  border-color: #94a3b8 !important;
+    background-color: #e2e8f0 !important;
+    color: #0f172a !important;
+    border-color: #94a3b8 !important;
 }
 
 body.theme-light .text-slate-100,
 body.theme-light .text-slate-200,
 body.theme-light .text-slate-300 {
-  color: #1e293b !important;
+    color: #1e293b !important;
 }
 
 body.theme-light .text-slate-400,
 body.theme-light .text-slate-500 {
-  color: #475569 !important;
+    color: #475569 !important;
 }
 
 body.theme-light .form-input {
-  background-color: #ffffff !important;
-  color: #0f172a !important;
-  border-color: #94a3b8 !important;
+    background-color: #ffffff !important;
+    color: #0f172a !important;
+    border-color: #94a3b8 !important;
 }
 
-/* الأهرامات الثلاثية */
-.triple-pyramid-stage { display: flex; align-items: flex-end; justify-content: center; gap: 1rem; perspective: 1000px; }
-.pyramid-wrapper { position: relative; width: 60px; height: 60px; }
-.pyramid-main { width: 85px; height: 85px; }
-.pyramid-3d { width: 100%; height: 100%; transform-style: preserve-3d; animation: floatPyramid 4s ease-in-out infinite alternate; }
-@keyframes floatPyramid { 0% { transform: translateY(0px) rotateY(-5deg); } 100% { transform: translateY(-8px) rotateY(12deg); } }
-.side { position: absolute; width: 0; height: 0; border-left: 30px solid transparent; border-right: 30px solid transparent; border-bottom: 55px solid #d97706; }
-.pyramid-main .side { border-left-width: 42px; border-right-width: 42px; border-bottom-width: 75px; }
-.side-right { border-bottom-color: #fbbf24; transform: rotateY(-30deg) skewY(10deg); }
-.side-left { transform: rotateY(30deg) skewY(-10deg); }
+body.theme-light input,
+body.theme-light textarea,
+body.theme-light select {
+    color: #0f172a;
+}
 
-/* الحقول والأزرار */
-.form-input { width: 100%; padding: 0.6rem 0.8rem; border: 1px solid rgba(255, 255, 255, 0.12); border-radius: 0.6rem; font-size: 0.75rem; outline: none; }
-.form-input:focus { border-color: #fbbf24; }
 
-.gender-btn { display: flex; align-items: center; justify-content: center; padding: 0.6rem; border-width: 1px; border-radius: 0.6rem; }
-.gender-btn.active-male { background-color: rgba(59, 130, 246, 0.25); border-color: #3b82f6; }
-.gender-btn.active-female { background-color: rgba(236, 72, 153, 0.25); border-color: #ec4899; }
-.nav-link { font-weight: 700; transition: color 0.2s; }
+/* =====================================================
+   INTRO PYRAMIDS
+===================================================== */
+
+.triple-pyramid-stage {
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+    gap: 1rem;
+    perspective: 1000px;
+}
+
+.pyramid-wrapper {
+    position: relative;
+    width: 60px;
+    height: 60px;
+}
+
+.pyramid-main {
+    width: 85px;
+    height: 85px;
+}
+
+.pyramid-3d {
+    width: 100%;
+    height: 100%;
+    transform-style: preserve-3d;
+
+    animation:
+        floatPyramid
+        4s
+        ease-in-out
+        infinite
+        alternate;
+}
+
+@keyframes floatPyramid {
+
+    0% {
+        transform:
+            translateY(0px)
+            rotateY(-5deg);
+    }
+
+    100% {
+        transform:
+            translateY(-8px)
+            rotateY(12deg);
+    }
+
+}
+
+.side {
+
+    position: absolute;
+
+    width: 0;
+    height: 0;
+
+    border-left:
+        30px
+        solid
+        transparent;
+
+    border-right:
+        30px
+        solid
+        transparent;
+
+    border-bottom:
+        55px
+        solid
+        #d97706;
+
+}
+
+.pyramid-main .side {
+
+    border-left-width: 42px;
+    border-right-width: 42px;
+    border-bottom-width: 75px;
+
+}
+
+.side-right {
+
+    border-bottom-color: #fbbf24;
+
+    transform:
+        rotateY(-30deg)
+        skewY(10deg);
+
+}
+
+.side-left {
+
+    transform:
+        rotateY(30deg)
+        skewY(-10deg);
+
+}
+
+
+/* =====================================================
+   FORM INPUTS
+===================================================== */
+
+.form-input {
+
+    width: 100%;
+
+    padding:
+        0.6rem
+        0.8rem;
+
+    border:
+        1px
+        solid
+        rgba(255, 255, 255, 0.12);
+
+    border-radius: 0.6rem;
+
+    font-size: 0.75rem;
+
+    outline: none;
+
+    transition:
+        border-color 0.2s ease,
+        box-shadow 0.2s ease;
+
+}
+
+.form-input:focus {
+
+    border-color: #fbbf24;
+
+    box-shadow:
+        0 0 0 3px
+        rgba(251, 191, 36, 0.12);
+
+}
+
+
+/* =====================================================
+   GENDER BUTTONS
+===================================================== */
+
+.gender-btn {
+
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    padding: 0.6rem;
+
+    border-width: 1px;
+
+    border-radius: 0.6rem;
+
+    transition:
+        0.2s ease;
+
+}
+
+.gender-btn:hover {
+
+    transform:
+        translateY(-1px);
+
+}
+
+.gender-btn.active-male {
+
+    background-color:
+        rgba(59, 130, 246, 0.25);
+
+    border-color: #3b82f6;
+
+}
+
+.gender-btn.active-female {
+
+    background-color:
+        rgba(236, 72, 153, 0.25);
+
+    border-color: #ec4899;
+
+}
+
+
+/* =====================================================
+   CONTENT CARDS
+===================================================== */
+
+.content-card {
+
+    animation:
+        fadeInContent
+        0.35s
+        ease;
+
+}
+
+@keyframes fadeInContent {
+
+    from {
+
+        opacity: 0;
+
+        transform:
+            translateY(10px);
+
+    }
+
+    to {
+
+        opacity: 1;
+
+        transform:
+            translateY(0);
+
+    }
+
+}
+
+
+/* =====================================================
+   RED NOTIFICATION BADGE
+===================================================== */
+
+.notification-badge {
+
+    animation:
+        notificationPulse
+        1.5s
+        infinite;
+
+}
+
+@keyframes notificationPulse {
+
+    0% {
+
+        transform: scale(1);
+
+        box-shadow:
+            0 0 0 0
+            rgba(239, 68, 68, 0.7);
+
+    }
+
+    70% {
+
+        transform: scale(1.15);
+
+        box-shadow:
+            0 0 0 7px
+            rgba(239, 68, 68, 0);
+
+    }
+
+    100% {
+
+        transform: scale(1);
+
+        box-shadow:
+            0 0 0 0
+            rgba(239, 68, 68, 0);
+
+    }
+
+}
+
+
+/* =====================================================
+   QUIZ
+===================================================== */
+
+.quiz-card {
+
+    transition:
+        transform 0.25s ease,
+        border-color 0.25s ease;
+
+}
+
+.quiz-card:hover {
+
+    transform:
+        translateY(-3px);
+
+    border-color:
+        rgba(251, 191, 36, 0.7);
+
+}
+
+.quiz-question {
+
+    animation:
+        fadeInContent
+        0.3s ease;
+
+}
+
+.quiz-option {
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 0.75rem;
+
+    cursor: pointer;
+
+    padding: 0.9rem;
+
+    border-radius: 0.75rem;
+
+    border:
+        1px
+        solid
+        #334155;
+
+    background:
+        rgba(15, 23, 42, 0.7);
+
+    transition:
+        all
+        0.2s
+        ease;
+
+}
+
+.quiz-option:hover {
+
+    border-color:
+        #fbbf24;
+
+    background:
+        rgba(251, 191, 36, 0.08);
+
+}
+
+.quiz-option input {
+
+    accent-color:
+        #fbbf24;
+
+}
+
+.quiz-option:has(input:checked) {
+
+    border-color:
+        #fbbf24;
+
+    background:
+        rgba(251, 191, 36, 0.12);
+
+}
+
+
+/* =====================================================
+  
