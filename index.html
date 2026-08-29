@@ -1,74 +1,3 @@
-<!-- 4. ADMIN DASHBOARD MODAL -->
-<div id="admin-modal" class="fixed inset-0 bg-slate-950/95 backdrop-blur-md z-50 hidden flex flex-col p-4 overflow-y-auto text-xs">
-    <div class="max-w-5xl mx-auto w-full">
-        <!-- شاشة تسجيل دخول الأدمن -->
-        <div id="admin-auth" class="max-w-sm mx-auto my-16 p-6 rounded-2xl bg-slate-900 border border-amber-400/30 text-center space-y-3">
-            <h3 class="text-xl font-bold text-amber-400">دخول لوحة الأدمن</h3>
-            
-            <input type="password" id="admin-pass-input" placeholder="كلمة السر" class="form-input text-center">
-            
-            <div class="flex gap-2">
-                <button onclick="verifyAdminPass()" class="flex-1 py-2.5 bg-amber-400 text-slate-950 font-bold rounded-xl">دخول</button>
-                <button onclick="closeAdminModal()" class="px-4 py-2.5 bg-slate-800 text-slate-300 font-bold rounded-xl">إلغاء</button>
-            </div>
-
-            <!-- زر دخول البصمة -->
-            <div class="pt-2 border-t border-slate-800">
-                <button onclick="loginWithBiometrics()" class="w-full py-2.5 bg-slate-800 hover:bg-slate-700 text-amber-400 border border-amber-400/40 font-bold rounded-xl flex items-center justify-center gap-2">
-                    <span>☝️ الدخول باستخدام البصمة</span>
-                </button>
-            </div>
-        </div>
-
-        <!-- لوحة التحكم بعد الدخول -->
-        <div id="admin-dashboard-content" class="hidden space-y-4">
-            <div class="flex justify-between items-center border-b border-slate-800 pb-3">
-                <h3 class="text-lg font-bold text-amber-400">لوحة إدارة الطلاب والرسائل</h3>
-                <div class="flex gap-2">
-                    <button onclick="registerAdminBiometrics()" class="px-3 py-1.5 bg-amber-400/20 text-amber-300 border border-amber-400/30 rounded-lg font-bold">
-                        ☝️ تفعيل البصمة لـ هذا الجهاز
-                    </button>
-                    <button onclick="closeAdminModal()" class="px-3 py-1.5 bg-slate-800 rounded-lg font-bold">إغلاق</button>
-                </div>
-            </div>
-
-            <!--نموذج شر خبر مع زر رفع صوة او صورة->
-         <div>
-<h4 class="font-bold text-amber-400">نشر خبر / تنويه جديد للطلاب</h4>
-                
-<input type="text" id="admin-news-input" placeholder="اكتب نص التنويه للطلاب..." class="form-input">
-
-<div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
-    <input type="text" id="admin-news-link" placeholder="رابط خارجي (اختياري)" class="form-input">
-    <!-- زر اختيار ملف صورة او فديو  من الجهاز -->
-    <div class="flex items-center gap-2 bg-slate-950 p-1.5 rounded-lg border border-slate-800">
-        <label class="text-slate-400 text-[11px] font-bold shrink-0">رفع صورة:</label>
-        <input type="file" id="admin-news-file" accept="image/*" class="text-xs text-slate-400 file:mr-2 file:py-1 file:px-2 file:rounded-md file:border-0 file:bg-amber-400 file:text-slate-950 file:font-bold">
-    </div>
-</div>
-
-<button onclick="publishNews()" class="w-full py-2.5 bg-amber-400 text-slate-950 font-bold rounded-xl">نشر التنويه</button>
-
-            <!-- جدول الطلاب -->
-            <div class="bg-slate-900 rounded-xl border border-slate-800 overflow-x-auto">
-                <table class="w-full text-right">
-                    <thead class="bg-slate-950 text-slate-400 border-b border-slate-800">
-                        <tr>
-                            <th class="p-2.5">العضو / الطالب</th>
-                            <th class="p-2.5">الصف</th>
-                            <th class="p-2.5">الهاتف</th>
-                            <th class="p-2.5">الرسالة</th>
-                            <th class="p-2.5">الرد الحالي</th>
-                            <th class="p-2.5 text-center">الإجراءات</th>
-                        </tr>
-                    </thead>
-                    <tbody id="admin-table-body" class="divide-y divide-slate-800 text-slate-200"></tbody>
-                </table>
-            </div>
-        </div>
-    </div>
-</div>
-
 <!DOCTYPE html>
 <html lang="ar" dir="rtl" class="scroll-smooth">
 <head>
@@ -218,7 +147,7 @@
 
             <div class="flex-1 space-y-3 text-right">
                 <span class="inline-block px-3 py-1 rounded-full border border-amber-400/30 text-amber-300 bg-amber-400/10 text-[11px] font-bold">
-                    🏆 المعلم المثقف بمحافظة كفر الشيخ (المشروع الوطــــــــ2024ني المشروع
+                    🏆 المعلم المثقف بمحافظة كفر الشيخ (المشروع الوطني للقراءة)
                 </span>
                 <h2 class="text-2xl md:text-4xl font-black">مستر أشرف بسيوني <span class="text-amber-400">علي أحمد</span></h2>
                 <p class="text-sm md:text-base text-slate-300 font-bold">معلم خبير اللغة الإنجليزية</p>
@@ -319,29 +248,49 @@
     <!-- 4. ADMIN DASHBOARD MODAL -->
     <div id="admin-modal" class="fixed inset-0 bg-slate-950/95 backdrop-blur-md z-50 hidden flex flex-col p-4 overflow-y-auto text-xs">
         <div class="max-w-5xl mx-auto w-full">
-            <div id="admin-auth" class="max-w-sm mx-auto my-16 p-6 rounded-2xl bg-slate-900 border border-amber-400/30 text-center">
-                <h3 class="text-xl font-bold text-amber-400 mb-3">دخول لوحة الأدمن</h3>
-                <input type="password" id="admin-pass-input" placeholder="كلمة السر" class="form-input mb-3 text-center">
+            <div id="admin-auth" class="max-w-sm mx-auto my-16 p-6 rounded-2xl bg-slate-900 border border-amber-400/30 text-center space-y-3">
+                <h3 class="text-xl font-bold text-amber-400">دخول لوحة الأدمن</h3>
+                <input type="password" id="admin-pass-input" placeholder="كلمة السر" class="form-input text-center">
+                
                 <div class="flex gap-2">
-                    <button onclick="verifyAdminPass()" class="flex-1 py-2.5 bg-amber-400 text-slate-950 font-bold rounded-xl">دخول</button>
-                    <button onclick="closeAdminModal()" class="px-4 py-2.5 bg-slate-800 text-slate-300 font-bold rounded-xl">إلغاء</button>
+                    <button onclick="verifyAdminPass()" class="flex-1 py-2.5 bg-amber-400 text-slate-950 font-bold rounded-xl">دخول بكلمة السر</button>
+                    <button onclick="loginWithBiometrics()" class="px-3 py-2.5 bg-slate-800 text-amber-400 border border-amber-400/30 font-bold rounded-xl flex items-center gap-1">
+                        ☝️ البصمة
+                    </button>
                 </div>
+                <button onclick="closeAdminModal()" class="w-full py-2 bg-slate-800 text-slate-300 font-bold rounded-xl">إلغاء</button>
             </div>
 
             <div id="admin-dashboard-content" class="hidden space-y-4">
                 <div class="flex justify-between items-center border-b border-slate-800 pb-3">
-                    <h3 class="text-lg font-bold text-amber-400">لوحة إدارة الطلاب والرسائل</h3>
+                    <div class="flex items-center gap-3">
+                        <h3 class="text-lg font-bold text-amber-400">لوحة إدارة الطلاب والرسائل</h3>
+                        <button onclick="registerAdminBiometrics()" class="px-2.5 py-1 bg-amber-400/10 text-amber-300 border border-amber-400/30 rounded-lg text-[11px] font-bold">
+                            ☝️ تفعيل البصمة
+                        </button>
+                    </div>
                     <button onclick="closeAdminModal()" class="px-3 py-1.5 bg-slate-800 rounded-lg font-bold">إغلاق</button>
                 </div>
 
-                <div class="p-4 rounded-xl bg-slate-900 border border-slate-800 space-y-2">
+                <!-- نموذج نشر خبر مع زر رفع صورة -->
+                <div class="p-4 rounded-xl bg-slate-900 border border-slate-800 space-y-3">
                     <h4 class="font-bold text-amber-400">نشر خبر / تنويه جديد للطلاب</h4>
-                    <div class="flex gap-2">
-                        <input type="text" id="admin-news-input" placeholder="اكتب التنويه للطلاب..." class="form-input flex-1">
-                        <button onclick="publishNews()" class="px-4 py-2 bg-amber-400 text-slate-950 font-bold rounded-xl">نشر</button>
+                    
+                    <input type="text" id="admin-news-input" placeholder="اكتب نص التنويه للطلاب..." class="form-input">
+                    
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                        <input type="text" id="admin-news-link" placeholder="رابط خارجي (اختياري)" class="form-input">
+                        <!-- زر اختيار ملف صورة من الجهاز -->
+                        <div class="flex items-center gap-2 bg-slate-950 p-1.5 rounded-lg border border-slate-800">
+                            <label class="text-slate-400 text-[11px] font-bold shrink-0">رفع صورة:</label>
+                            <input type="file" id="admin-news-file" accept="image/*" class="text-xs text-slate-400 file:mr-2 file:py-1 file:px-2 file:rounded-md file:border-0 file:bg-amber-400 file:text-slate-950 file:font-bold">
+                        </div>
                     </div>
+
+                    <button onclick="publishNews()" class="w-full py-2.5 bg-amber-400 text-slate-950 font-bold rounded-xl">نشر التنويه</button>
                 </div>
 
+                <!-- جدول الطلاب -->
                 <div class="bg-slate-900 rounded-xl border border-slate-800 overflow-x-auto">
                     <table class="w-full text-right">
                         <thead class="bg-slate-950 text-slate-400 border-b border-slate-800">
