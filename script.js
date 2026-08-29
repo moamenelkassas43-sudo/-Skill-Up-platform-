@@ -1,39 +1,5 @@
 /* ==========================================================================
-   GLOBAL DATA STORES (NEWS, QUIZZES, MEMBERS)
-   ========================================================================== */
-
-let newsList = [
-    { id: 1, title: "تم فتح باب التسجيل لاختبار الشامل على الوحدة الأولى والثانية.", date: "اليوم" },
-    { id: 2, title: "سيتم رفع ملزمة المراجعة القادمة يوم الخميس المقبل.", date: "أمس" }
-];
-
-let quizzesList = [
-    {
-        id: 101,
-        title: "اختبار إنجليزي تجريبي - Unit 1 & 2",
-        timeLimitInMinutes: 10,
-        questions: [
-            { q: "While I ________ my homework, my brother was watching TV.", options: ["was doing", "did", "have done", "am doing"], correctAnswer: 0 },
-            { q: "She has ________ been to London, so she knows the city well.", options: ["never", "already", "yet", "ever"], correctAnswer: 1 },
-            { q: "Choose the correct synonym of 'Prosperous':", options: ["Poor", "Wealthy", "Weak", "Sad"], correctAnswer: 1 },
-            { q: "By next month, the students ________ all their final revision tests.", options: ["will finish", "will have finished", "finished", "have finished"], correctAnswer: 1 }
-        ]
-    }
-];
-
-let membersList = [
-    { id: 1, name: "أحمد محمد علي", phone: "01012345678", score: "18/20" },
-    { id: 2, name: "محمود إبراهيم", phone: "01198765432", score: "15/20" },
-    { id: 3, name: "سارة السيد", phone: "01234567890", score: "20/20" }
-];
-
-let activeQuiz = quizzesList[0];
-let quizTimer = null;
-let remainingTime = 0;
-let studentAnswers = {};
-
-/* ==========================================================================
-   PLATFORM LOGIC - NAVIGATION
+   PLATFORM LOGIC - NAVIGATION & ADMIN MODAL
    ========================================================================== */
 
 function showSection(sectionId) {
@@ -46,55 +12,80 @@ function showSection(sectionId) {
     const activeSec = document.getElementById(`sec-${sectionId}`);
     if (activeSec) activeSec.classList.remove('hidden');
 
-    if (sectionId === 'news') renderNewsSection();
-    if (sectionId === 'quizzes') startExam();
+    if (sectionId === 'quizzes') {
+        startExam();
+    }
 }
 
-/* ==========================================================================
-   NEWS SECTION RENDER & DELETE
-   ========================================================================== */
+function openAdminModal() {
+    document.getElementById('admin-modal').classList.remove('hidden');
+}
 
-function renderNewsSection() {
-    const container = document.getElementById('news-container');
-    if (!container) return;
+function closeAdminModal() {
+    document.getElementById('admin-modal').classList.add('hidden');
+}
 
-    if (newsList.length === 0) {
-        container.innerHTML = `<p class="text-xs text-slate-400">لا توجد أخبار حالياً.</p>`;
+function publishAdminContent() {
+    const titleInput = document.getElementById('admin-item-title');
+    const targetSection = document.getElementById('admin-target-section').value;
+
+    if (!titleInput.value.trim()) {
+        alert("يرجى كتابة عنوان العنصر أولاً!");
         return;
     }
 
-    container.innerHTML = newsList.map(n => `
-        <div class="p-4 bg-slate-900 border border-slate-800 rounded-2xl text-xs space-y-1">
-            <span class="text-[10px] text-amber-400 font-bold">${n.date}</span>
-            <p class="font-bold text-slate-200">${n.title}</p>
-        </div>
-    `).join('');
-}
+    // إظهار النقطة الحمراء للطلاب فوراً فوق الأيقونة
+    triggerNewNotification(targetSection);
 
-function deleteNewsItem(id) {
-    newsList = newsList.filter(item => item.id !== id);
-    renderNewsSection();
-    renderAdminNewsList();
-    alert("تم حذف الخبر بنجاح.");
+    alert(`تم نشر "${titleInput.value}" بنجاح في قسم (${targetSection}) وإرسال التنبيه للطلاب!`);
+    titleInput.value = '';
+    closeAdminModal();
 }
 
 /* ==========================================================================
-   ADVANCED QUIZ SYSTEM
+   ADVANCED QUIZ SYSTEM (AUTO FORMAT, HIDDEN ANSWERS, TIMER & AUTO-SUBMIT)
    ========================================================================== */
+
+// بيانات الأسئلة يرفعها الأدمن شاملة الخيارات ورقم الإجابة الصحيحة
+const rawQuizData = {
+    title: "اختبار إنجليزي تجريبي - Unit 1 & 2",
+    timeLimitInMinutes: 10, // تحديد مدة الامتحان بالدقائق
+    questions: [
+        {
+            q: "While I ________ my homework, my brother was watching TV.",
+            options: ["was doing", "did", "have done", "am doing"],
+            correctAnswer: 0 // يتم إخفاؤها نهائياً عن كود الطالب
+        },
+        {
+            q: "She has ________ been to London, so she knows the city well.",
+            options: ["never", "already", "yet", "ever"],
+            correctAnswer: 1
+        },
+        {
+            q: "Choose the correct synonym of 'Prosperous':",
+            options: ["Poor", "Wealthy", "Weak", "Sad"],
+            correctAnswer: 1
+        },
+        {
+            q: "By next month, the students ________ all their final revision tests.",
+            options: ["will finish", "will have finished", "finished", "have finished"],
+            correctAnswer: 1
+        }
+    ]
+};
+
+let quizTimer = null;
+let remainingTime = rawQuizData.timeLimitInMinutes * 60;
+let studentAnswers = {};
 
 function startExam() {
-    if (!activeQuiz) {
-        const quizContainer = document.getElementById('quizzes-container');
-        quizContainer.innerHTML = `<div class="p-6 bg-slate-900 rounded-2xl text-center text-slate-400 text-xs font-bold">لا يوجد اختبار متاح حالياً.</div>`;
-        return;
-    }
-
-    remainingTime = activeQuiz.timeLimitInMinutes * 60;
+    remainingTime = rawQuizData.timeLimitInMinutes * 60;
     studentAnswers = {};
     renderFormattedExam();
     startExamTimer();
 }
 
+// تنسيق الأسئلة وإلغاء أي إظهار للإجابة الصحيحة
 function renderFormattedExam() {
     const quizContainer = document.getElementById('quizzes-container');
     if (!quizContainer) return;
@@ -103,7 +94,7 @@ function renderFormattedExam() {
         <div class="bg-slate-900 border border-amber-400/30 p-5 rounded-2xl shadow-xl space-y-4">
             <div class="flex justify-between items-center border-b border-slate-800 pb-3">
                 <div>
-                    <h4 class="font-bold text-amber-400 text-sm md:text-base">${activeQuiz.title}</h4>
+                    <h4 class="font-bold text-amber-400 text-sm md:text-base">${rawQuizData.title}</h4>
                     <p class="text-[10px] text-slate-400">إعداد: مستر أشرف بسيوني</p>
                 </div>
                 <div id="exam-timer" class="bg-slate-950 px-3 py-1 rounded-lg border border-red-500/40 text-red-400 font-bold text-xs">
@@ -114,7 +105,7 @@ function renderFormattedExam() {
             <form id="exam-form" onsubmit="submitExam(event)" class="space-y-4">
     `;
 
-    activeQuiz.questions.forEach((qObj, index) => {
+    rawQuizData.questions.forEach((qObj, index) => {
         html += `
             <div class="p-3 bg-slate-950 rounded-xl border border-slate-800 space-y-2">
                 <p class="font-bold text-slate-100 text-xs md:text-sm">${index + 1}. ${qObj.q}</p>
@@ -148,6 +139,7 @@ function recordAnswer(questionIndex, selectedOptionIndex) {
     studentAnswers[questionIndex] = selectedOptionIndex;
 }
 
+// مؤقت الوقت المحدد للتمرير وإغلاق الامتحان عند انتهائه
 function startExamTimer() {
     clearInterval(quizTimer);
     const timerElement = document.getElementById('exam-timer');
@@ -178,9 +170,9 @@ function autoSubmitExam() {
     clearInterval(quizTimer);
     
     let score = 0;
-    const totalQuestions = activeQuiz.questions.length;
+    const totalQuestions = rawQuizData.questions.length;
 
-    activeQuiz.questions.forEach((qObj, index) => {
+    rawQuizData.questions.forEach((qObj, index) => {
         if (studentAnswers[index] === qObj.correctAnswer) {
             score++;
         }
@@ -188,6 +180,7 @@ function autoSubmitExam() {
 
     const percentage = Math.round((score / totalQuestions) * 100);
     
+    // إغلاق الامتحان وعرض النتيجة النهائية
     const quizContainer = document.getElementById('quizzes-container');
     quizContainer.innerHTML = `
         <div class="bg-slate-900 border border-amber-400/40 p-6 rounded-2xl text-center space-y-3 shadow-2xl">
@@ -199,6 +192,98 @@ function autoSubmitExam() {
             </button>
         </div>
     `;
+
+    if ("vibrate" in navigator) {
+        navigator.vibrate([200, 100, 200]);
+    }
+}
+
+/* ==========================================================================
+   GLOBAL NOTIFICATION BADGE SYSTEM (RED DOT ON ALL ICONS)
+   ========================================================================== */
+
+function triggerNewNotification(targetSection) {
+    const navBadge = document.getElementById(`badge-${targetSection}-nav`);
+    const mobileBadge = document.getElementById(`badge-${targetSection}-mobile`);
+
+    if (navBadge) navBadge.classList.remove('hidden');
+    if (mobileBadge) mobileBadge.classList.remove('hidden');
+
+    if ("vibrate" in navigator) {
+        navigator.vibrate([150, 50, 150]);
+    }
+}
+
+function clearNotificationBadge(targetSection) {
+    const navBadge = document.getElementById(`badge-${targetSection}-nav`);
+    const mobileBadge = document.getElementById(`badge-${targetSection}-mobile`);
+
+    if (navBadge) navBadge.classList.add('hidden');
+    if (mobileBadge) mobileBadge.classList.add('hidden');
+}
+
+// تشغيل النظام تلقائياً
+document.addEventListener('DOMContentLoaded', () => {
+    showSection('hero');
+});
+
+/* ==========================================================================
+   GLOBAL DATA STORES (NEWS, QUIZZES, MEMBERS)
+   ========================================================================== */
+
+let newsList = [
+    { id: 1, title: "تم فتح باب التسجيل لاختبار الشامل على الوحدة الأولى والثانية.", date: "اليوم" },
+    { id: 2, title: "سيتم رفع ملزمة المراجعة القادمة يوم الخميس المقبل.", date: "أمس" }
+];
+
+let quizzesList = [
+    {
+        id: 101,
+        title: "اختبار إنجليزي تجريبي - Unit 1 & 2",
+        timeLimitInMinutes: 10,
+        questions: [
+            { q: "While I ________ my homework, my brother was watching TV.", options: ["was doing", "did", "have done", "am doing"], correctAnswer: 0 },
+            { q: "She has ________ been to London, so she knows the city well.", options: ["never", "already", "yet", "ever"], correctAnswer: 1 },
+            { q: "Choose the correct synonym of 'Prosperous':", options: ["Poor", "Wealthy", "Weak", "Sad"], correctAnswer: 1 },
+            { q: "By next month, the students ________ all their final revision tests.", options: ["will finish", "will have finished", "finished", "have finished"], correctAnswer: 1 }
+        ]
+    }
+];
+
+let membersList = [
+    { id: 1, name: "أحمد محمد علي", phone: "01012345678", score: "18/20" },
+    { id: 2, name: "محمود إبراهيم", phone: "01198765432", score: "15/20" },
+    { id: 3, name: "سارة السيد", phone: "01234567890", score: "20/20" }
+];
+
+let activeQuiz = quizzesList[0];
+
+/* ==========================================================================
+   NEWS SECTION RENDER & DELETE
+   ========================================================================== */
+
+function renderNewsSection() {
+    const container = document.getElementById('news-container');
+    if (!container) return;
+
+    if (newsList.length === 0) {
+        container.innerHTML = `<p class="text-xs text-slate-400">لا توجد أخبار حالياً.</p>`;
+        return;
+    }
+
+    container.innerHTML = newsList.map(n => `
+        <div class="p-4 bg-slate-900 border border-slate-800 rounded-2xl text-xs space-y-1">
+            <span class="text-[10px] text-amber-400 font-bold">${n.date}</span>
+            <p class="font-bold text-slate-200">${n.title}</p>
+        </div>
+    `).join('');
+}
+
+function deleteNewsItem(id) {
+    newsList = newsList.filter(item => item.id !== id);
+    renderNewsSection();
+    renderAdminNewsList();
+    alert("تم حذف الخبر بنجاح.");
 }
 
 function deleteQuiz(id) {
@@ -223,15 +308,6 @@ function deleteMember(id) {
 /* ==========================================================================
    ADMIN PANEL TABS & CONTROLLER
    ========================================================================== */
-
-function openAdminModal() {
-    document.getElementById('admin-modal').classList.remove('hidden');
-    switchAdminTab('publish');
-}
-
-function closeAdminModal() {
-    document.getElementById('admin-modal').classList.add('hidden');
-}
 
 function switchAdminTab(tabName) {
     const tabs = ['publish', 'news', 'quizzes', 'members'];
@@ -298,47 +374,3 @@ function renderAdminMembersList() {
         </div>
     `).join('');
 }
-
-function publishAdminContent() {
-    const titleInput = document.getElementById('admin-item-title');
-    const targetSection = document.getElementById('admin-target-section').value;
-
-    if (!titleInput.value.trim()) {
-        alert("يرجى كتابة عنوان العنصر أولاً!");
-        return;
-    }
-
-    if (targetSection === 'news') {
-        newsList.unshift({ id: Date.now(), title: titleInput.value, date: "الآن" });
-        renderNewsSection();
-    }
-
-    triggerNewNotification(targetSection);
-    alert(`تم نشر "${titleInput.value}" بنجاح وتنبيه الطلاب!`);
-    titleInput.value = '';
-    closeAdminModal();
-}
-
-/* ==========================================================================
-   GLOBAL NOTIFICATION BADGE SYSTEM
-   ========================================================================== */
-
-function triggerNewNotification(targetSection) {
-    const navBadge = document.getElementById(`badge-${targetSection}-nav`);
-    const mobileBadge = document.getElementById(`badge-${targetSection}-mobile`);
-
-    if (navBadge) navBadge.classList.remove('hidden');
-    if (mobileBadge) mobileBadge.classList.remove('hidden');
-}
-
-function clearNotificationBadge(targetSection) {
-    const navBadge = document.getElementById(`badge-${targetSection}-nav`);
-    const mobileBadge = document.getElementById(`badge-${targetSection}-mobile`);
-
-    if (navBadge) navBadge.classList.add('hidden');
-    if (mobileBadge) mobileBadge.classList.add('hidden');
-}
-
-document.addEventListener('DOMContentLoaded', () => {
-    showSection('hero');
-});
