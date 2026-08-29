@@ -211,77 +211,6 @@ function replyToStudent(phone) {
         return st;
     });
 
-    // نشر خبر جديد (يحتوي على نص، رابط، أو صورة)
-function publishNews() {
-    const text = document.getElementById('admin-news-input').value.trim();
-    const link = prompt("أدخل رابط خارجي (موقع/فيديو) إن وجد (أو اتركه فارغاً):") || "";
-    const imageUrl = prompt("أدخل رابط الصورة (URL) إن وجد (أو اتركه فارغاً):") || "";
-
-    if (!text && !link && !imageUrl) {
-        alert('يرجى كتابة نص أو إدخال رابط/صورة للنشر!');
-        return;
-    }
-
-    const newsItem = {
-        id: Date.now(),
-        text: text,
-        link: link.trim(),
-        imageUrl: imageUrl.trim(),
-        date: new Date().toLocaleDateString('ar-EG')
-    };
-
-    let newsList = JSON.parse(localStorage.getItem('platform_news')) || [];
-    newsList.unshift(newsItem);
-    localStorage.setItem('platform_news', JSON.stringify(newsList));
-
-    document.getElementById('admin-news-input').value = '';
-
-    // تفعيل النقطة الحمراء والتنبيه الصوتي
-    document.getElementById('badge-news-nav').classList.remove('hidden');
-    document.getElementById('badge-news-mobile').classList.remove('hidden');
-    
-    triggerNotificationAlert();
-    alert('تم نشر التنويه بنجاح!');
-    loadNews();
-}
-
-// عرض الأخبار والروابط والصور في واجهة الطلاب
-function loadNews() {
-    const defaultNews = [{
-        text: "مرحباً بكم في التحديث الجديد لمنصة مستر أشرف بسيوني.",
-        link: "",
-        imageUrl: "",
-        date: ""
-    }];
-
-    const newsList = JSON.parse(localStorage.getItem('platform_news')) || defaultNews;
-    const newsContainer = document.getElementById('news-container');
-
-    if (newsContainer) {
-        newsContainer.innerHTML = newsList.map(item => `
-            <div class="p-4 rounded-xl bg-slate-900 border border-slate-800 space-y-3">
-                ${item.text ? `<p class="font-bold text-xs text-slate-100">📌 ${item.text}</p>` : ''}
-                
-                <!-- عرض الصورة إن وجدت -->
-                ${item.imageUrl ? `
-                    <div class="rounded-lg overflow-hidden border border-slate-700 max-h-60">
-                        <img src="${item.imageUrl}" alt="صورة الخبر" class="w-full h-full object-cover" onerror="this.style.display='none'" />
-                    </div>
-                ` : ''}
-
-                <!-- عرض الرابط جاهز للفتح إن وجد -->
-                ${item.link ? `
-                    <div class="pt-1">
-                        <a href="${item.link}" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-1 text-xs font-bold text-amber-400 hover:text-amber-300 underline">
-                            🔗 اضغط هنا لفتح الرابط / المرفق
-                        </a>
-                    </div>
-                ` : ''}
-            </div>
-        `).join('');
-    }
-}
-
     localStorage.setItem('platform_students', JSON.stringify(studentsList));
     triggerNotificationAlert();
     loadDashboardData();
@@ -319,13 +248,28 @@ function loadDashboardData() {
     });
 }
 
-// News Functionality & Trigger Red Badges
+// News Functionality (نشر واستعراض الأخبار والصور والروابط)
 function publishNews() {
-    const text = document.getElementById('admin-news-input').value;
-    if (!text) return;
+    const text = document.getElementById('admin-news-input').value.trim();
+    const link = prompt("أدخل رابط خارجي (موقع/فيديو) إن وجد (أو اتركه فارغاً):") || "";
+    const imageUrl = prompt("أدخل رابط الصورة (URL) إن وجد (أو اتركه فارغاً):") || "";
+
+    if (!text && !link && !imageUrl) {
+        alert('يرجى كتابة نص أو إدخال رابط/صورة للنشر!');
+        return;
+    }
+
+    const newsItem = {
+        id: Date.now(),
+        text: text,
+        link: link.trim(),
+        imageUrl: imageUrl.trim()
+    };
+
     let newsList = JSON.parse(localStorage.getItem('platform_news')) || [];
-    newsList.unshift(text);
+    newsList.unshift(newsItem);
     localStorage.setItem('platform_news', JSON.stringify(newsList));
+
     document.getElementById('admin-news-input').value = '';
 
     // Show Red Badges
@@ -333,18 +277,47 @@ function publishNews() {
     document.getElementById('badge-news-mobile').classList.remove('hidden');
     
     triggerNotificationAlert();
-    alert('تم نشر الخبر مع تفعيل صوت وإشعار التنبيه!');
+    alert('تم نشر التنويه بنجاح!');
     loadNews();
 }
 
 function loadNews() {
-    const newsList = JSON.parse(localStorage.getItem('platform_news')) || ["مرحباً بكم في التحديث الجديد لمنصة مستر أشرف بسيوني."];
+    const defaultNews = [{
+        text: "مرحباً بكم في التحديث الجديد لمنصة مستر أشرف بسيوني.",
+        link: "",
+        imageUrl: ""
+    }];
+
+    const rawNewsList = JSON.parse(localStorage.getItem('platform_news')) || defaultNews;
     const newsContainer = document.getElementById('news-container');
+
     if (newsContainer) {
-        newsContainer.innerHTML = newsList.map(n => `
-            <div class="p-3 rounded-xl bg-slate-900 border border-slate-800 font-bold text-xs">
-                📌 ${n}
-            </div>
-        `).join('');
+        newsContainer.innerHTML = rawNewsList.map(item => {
+            // التوافق مع التنويهات القديمة المخزنة كنصوص فقط
+            const isObject = typeof item === 'object' && item !== null;
+            const text = isObject ? item.text : item;
+            const link = isObject ? item.link : '';
+            const imageUrl = isObject ? item.imageUrl : '';
+
+            return `
+                <div class="p-4 rounded-xl bg-slate-900 border border-slate-800 space-y-3">
+                    ${text ? `<p class="font-bold text-xs text-slate-100">📌 ${text}</p>` : ''}
+                    
+                    ${imageUrl ? `
+                        <div class="rounded-lg overflow-hidden border border-slate-700 max-h-60">
+                            <img src="${imageUrl}" alt="صورة الخبر" class="w-full h-full object-cover" onerror="this.style.display='none'" />
+                        </div>
+                    ` : ''}
+
+                    ${link ? `
+                        <div class="pt-1">
+                            <a href="${link}" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-1 text-xs font-bold text-amber-400 hover:text-amber-300 underline">
+                                🔗 اضغط هنا لفتح الرابط / المرفق
+                            </a>
+                        </div>
+                    ` : ''}
+                </div>
+            `;
+        }).join('');
     }
 }
