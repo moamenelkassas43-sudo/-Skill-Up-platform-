@@ -68,19 +68,19 @@ async function loginWithBiometrics() {
     }
 }
 
-
 // ==========================================
-// 2. ميزة رفع الصور ونشر الأخبار المعدلة
+// 2. ميزة رفع الصور المباشرة ونشر الأخبار
 // ==========================================
 
 async function publishNews() {
     const text = document.getElementById('admin-news-input').value.trim();
-    const link = document.getElementById('admin-news-link').value.trim();
+    const linkInput = document.getElementById('admin-news-link');
+    const link = linkInput ? linkInput.value.trim() : '';
     const fileInput = document.getElementById('admin-news-file');
     let imageUrl = "";
 
-    // تحويل الملف المرفوع إلى Base64
-    if (fileInput.files && fileInput.files[0]) {
+    // قراءة الصورة المرفوعة تحويلها إلى Base64
+    if (fileInput && fileInput.files && fileInput.files[0]) {
         const file = fileInput.files[0];
         imageUrl = await new Promise((resolve) => {
             const reader = new FileReader();
@@ -90,7 +90,7 @@ async function publishNews() {
     }
 
     if (!text && !link && !imageUrl) {
-        alert('يرجى كتابة نص، إضافة رابط، أو رفع صورة للنشر!');
+        alert('يرجى كتابة نص، إضافة رابط، أو اختيار صورة من الجهاز للنشر!');
         return;
     }
 
@@ -105,211 +105,70 @@ async function publishNews() {
     newsList.unshift(newsItem);
     localStorage.setItem('platform_news', JSON.stringify(newsList));
 
-    // إعادة تصفير الحقول
+    // تفريغ الحقول بعد النشر
     document.getElementById('admin-news-input').value = '';
-    document.getElementById('admin-news-link').value = '';
-    document.getElementById('admin-news-file').value = '';
+    if (linkInput) linkInput.value = '';
+    if (fileInput) fileInput.value = '';
 
-    // إظهار الإشارات الحمراء
-    document.getElementById('badge-news-nav').classList.remove('hidden');
-    document.getElementById('badge-news-mobile').classList.remove('hidden');
+    // إظهار التنويهات
+    const navBadge = document.getElementById('badge-news-nav');
+    const mobileBadge = document.getElementById('badge-news-mobile');
+    if (navBadge) navBadge.classList.remove('hidden');
+    if (mobileBadge) mobileBadge.classList.remove('hidden');
     
     triggerNotificationAlert();
-    alert('تم نشر التنويه بنجاح!');
+    alert('تم نشر التنويه والصورة بنجاح!');
     loadNews();
 }
 
-// Typing effect
-const typingTextElement = document.getElementById('typing-text');
-const fullText = "Mr. Ashraf Bassiouny: An Expert Teacher in English";
-let charIndex = 0;
+function loadNews() {
+    const defaultNews = [{
+        text: "مرحباً بكم في التحديث الجديد لمنصة مستر أشرف بسيوني.",
+        link: "",
+        imageUrl: ""
+    }];
 
-function typeWriter() {
-    if (charIndex < fullText.length) {
-        typingTextElement.textContent += fullText.charAt(charIndex);
-        charIndex++;
-        setTimeout(typeWriter, 35);
-    } else {
-        document.getElementById('registration-box').classList.remove('hidden');
+    const rawNewsList = JSON.parse(localStorage.getItem('platform_news')) || defaultNews;
+    const newsContainer = document.getElementById('news-container');
+
+    if (newsContainer) {
+        newsContainer.innerHTML = rawNewsList.map(item => {
+            const isObject = typeof item === 'object' && item !== null;
+            const text = isObject ? item.text : item;
+            const link = isObject ? item.link : '';
+            const imageUrl = isObject ? item.imageUrl : '';
+
+            return `
+                <div class="p-4 rounded-xl bg-slate-900 border border-slate-800 space-y-3">
+                    ${text ? `<p class="font-bold text-xs text-slate-100">📌 ${text}</p>` : ''}
+                    
+                    ${imageUrl ? `
+                        <div class="rounded-lg overflow-hidden border border-slate-700 max-h-72">
+                            <img src="${imageUrl}" alt="صورة التنويه" class="w-full h-full object-cover" onerror="this.style.display='none'" />
+                        </div>
+                    ` : ''}
+
+                    ${link ? `
+                        <div class="pt-1">
+                            <a href="${link}" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-1 text-xs font-bold text-amber-400 hover:text-amber-300 underline">
+                                🔗 اضغط هنا لفتح الرابط / المرفق
+                            </a>
+                        </div>
+                    ` : ''}
+                </div>
+            `;
+        }).join('');
     }
 }
 
-// Sound & Vibration Trigger
-function triggerNotificationAlert() {
-    // Play Notification Sound
-    try {
-        const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-        const osc = audioCtx.createOscillator();
-        const gain = audioCtx.createGain();
-        osc.connect(gain);
-        gain.connect(audioCtx.destination);
-        osc.frequency.value = 587.33; // D5 Note
-        gain.gain.setValueAtTime(0.1, audioCtx.currentTime);
-        osc.start();
-        osc.stop(audioCtx.currentTime + 0.2);
-    } catch (e) {}
-
-    // Phone Vibration
-    if (navigator.vibrate) {
-        navigator.vibrate([100, 50, 100]);
-    }
-}
-
-// Check Session & Badges on load
-window.addEventListener('load', () => {
-    const savedUser = JSON.parse(localStorage.getItem('current_user'));
-    
-    if (savedUser) {
-        document.getElementById('intro-screen').classList.add('hidden');
-        showMainApp(savedUser);
-    } else {
-        typeWriter();
-    }
-    loadNews();
-    checkNotificationBadges();
-});
-
-// Theme Toggle Mechanism
-function toggleTheme() {
-    const body = document.getElementById('app-body');
-    const themeBtnText = document.getElementById('theme-btn-text');
-    if (body.classList.contains('theme-dark')) {
-        body.classList.remove('theme-dark');
-        body.classList.add('theme-light');
-        themeBtnText.textContent = '☀️ الفاتح';
-    } else {
-        body.classList.remove('theme-light');
-        body.classList.add('theme-dark');
-        themeBtnText.textContent = '🌙 الداكن';
-    }
-}
-
-function showMainApp(user) {
-    document.getElementById('nav-user-name').textContent = user.name.split(' ')[0];
-    const mainApp = document.getElementById('main-app');
-    mainApp.classList.remove('hidden');
-    setTimeout(() => mainApp.classList.remove('opacity-0'), 50);
-}
-
-// Gender Choice
-let selectedGender = 'male';
-function setGenderChoice(gender) {
-    selectedGender = gender;
-    document.getElementById('btn-gender-male').classList.toggle('active-male', gender === 'male');
-    document.getElementById('btn-gender-female').classList.toggle('active-female', gender === 'female');
-}
-setGenderChoice('male');
-
-function showSection(sectionId) {
-    document.querySelectorAll('.app-section').forEach(sec => sec.classList.add('hidden'));
-    const activeSection = document.getElementById(sectionId);
-    if (activeSection) activeSection.classList.remove('hidden');
-
-    // Remove Red Badge from News upon clicking
-    if (sectionId === 'news') {
-        document.getElementById('badge-news-nav').classList.add('hidden');
-        document.getElementById('badge-news-mobile').classList.add('hidden');
-    }
-}
-
-// Registration Submit
-document.getElementById('register-form').addEventListener('submit', function(e) {
-    e.preventDefault();
-
-    const studentData = {
-        id: Date.now(),
-        name: document.getElementById('reg-name').value,
-        phone: document.getElementById('reg-phone').value,
-        grade: document.getElementById('reg-grade').value,
-        school: document.getElementById('reg-school').value,
-        pass: document.getElementById('reg-pass').value,
-        gender: selectedGender,
-        message: 'عضو مُسجّل بالمنصة',
-        adminReply: 'أهلاً بك في المنصة'
-    };
-
-    let studentsList = JSON.parse(localStorage.getItem('platform_students')) || [];
-    studentsList.push(studentData);
-    localStorage.setItem('platform_students', JSON.stringify(studentsList));
-    localStorage.setItem('current_user', JSON.stringify(studentData));
-
-    document.getElementById('intro-screen').classList.add('hidden');
-    showMainApp(studentData);
-});
-
-// Check & Display Red Badges
-function checkNotificationBadges() {
-    const currentUser = JSON.parse(localStorage.getItem('current_user'));
-    if (!currentUser) return;
-
-    const studentsList = JSON.parse(localStorage.getItem('platform_students')) || [];
-    const myData = studentsList.find(st => st.phone === currentUser.phone);
-
-    if (myData && myData.hasNewReply) {
-        document.getElementById('badge-user-nav').classList.remove('hidden');
-        document.getElementById('badge-user-mobile').classList.remove('hidden');
-    }
-}
-
-// Account Modal Actions
-function openUserAccountModal() {
-    const currentUser = JSON.parse(localStorage.getItem('current_user'));
-    if (!currentUser) return;
-
-    document.getElementById('user-account-modal').classList.remove('hidden');
-    
-    // Clear Badge
-    document.getElementById('badge-user-nav').classList.add('hidden');
-    document.getElementById('badge-user-mobile').classList.add('hidden');
-
-    const infoCard = document.getElementById('user-info-card');
-    infoCard.innerHTML = `
-        <p class="font-bold">${currentUser.name}</p>
-        <p class="text-amber-400 font-semibold">${currentUser.grade}</p>
-        <p class="text-slate-400 text-[11px]">${currentUser.school}</p>
-    `;
-
-    let studentsList = JSON.parse(localStorage.getItem('platform_students')) || [];
-    const myData = studentsList.find(st => st.phone === currentUser.phone);
-    if (myData) {
-        document.getElementById('user-reply-box').textContent = myData.adminReply || 'لا يوجد رد بعد.';
-        myData.hasNewReply = false;
-        localStorage.setItem('platform_students', JSON.stringify(studentsList));
-    }
-}
-
-function closeUserAccountModal() { document.getElementById('user-account-modal').classList.add('hidden'); }
-function logoutUser() { localStorage.removeItem('current_user'); location.reload(); }
-
-// Send Message
-document.getElementById('student-msg-form').addEventListener('submit', function(e) {
-    e.preventDefault();
-    const msgText = document.getElementById('student-msg-text').value;
-    const currentUser = JSON.parse(localStorage.getItem('current_user'));
-
-    if (!currentUser) return;
-
-    let studentsList = JSON.parse(localStorage.getItem('platform_students')) || [];
-    studentsList = studentsList.map(st => {
-        if (st.phone === currentUser.phone) st.message = msgText;
-        return st;
-    });
-
-    localStorage.setItem('platform_students', JSON.stringify(studentsList));
-    alert('تم إرسال الرسالة للأدمن!');
-    document.getElementById('student-msg-text').value = '';
-});
-
-// Admin Control Panel Modal
-function openAdminModal() { document.getElementById('admin-modal').classList.remove('hidden'); }
-function closeAdminModal() { 
-    document.getElementById('admin-modal').classList.add('hidden'); 
-    document.getElementById('admin-auth').classList.remove('hidden');
-    document.getElementById('admin-dashboard-content').classList.add('hidden');
-}
+// ==========================================
+// 3. إدارة الأدمن والحسابات والتشغيل
+// ==========================================
 
 function verifyAdminPass() {
-    if (document.getElementById('admin-pass-input').value === '1122334455') {
+    const passInput = document.getElementById('admin-pass-input').value;
+    
+    if (passInput === '1122334455') {
         document.getElementById('admin-auth').classList.add('hidden');
         document.getElementById('admin-dashboard-content').classList.remove('hidden');
         loadDashboardData();
@@ -318,7 +177,13 @@ function verifyAdminPass() {
     }
 }
 
-// Admin Reply & Delete Functions
+function openAdminModal() { document.getElementById('admin-modal').classList.remove('hidden'); }
+function closeAdminModal() { 
+    document.getElementById('admin-modal').classList.add('hidden'); 
+    document.getElementById('admin-auth').classList.remove('hidden');
+    document.getElementById('admin-dashboard-content').classList.add('hidden');
+}
+
 function replyToStudent(phone) {
     const replyText = prompt("أدخل رد الأدمن/المستر للطالب:");
     if (!replyText) return;
@@ -350,6 +215,8 @@ function deleteStudentData(phone) {
 function loadDashboardData() {
     const studentsList = JSON.parse(localStorage.getItem('platform_students')) || [];
     const tableBody = document.getElementById('admin-table-body');
+    if (!tableBody) return;
+    
     tableBody.innerHTML = '';
 
     studentsList.forEach(st => {
@@ -369,75 +236,199 @@ function loadDashboardData() {
     });
 }
 
-// News Functionality (نشر واستعراض الأخبار والصور والروابط)
-function publishNews() {
-    const text = document.getElementById('admin-news-input').value.trim();
-    const link = prompt("أدخل رابط خارجي (موقع/فيديو) إن وجد (أو اتركه فارغاً):") || "";
-    const imageUrl = prompt("أدخل رابط الصورة (URL) إن وجد (أو اتركه فارغاً):") || "";
+// Typing effect
+const typingTextElement = document.getElementById('typing-text');
+const fullText = "Mr. Ashraf Bassiouny: An Expert Teacher in English";
+let charIndex = 0;
 
-    if (!text && !link && !imageUrl) {
-        alert('يرجى كتابة نص أو إدخال رابط/صورة للنشر!');
-        return;
+function typeWriter() {
+    if (typingTextElement && charIndex < fullText.length) {
+        typingTextElement.textContent += fullText.charAt(charIndex);
+        charIndex++;
+        setTimeout(typeWriter, 35);
+    } else {
+        const regBox = document.getElementById('registration-box');
+        if (regBox) regBox.classList.remove('hidden');
     }
-
-    const newsItem = {
-        id: Date.now(),
-        text: text,
-        link: link.trim(),
-        imageUrl: imageUrl.trim()
-    };
-
-    let newsList = JSON.parse(localStorage.getItem('platform_news')) || [];
-    newsList.unshift(newsItem);
-    localStorage.setItem('platform_news', JSON.stringify(newsList));
-
-    document.getElementById('admin-news-input').value = '';
-
-    // Show Red Badges
-    document.getElementById('badge-news-nav').classList.remove('hidden');
-    document.getElementById('badge-news-mobile').classList.remove('hidden');
-    
-    triggerNotificationAlert();
-    alert('تم نشر التنويه بنجاح!');
-    loadNews();
 }
 
-function loadNews() {
-    const defaultNews = [{
-        text: "مرحباً بكم في التحديث الجديد لمنصة مستر أشرف بسيوني.",
-        link: "",
-        imageUrl: ""
-    }];
+// Sound & Vibration Trigger
+function triggerNotificationAlert() {
+    try {
+        const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+        osc.connect(gain);
+        gain.connect(audioCtx.destination);
+        osc.frequency.value = 587.33;
+        gain.gain.setValueAtTime(0.1, audioCtx.currentTime);
+        osc.start();
+        osc.stop(audioCtx.currentTime + 0.2);
+    } catch (e) {}
 
-    const rawNewsList = JSON.parse(localStorage.getItem('platform_news')) || defaultNews;
-    const newsContainer = document.getElementById('news-container');
-
-    if (newsContainer) {
-        newsContainer.innerHTML = rawNewsList.map(item => {
-            const isObject = typeof item === 'object' && item !== null;
-            const text = isObject ? item.text : item;
-            const link = isObject ? item.link : '';
-            const imageUrl = isObject ? item.imageUrl : '';
-
-            return `
-                <div class="p-4 rounded-xl bg-slate-900 border border-slate-800 space-y-3">
-                    ${text ? `<p class="font-bold text-xs text-slate-100">📌 ${text}</p>` : ''}
-                    
-                    ${imageUrl ? `
-                        <div class="rounded-lg overflow-hidden border border-slate-700 max-h-60">
-                            <img src="${imageUrl}" alt="صورة الخبر" class="w-full h-full object-cover" onerror="this.style.display='none'" />
-                        </div>
-                    ` : ''}
-
-                    ${link ? `
-                        <div class="pt-1">
-                            <a href="${link}" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-1 text-xs font-bold text-amber-400 hover:text-amber-300 underline">
-                                🔗 اضغط هنا لفتح الرابط / المرفق
-                            </a>
-                        </div>
-                    ` : ''}
-                </div>
-            `;
-        }).join('');
+    if (navigator.vibrate) {
+        navigator.vibrate([100, 50, 100]);
     }
+}
+
+// Check Session & Badges on load
+window.addEventListener('load', () => {
+    const savedUser = JSON.parse(localStorage.getItem('current_user'));
+    
+    if (savedUser) {
+        const introScreen = document.getElementById('intro-screen');
+        if (introScreen) introScreen.classList.add('hidden');
+        showMainApp(savedUser);
+    } else {
+        typeWriter();
+    }
+    loadNews();
+    checkNotificationBadges();
+});
+
+// Theme Toggle Mechanism
+function toggleTheme() {
+    const body = document.getElementById('app-body');
+    const themeBtnText = document.getElementById('theme-btn-text');
+    if (body.classList.contains('theme-dark')) {
+        body.classList.remove('theme-dark');
+        body.classList.add('theme-light');
+        themeBtnText.textContent = '☀️ الفاتح';
+    } else {
+        body.classList.remove('theme-light');
+        body.classList.add('theme-dark');
+        themeBtnText.textContent = '🌙 الداكن';
+    }
+}
+
+function showMainApp(user) {
+    const userNameElem = document.getElementById('nav-user-name');
+    if (userNameElem) userNameElem.textContent = user.name.split(' ')[0];
+    const mainApp = document.getElementById('main-app');
+    if (mainApp) {
+        mainApp.classList.remove('hidden');
+        setTimeout(() => mainApp.classList.remove('opacity-0'), 50);
+    }
+}
+
+// Gender Choice
+let selectedGender = 'male';
+function setGenderChoice(gender) {
+    selectedGender = gender;
+    const btnMale = document.getElementById('btn-gender-male');
+    const btnFemale = document.getElementById('btn-gender-female');
+    if (btnMale) btnMale.classList.toggle('active-male', gender === 'male');
+    if (btnFemale) btnFemale.classList.toggle('active-female', gender === 'female');
+}
+
+function showSection(sectionId) {
+    document.querySelectorAll('.app-section').forEach(sec => sec.classList.add('hidden'));
+    const activeSection = document.getElementById(sectionId);
+    if (activeSection) activeSection.classList.remove('hidden');
+
+    if (sectionId === 'news') {
+        const navBadge = document.getElementById('badge-news-nav');
+        const mobileBadge = document.getElementById('badge-news-mobile');
+        if (navBadge) navBadge.classList.add('hidden');
+        if (mobileBadge) mobileBadge.classList.add('hidden');
+    }
+}
+
+// Registration Submit
+const regForm = document.getElementById('register-form');
+if (regForm) {
+    regForm.addEventListener('submit', function(e) {
+        e.preventDefault();
+
+        const studentData = {
+            id: Date.now(),
+            name: document.getElementById('reg-name').value,
+            phone: document.getElementById('reg-phone').value,
+            grade: document.getElementById('reg-grade').value,
+            school: document.getElementById('reg-school').value,
+            pass: document.getElementById('reg-pass').value,
+            gender: selectedGender,
+            message: 'عضو مُسجّل بالمنصة',
+            adminReply: 'أهلاً بك في المنصة'
+        };
+
+        let studentsList = JSON.parse(localStorage.getItem('platform_students')) || [];
+        studentsList.push(studentData);
+        localStorage.setItem('platform_students', JSON.stringify(studentsList));
+        localStorage.setItem('current_user', JSON.stringify(studentData));
+
+        document.getElementById('intro-screen').classList.add('hidden');
+        showMainApp(studentData);
+    });
+}
+
+// Check Badges
+function checkNotificationBadges() {
+    const currentUser = JSON.parse(localStorage.getItem('current_user'));
+    if (!currentUser) return;
+
+    const studentsList = JSON.parse(localStorage.getItem('platform_students')) || [];
+    const myData = studentsList.find(st => st.phone === currentUser.phone);
+
+    if (myData && myData.hasNewReply) {
+        const userNav = document.getElementById('badge-user-nav');
+        const userMobile = document.getElementById('badge-user-mobile');
+        if (userNav) userNav.classList.remove('hidden');
+        if (userMobile) userMobile.classList.remove('hidden');
+    }
+}
+
+// Account Modal Actions
+function openUserAccountModal() {
+    const currentUser = JSON.parse(localStorage.getItem('current_user'));
+    if (!currentUser) return;
+
+    document.getElementById('user-account-modal').classList.remove('hidden');
+    const navBadge = document.getElementById('badge-user-nav');
+    const mobileBadge = document.getElementById('badge-user-mobile');
+    if (navBadge) navBadge.classList.add('hidden');
+    if (mobileBadge) mobileBadge.classList.add('hidden');
+
+    const infoCard = document.getElementById('user-info-card');
+    if (infoCard) {
+        infoCard.innerHTML = `
+            <p class="font-bold">${currentUser.name}</p>
+            <p class="text-amber-400 font-semibold">${currentUser.grade}</p>
+            <p class="text-slate-400 text-[11px]">${currentUser.school}</p>
+        `;
+    }
+
+    let studentsList = JSON.parse(localStorage.getItem('platform_students')) || [];
+    const myData = studentsList.find(st => st.phone === currentUser.phone);
+    if (myData) {
+        const replyBox = document.getElementById('user-reply-box');
+        if (replyBox) replyBox.textContent = myData.adminReply || 'لا يوجد رد بعد.';
+        myData.hasNewReply = false;
+        localStorage.setItem('platform_students', JSON.stringify(studentsList));
+    }
+}
+
+function closeUserAccountModal() { document.getElementById('user-account-modal').classList.add('hidden'); }
+function logoutUser() { localStorage.removeItem('current_user'); location.reload(); }
+
+// Send Message
+const studentMsgForm = document.getElementById('student-msg-form');
+if (studentMsgForm) {
+    studentMsgForm.addEventListener('submit', function(e) {
+        e.preventDefault();
+        const msgText = document.getElementById('student-msg-text').value;
+        const currentUser = JSON.parse(localStorage.getItem('current_user'));
+
+        if (!currentUser) return;
+
+        let studentsList = JSON.parse(localStorage.getItem('platform_students')) || [];
+        studentsList = studentsList.map(st => {
+            if (st.phone === currentUser.phone) st.message = msgText;
+            return st;
+        });
+
+        localStorage.setItem('platform_students', JSON.stringify(studentsList));
+        alert('تم إرسال الرسالة للأدمن!');
+        document.getElementById('student-msg-text').value = '';
+    });
 }
