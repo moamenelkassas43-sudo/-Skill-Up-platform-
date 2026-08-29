@@ -67,7 +67,7 @@
     <!-- Main Container -->
     <main class="max-w-4xl mx-auto px-4 py-6">
 
-        <!-- 1. Hero Section -->
+        <!-- 1. Hero Section (الرئيسية) -->
         <section id="sec-hero" class="space-y-6">
             <div class="bg-gradient-to-br from-slate-900 to-slate-950 border border-amber-400/20 p-6 md:p-8 rounded-3xl shadow-2xl text-center space-y-4">
                 <span class="inline-block px-3 py-1 bg-amber-400/10 border border-amber-400/30 text-amber-400 text-xs font-bold rounded-full">
@@ -89,7 +89,7 @@
                 </div>
             </div>
 
-            <!-- تجرِبة إرسال الإشعار -->
+            <!-- زر محاكاة إرسال إشعار جديد لتجربة النقطة الحمراء -->
             <div class="p-4 bg-slate-900 border border-slate-800 rounded-2xl flex justify-between items-center text-xs">
                 <span class="text-slate-400 font-semibold">تجرِبة إرسال تنبيه جديد للطالب:</span>
                 <button onclick="triggerNewNotification('quizzes')" class="px-3 py-1.5 bg-red-500/20 border border-red-500/40 text-red-400 font-bold rounded-lg hover:bg-red-500/30 transition">
@@ -98,15 +98,18 @@
             </div>
         </section>
 
-        <!-- 2. News Section -->
+        <!-- 2. News Section (الأخبار) -->
         <section id="sec-news" class="hidden space-y-4">
             <h3 class="text-lg font-bold text-amber-400 flex items-center gap-2">📢 أحدث الأخبار والتنبيهات</h3>
             <div id="news-container" class="space-y-3">
-                <!-- يتم التحميل هنا عبر JS -->
+                <div class="p-4 bg-slate-900 border border-slate-800 rounded-2xl text-xs space-y-1">
+                    <span class="text-[10px] text-amber-400 font-bold">اليوم</span>
+                    <p class="font-bold text-slate-200">تم فتح باب التسجيل لاختبار الشامل على الوحدة الأولى والثانية.</p>
+                </div>
             </div>
         </section>
 
-        <!-- 3. Courses Section -->
+        <!-- 3. Courses Section (المحاضرات) -->
         <section id="sec-courses" class="hidden space-y-4">
             <h3 class="text-lg font-bold text-amber-400 flex items-center gap-2">🎥 محاضرات الشرح</h3>
             <div id="courses-container" class="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -120,7 +123,7 @@
             </div>
         </section>
 
-        <!-- 4. PDFs Section -->
+        <!-- 4. PDFs Section (الملازم) -->
         <section id="sec-pdfs" class="hidden space-y-4">
             <h3 class="text-lg font-bold text-amber-400 flex items-center gap-2">📚 الملازم والمذكرات (PDF)</h3>
             <div id="pdfs-container" class="space-y-3">
@@ -136,35 +139,26 @@
             </div>
         </section>
 
-        <!-- 5. Quizzes Section -->
+        <!-- 5. Quizzes Section (الاختبارات والتصحيح) -->
         <section id="sec-quizzes" class="hidden space-y-4">
             <div id="quizzes-container">
-                <!-- يتم توليد واجهة الامتحان والمؤقت ديناميكياً هنا عبر JS -->
+                <!-- سيتم توليد واجهة الامتحان والمؤقت ديناميكياً هنا عبر JS -->
             </div>
         </section>
 
     </main>
 
-    <!-- Admin Panel Modal (محدث بالتبويبات الكاملة للحذف والإدارة) -->
+    <!-- Admin Panel Modal -->
     <div id="admin-modal" class="hidden fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-        <div class="bg-slate-900 border border-amber-400/30 rounded-3xl p-6 w-full max-w-2xl space-y-4 shadow-2xl max-h-[90vh] overflow-y-auto">
+        <div class="bg-slate-900 border border-amber-400/30 rounded-3xl p-6 w-full max-w-lg space-y-4 shadow-2xl">
             <div class="flex justify-between items-center border-b border-slate-800 pb-3">
-                <h3 class="font-black text-amber-400 text-sm md:text-base">لوحة تحكم الأدمن الشاملة ⚙️</h3>
+                <h3 class="font-black text-amber-400 text-sm">لوحة تحكم الأدمن ⚙️</h3>
                 <button onclick="closeAdminModal()" class="text-slate-400 hover:text-slate-200 font-bold text-lg">✕</button>
             </div>
             
-            <!-- أزرار التبديل بين أطوار الأدمن -->
-            <div class="flex gap-2 border-b border-slate-800 pb-3 text-xs font-bold">
-                <button onclick="switchAdminTab('publish')" id="tab-btn-publish" class="px-3 py-1.5 rounded-lg bg-amber-400 text-slate-950">نشر محتوى</button>
-                <button onclick="switchAdminTab('news')" id="tab-btn-news" class="px-3 py-1.5 rounded-lg bg-slate-800 text-slate-300">إدارة الأخبار</button>
-                <button onclick="switchAdminTab('quizzes')" id="tab-btn-quizzes" class="px-3 py-1.5 rounded-lg bg-slate-800 text-slate-300">إدارة الامتحانات</button>
-                <button onclick="switchAdminTab('members')" id="tab-btn-members" class="px-3 py-1.5 rounded-lg bg-slate-800 text-slate-300">إدارة الأعضاء والطلاب</button>
-            </div>
-
-            <!-- Tab 1: نشر محتوى جديد -->
-            <div id="admin-tab-publish" class="space-y-3 text-xs">
+            <div class="space-y-3 text-xs">
                 <div>
-                    <label class="block font-bold text-slate-300 mb-1">عنوان المحتوى:</label>
+                    <label class="block font-bold text-slate-300 mb-1">عنوان المحاضرة/الخبر الجديد:</label>
                     <input type="text" id="admin-item-title" class="w-full bg-slate-950 border border-slate-800 rounded-xl p-2.5 text-slate-200 focus:outline-none focus:border-amber-400">
                 </div>
                 <div>
@@ -173,34 +167,17 @@
                         <option value="news">قسم الأخبار</option>
                         <option value="courses">قسم المحاضرات</option>
                         <option value="pdfs">قسم الملازم</option>
+                        <option value="quizzes">قسم الاختبارات</option>
                     </select>
                 </div>
                 <button onclick="publishAdminContent()" class="w-full py-3 bg-amber-400 text-slate-950 font-black rounded-xl hover:bg-amber-300 transition">
                     نشر فوراً وتنبيه الطلاب بالنقطة الحمراء 🔔
                 </button>
             </div>
-
-            <!-- Tab 2: إدارة الأخبار (إظهار وحذف الأخبار) -->
-            <div id="admin-tab-news" class="hidden space-y-3 text-xs">
-                <h4 class="font-bold text-amber-400">قائمة الأخبار المنشورة:</h4>
-                <div id="admin-news-list" class="space-y-2"></div>
-            </div>
-
-            <!-- Tab 3: إدارة الامتحانات (حذف وتعديل الامتحانات) -->
-            <div id="admin-tab-quizzes" class="hidden space-y-3 text-xs">
-                <h4 class="font-bold text-amber-400">الامتحانات المتاحة على المنصة:</h4>
-                <div id="admin-quizzes-list" class="space-y-2"></div>
-            </div>
-
-            <!-- Tab 4: إدارة الطلاب والأعضاء (حذف الطالب/الربط) -->
-            <div id="admin-tab-members" class="hidden space-y-3 text-xs">
-                <h4 class="font-bold text-amber-400">قائمة الأعضاء المسجلين:</h4>
-                <div id="admin-members-list" class="space-y-2"></div>
-            </div>
         </div>
     </div>
 
-    <!-- Mobile Navigation -->
+    <!-- Mobile Bottom Navigation Bar (مزودة بالنقطة الحمراء) -->
     <div class="md:hidden fixed bottom-0 inset-x-0 bg-slate-950/95 border-t border-slate-800 p-2 flex justify-around items-center z-40 text-[10px] font-bold backdrop-blur-md">
         <button onclick="showSection('hero')" class="flex flex-col items-center gap-1 text-amber-400 relative">
             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path></svg>
