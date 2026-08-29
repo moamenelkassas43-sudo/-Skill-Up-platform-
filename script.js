@@ -45,6 +45,7 @@ window.addEventListener('load', () => {
         typeWriter();
     }
     loadNews();
+    loadQuizzes();
     checkNotificationBadges();
 });
 
@@ -247,7 +248,7 @@ function replyToStudent(phone) {
 }
 
 function deleteStudentData(phone) {
-    if (!confirm('هل تريد حذف هذه الرسالة/الطالب؟')) return;
+    if (!confirm('هل تريد حذف هذا العضو/الطالب نهائياً؟')) return;
 
     let studentsList = JSON.parse(localStorage.getItem('platform_students')) || [];
     studentsList = studentsList.filter(st => st.phone !== phone);
@@ -256,27 +257,52 @@ function deleteStudentData(phone) {
     loadDashboardData();
 }
 
+function deleteNewsItem(id) {
+    if (!confirm('هل تريد حذف هذا الخبر/المحتوى؟')) return;
+    let newsList = JSON.parse(localStorage.getItem('platform_news')) || [];
+    newsList = newsList.filter(item => item.id !== id);
+    localStorage.setItem('platform_news', JSON.stringify(newsList));
+    loadNews();
+    loadDashboardData();
+}
+
 function loadDashboardData() {
+    // تحميل الأعضاء
     const studentsList = JSON.parse(localStorage.getItem('platform_students')) || [];
     const tableBody = document.getElementById('admin-table-body');
-    if (!tableBody) return;
-    tableBody.innerHTML = '';
+    if (tableBody) {
+        tableBody.innerHTML = '';
+        studentsList.forEach(st => {
+            const tr = document.createElement('tr');
+            tr.innerHTML = `
+                <td class="p-2.5 font-bold">${st.name}</td>
+                <td class="p-2.5 text-amber-400">${st.grade || 'عام'}</td>
+                <td class="p-2.5 font-mono" dir="ltr">${st.phone}</td>
+                <td class="p-2.5">${st.message}</td>
+                <td class="p-2.5 text-amber-400 font-bold">${st.adminReply || '-'}</td>
+                <td class="p-2.5 flex justify-center gap-1">
+                    <button onclick="replyToStudent('${st.phone}')" class="px-2 py-1 bg-amber-400 text-slate-950 rounded font-bold text-[11px]">رد</button>
+                    <button onclick="deleteStudentData('${st.phone}')" class="px-2 py-1 bg-red-500/20 text-red-400 border border-red-500/30 rounded font-bold text-[11px]">إزالة العضو</button>
+                </td>
+            `;
+            tableBody.appendChild(tr);
+        });
+    }
 
-    studentsList.forEach(st => {
-        const tr = document.createElement('tr');
-        tr.innerHTML = `
-            <td class="p-2.5 font-bold">${st.name}</td>
-            <td class="p-2.5 text-amber-400">${st.grade || 'عام'}</td>
-            <td class="p-2.5 font-mono" dir="ltr">${st.phone}</td>
-            <td class="p-2.5">${st.message}</td>
-            <td class="p-2.5 text-amber-400 font-bold">${st.adminReply || '-'}</td>
-            <td class="p-2.5 flex justify-center gap-1">
-                <button onclick="replyToStudent('${st.phone}')" class="px-2 py-1 bg-amber-400 text-slate-950 rounded font-bold text-[11px]">رد</button>
-                <button onclick="deleteStudentData('${st.phone}')" class="px-2 py-1 bg-red-500/20 text-red-400 border border-red-500/30 rounded font-bold text-[11px]">حذف</button>
-            </td>
-        `;
-        tableBody.appendChild(tr);
-    });
+    // تحميل إدارة الأخبار المنشورة
+    const newsList = JSON.parse(localStorage.getItem('platform_news')) || [];
+    const manageList = document.getElementById('admin-news-manage-list');
+    if (manageList) {
+        manageList.innerHTML = newsList.length === 0 ? '<p class="text-slate-500">لا يوجد محتوى مرفوع حالياً.</p>' : '';
+        newsList.forEach(item => {
+            manageList.innerHTML += `
+                <div class="flex justify-between items-center p-2 bg-slate-950 rounded border border-slate-800">
+                    <span class="truncate max-w-xs font-bold text-slate-300">${item.text || 'محتوى بدون نص'}</span>
+                    <button onclick="deleteNewsItem(${item.id})" class="px-2 py-1 bg-red-500/20 text-red-400 rounded text-[10px] font-bold">حذف الخبر</button>
+                </div>
+            `;
+        });
+    }
 }
 
 // النشر الشامل وإدارة المرفقات للأقسام المختلفة
@@ -336,6 +362,7 @@ async function publishNews() {
     triggerNotificationAlert();
     alert('تم نشر المحتوى بنجاح في القسم المختار!');
     loadNews();
+    loadDashboardData();
 }
 
 function loadNews(filterKeyword = '') {
@@ -350,7 +377,7 @@ function loadNews(filterKeyword = '') {
     }];
 
     const rawNewsList = JSON.parse(localStorage.getItem('platform_news')) || defaultNews;
-    const sections = ['news', 'courses', 'pdfs', 'quizzes'];
+    const sections = ['news', 'courses', 'pdfs'];
 
     sections.forEach(sec => {
         const container = document.getElementById(`${sec}-container`);
@@ -422,6 +449,202 @@ function loadNews(filterKeyword = '') {
 function handleSearch() {
     const searchVal = document.getElementById('search-input')?.value.trim() || '';
     loadNews(searchVal);
+}
+
+// ------------------------------------------------------------------
+// --- نظام إدارة ونشر الاختبارات الإلكترونية وتصحيحها ---
+// ------------------------------------------------------------------
+
+let questionCount = 0;
+
+function addQuestionField() {
+    const builder = document.getElementById('quiz-questions-builder');
+    if (!builder) return;
+    questionCount++;
+
+    const qDiv = document.createElement('div');
+    qDiv.className = "p-3 bg-slate-950 rounded-xl border border-slate-800 space-y-2 question-block";
+    qDiv.setAttribute('data-q-index', questionCount);
+
+    qDiv.innerHTML = `
+        <div class="flex justify-between items-center">
+            <span class="font-bold text-amber-400">السؤال ${questionCount}</span>
+            <button onclick="this.parentElement.parentElement.remove()" class="text-red-400 font-bold">✕ حذف السؤال</button>
+        </div>
+        <input type="text" class="q-text w-full p-2 bg-slate-800 border border-slate-700 rounded-lg" placeholder="نص السؤال">
+        
+        <p class="text-[10px] text-slate-400 font-bold">الخيارات (حدد الدائرة بجانب الإجابة الصحيحة):</p>
+        <div class="space-y-1">
+            <div class="flex items-center gap-2">
+                <input type="radio" name="correct_${questionCount}" value="0" checked>
+                <input type="text" class="opt-0 w-full p-1.5 bg-slate-800 border border-slate-700 rounded" placeholder="الخيار الأول">
+            </div>
+            <div class="flex items-center gap-2">
+                <input type="radio" name="correct_${questionCount}" value="1">
+                <input type="text" class="opt-1 w-full p-1.5 bg-slate-800 border border-slate-700 rounded" placeholder="الخيار الثاني">
+            </div>
+            <div class="flex items-center gap-2">
+                <input type="radio" name="correct_${questionCount}" value="2">
+                <input type="text" class="opt-2 w-full p-1.5 bg-slate-800 border border-slate-700 rounded" placeholder="الخيار الثالث">
+            </div>
+            <div class="flex items-center gap-2">
+                <input type="radio" name="correct_${questionCount}" value="3">
+                <input type="text" class="opt-3 w-full p-1.5 bg-slate-800 border border-slate-700 rounded" placeholder="الخيار الرابع">
+            </div>
+        </div>
+    `;
+    builder.appendChild(qDiv);
+}
+
+function publishQuiz() {
+    const title = document.getElementById('quiz-title-input')?.value.trim();
+    const duration = document.getElementById('quiz-duration-input')?.value.trim() || 15;
+    const blocks = document.querySelectorAll('.question-block');
+
+    if (!title || blocks.length === 0) {
+        alert('يرجى إضافة عنوان للاختبار وسؤال واحد على الأقل!');
+        return;
+    }
+
+    const questions = [];
+    blocks.forEach((block) => {
+        const index = block.getAttribute('data-q-index');
+        const qText = block.querySelector('.q-text').value.trim();
+        const opts = [
+            block.querySelector('.opt-0').value.trim(),
+            block.querySelector('.opt-1').value.trim(),
+            block.querySelector('.opt-2').value.trim(),
+            block.querySelector('.opt-3').value.trim()
+        ];
+        const correctOpt = block.querySelector(`input[name="correct_${index}"]:checked`).value;
+
+        if (qText && opts[0] && opts[1]) {
+            questions.push({
+                question: qText,
+                options: opts.filter(o => o !== ''),
+                correct: parseInt(correctOpt)
+            });
+        }
+    });
+
+    if (questions.length === 0) {
+        alert('يرجى ملء بيانات الأسئلة والخيارات بشكل صحيح!');
+        return;
+    }
+
+    const quizItem = {
+        id: Date.now(),
+        title: title,
+        duration: parseInt(duration),
+        questions: questions
+    };
+
+    let quizzesList = JSON.parse(localStorage.getItem('platform_quizzes')) || [];
+    quizzesList.unshift(quizItem);
+    localStorage.setItem('platform_quizzes', JSON.stringify(quizzesList));
+
+    document.getElementById('quiz-title-input').value = '';
+    document.getElementById('quiz-questions-builder').innerHTML = '';
+    questionCount = 0;
+
+    alert('تم نشر الاختبار الإلكتروني بنجاح!');
+    loadQuizzes();
+}
+
+function deleteQuiz(id) {
+    if (!confirm('هل أنت تأكد من حذف هذا الاختبار؟')) return;
+    let quizzesList = JSON.parse(localStorage.getItem('platform_quizzes')) || [];
+    quizzesList = quizzesList.filter(q => q.id !== id);
+    localStorage.setItem('platform_quizzes', JSON.stringify(quizzesList));
+    loadQuizzes();
+}
+
+function loadQuizzes() {
+    const container = document.getElementById('quizzes-container');
+    if (!container) return;
+
+    const quizzesList = JSON.parse(localStorage.getItem('platform_quizzes')) || [];
+
+    if (quizzesList.length === 0) {
+        container.innerHTML = `<p class="text-xs text-slate-500 py-3 text-center">لا توجد اختبارات إلكترونية مضافة حالياً.</p>`;
+        return;
+    }
+
+    const isAdmin = !document.getElementById('admin-dashboard-content')?.classList.contains('hidden');
+
+    container.innerHTML = quizzesList.map(quiz => `
+        <div class="p-4 rounded-xl bg-slate-900 border border-slate-800 space-y-3 text-right">
+            <div class="flex justify-between items-center">
+                <h4 class="font-bold text-sm text-amber-400">📋 ${quiz.title}</h4>
+                <span class="text-[10px] text-slate-400 bg-slate-950 px-2 py-1 rounded-lg border border-slate-800">⏱️ ${quiz.duration} دقيقة</span>
+            </div>
+
+            <form id="quiz-form-${quiz.id}" class="space-y-3 pt-2">
+                ${quiz.questions.map((q, qIndex) => `
+                    <div class="p-3 bg-slate-950 rounded-lg border border-slate-800/80 space-y-1.5">
+                        <p class="font-bold text-slate-200">س${qIndex + 1}: ${q.question}</p>
+                        <div class="space-y-1 pr-2">
+                            ${q.options.map((opt, oIndex) => `
+                                <label class="flex items-center gap-2 cursor-pointer text-slate-300">
+                                    <input type="radio" name="q_${quiz.id}_${qIndex}" value="${oIndex}" class="accent-amber-400">
+                                    <span>${opt}</span>
+                                </label>
+                            `).join('')}
+                        </div>
+                    </div>
+                `).join('')}
+
+                <button type="button" onclick="submitQuizAnswers(${quiz.id})" class="w-full py-2 bg-amber-400 text-slate-950 font-bold rounded-xl hover:bg-amber-300 transition">
+                    تسليم الاختبار وعرض النتيجة
+                </button>
+            </form>
+
+            <div id="quiz-result-${quiz.id}" class="hidden p-3 rounded-lg text-center font-bold"></div>
+
+            ${isAdmin ? `
+                <div class="pt-2 border-t border-slate-800">
+                    <button onclick="deleteQuiz(${quiz.id})" class="text-xs text-red-400 hover:underline font-bold">🗑️ حذف الاختبار من الأدمن</button>
+                </div>
+            ` : ''}
+        </div>
+    `).join('');
+}
+
+function submitQuizAnswers(quizId) {
+    const quizzesList = JSON.parse(localStorage.getItem('platform_quizzes')) || [];
+    const quiz = quizzesList.find(q => q.id === quizId);
+    if (!quiz) return;
+
+    let score = 0;
+    let total = quiz.questions.length;
+    let unanswered = false;
+
+    quiz.questions.forEach((q, qIndex) => {
+        const selected = document.querySelector(`input[name="q_${quizId}_${qIndex}"]:checked`);
+        if (!selected) {
+            unanswered = true;
+        } else if (parseInt(selected.value) === q.correct) {
+            score++;
+        }
+    });
+
+    if (unanswered) {
+        if (!confirm('لم تقم بالإجابة على جميع الأسئلة! هل تريد التسليم على أي حال؟')) return;
+    }
+
+    const resultBox = document.getElementById(`quiz-result-${quizId}`);
+    if (resultBox) {
+        resultBox.classList.remove('hidden');
+        const percentage = Math.round((score / total) * 100);
+
+        if (percentage >= 50) {
+            resultBox.className = "p-3 rounded-lg text-center font-bold bg-green-500/20 text-green-400 border border-green-500/30";
+            resultBox.innerHTML = `🎉 أحسنت! النتيجة: ${score} من ${total} (${percentage}%)`;
+        } else {
+            resultBox.className = "p-3 rounded-lg text-center font-bold bg-red-500/20 text-red-400 border border-red-500/30";
+            resultBox.innerHTML = `⚠️ حاول مرة أخرى. النتيجة: ${score} من ${total} (${percentage}%)`;
+        }
+    }
 }
 
 // البصمة للأدمن
