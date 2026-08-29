@@ -1,6 +1,8 @@
-@import url('https://fonts.googleapis.com/css2?family=Noto+Kufi+Arabic:wght@400;600;700;900&family=Plus+Jakarta+Sans:wght@500;700;800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Aref+Ruqaa:wght@400;700&family=Great+Vibes&family=Noto+Kufi+Arabic:wght@400;600;700;900&display=swap');
 
-/* Dynamic Brightness & Themes */
+.font-ruqaa { font-family: 'Aref Ruqaa', serif; }
+.font-cursive { font-family: 'Great Vibes', cursive; }
+
 body.theme-light {
   background-image: linear-gradient(to bottom, rgba(15, 23, 42, 0.75), rgba(15, 23, 42, 0.85)), url("https://i.postimg.cc/SKNW8WBH/cd2dcf5d05d298548db59eeb6905a00f.jpg");
   background-size: cover;
@@ -15,10 +17,8 @@ body.theme-dark {
   background-attachment: fixed;
 }
 
-.font-english { font-family: 'Plus Jakarta Sans', sans-serif; }
 .text-gold { color: #fbbf24; text-shadow: 0 0 15px rgba(251, 191, 36, 0.4); }
 
-/* 3D Golden Pyramids */
 .triple-pyramid-stage { display: flex; align-items: flex-end; justify-content: center; gap: 1.5rem; perspective: 1000px; }
 .pyramid-wrapper { position: relative; width: 80px; height: 80px; }
 .pyramid-main { width: 110px; height: 110px; }
@@ -29,10 +29,9 @@ body.theme-dark {
 .side-right { border-bottom-color: #fbbf24; transform: rotateY(-30deg) skewY(10deg); }
 .side-left { transform: rotateY(30deg) skewY(-10deg); }
 
-/* Form Elements */
 .form-input { width: 100%; padding: 0.75rem 1rem; background-color: rgba(15, 23, 42, 0.85); border: 1px solid rgba(255, 255, 255, 0.15); border-radius: 0.75rem; color: #f8fafc; font-size: 0.875rem; outline: none; }
 .form-input:focus { border-color: #fbbf24; }
-.gender-btn { display: flex; align-items: center; justify-content: center; padding: 0.75rem; border-width: 1px; border-radius: 0.75rem; background-color: rgba(15, 23, 42, 0.6); }
+.gender-btn { display: flex; align-items: center; justify-content: center; gap: 0.4rem; padding: 0.75rem; border-width: 1px; border-radius: 0.75rem; background-color: rgba(15, 23, 42, 0.6); }
 .gender-btn.active-male { background-color: rgba(59, 130, 246, 0.3); border-color: #3b82f6; }
 .gender-btn.active-female { background-color: rgba(236, 72, 153, 0.3); border-color: #ec4899; }
 .nav-link { font-weight: 700; transition: color 0.2s; }
