@@ -293,7 +293,6 @@ function loadNews() {
 
     if (newsContainer) {
         newsContainer.innerHTML = rawNewsList.map(item => {
-            // التوافق مع التنويهات القديمة المخزنة كنصوص فقط
             const isObject = typeof item === 'object' && item !== null;
             const text = isObject ? item.text : item;
             const link = isObject ? item.link : '';
