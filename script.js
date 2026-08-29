@@ -2,7 +2,6 @@
 // 1. ميزة البصمة (Biometric Authentication)
 // ==========================================
 
-// تفعيل البصمة من داخل لوحة الأدمن
 async function registerAdminBiometrics() {
     if (!window.PublicKeyCredential) {
         alert("متصفحك أو جهازك لا يدعم دخول البصمة.");
@@ -38,7 +37,6 @@ async function registerAdminBiometrics() {
     }
 }
 
-// الدخول بالبصمة
 async function loginWithBiometrics() {
     const isBiometricEnabled = localStorage.getItem('admin_biometric_enabled');
     
@@ -59,8 +57,10 @@ async function loginWithBiometrics() {
         });
 
         if (assertion) {
-            document.getElementById('admin-auth').classList.add('hidden');
-            document.getElementById('admin-dashboard-content').classList.remove('hidden');
+            const adminAuth = document.getElementById('admin-auth');
+            const adminDashboard = document.getElementById('admin-dashboard-content');
+            if (adminAuth) adminAuth.classList.add('hidden');
+            if (adminDashboard) adminDashboard.classList.remove('hidden');
             loadDashboardData();
         }
     } catch (err) {
@@ -73,10 +73,12 @@ async function loginWithBiometrics() {
 // ==========================================
 
 async function publishNews() {
-    const text = document.getElementById('admin-news-input').value.trim();
+    const newsInput = document.getElementById('admin-news-input');
     const linkInput = document.getElementById('admin-news-link');
-    const link = linkInput ? linkInput.value.trim() : '';
     const fileInput = document.getElementById('admin-news-file');
+
+    const text = newsInput ? newsInput.value.trim() : '';
+    const link = linkInput ? linkInput.value.trim() : '';
     let imageUrl = "";
 
     // قراءة الصورة المرفوعة تحويلها إلى Base64
@@ -106,11 +108,10 @@ async function publishNews() {
     localStorage.setItem('platform_news', JSON.stringify(newsList));
 
     // تفريغ الحقول بعد النشر
-    document.getElementById('admin-news-input').value = '';
+    if (newsInput) newsInput.value = '';
     if (linkInput) linkInput.value = '';
     if (fileInput) fileInput.value = '';
 
-    // إظهار التنويهات
     const navBadge = document.getElementById('badge-news-nav');
     const mobileBadge = document.getElementById('badge-news-mobile');
     if (navBadge) navBadge.classList.remove('hidden');
@@ -166,22 +167,31 @@ function loadNews() {
 // ==========================================
 
 function verifyAdminPass() {
-    const passInput = document.getElementById('admin-pass-input').value;
-    
-    if (passInput === '1122334455') {
-        document.getElementById('admin-auth').classList.add('hidden');
-        document.getElementById('admin-dashboard-content').classList.remove('hidden');
+    const passInput = document.getElementById('admin-pass-input');
+    if (passInput && passInput.value === '1122334455') {
+        const adminAuth = document.getElementById('admin-auth');
+        const adminDashboard = document.getElementById('admin-dashboard-content');
+        if (adminAuth) adminAuth.classList.add('hidden');
+        if (adminDashboard) adminDashboard.classList.remove('hidden');
         loadDashboardData();
     } else {
         alert('كلمة السر خاطئة!');
     }
 }
 
-function openAdminModal() { document.getElementById('admin-modal').classList.remove('hidden'); }
+function openAdminModal() { 
+    const modal = document.getElementById('admin-modal');
+    if (modal) modal.classList.remove('hidden');
+}
+
 function closeAdminModal() { 
-    document.getElementById('admin-modal').classList.add('hidden'); 
-    document.getElementById('admin-auth').classList.remove('hidden');
-    document.getElementById('admin-dashboard-content').classList.add('hidden');
+    const modal = document.getElementById('admin-modal');
+    const adminAuth = document.getElementById('admin-auth');
+    const adminDashboard = document.getElementById('admin-dashboard-content');
+    
+    if (modal) modal.classList.add('hidden'); 
+    if (adminAuth) adminAuth.classList.remove('hidden');
+    if (adminDashboard) adminDashboard.classList.add('hidden');
 }
 
 function replyToStudent(phone) {
@@ -290,6 +300,8 @@ window.addEventListener('load', () => {
 function toggleTheme() {
     const body = document.getElementById('app-body');
     const themeBtnText = document.getElementById('theme-btn-text');
+    if (!body || !themeBtnText) return;
+
     if (body.classList.contains('theme-dark')) {
         body.classList.remove('theme-dark');
         body.classList.add('theme-light');
@@ -357,7 +369,8 @@ if (regForm) {
         localStorage.setItem('platform_students', JSON.stringify(studentsList));
         localStorage.setItem('current_user', JSON.stringify(studentData));
 
-        document.getElementById('intro-screen').classList.add('hidden');
+        const introScreen = document.getElementById('intro-screen');
+        if (introScreen) introScreen.classList.add('hidden');
         showMainApp(studentData);
     });
 }
@@ -383,7 +396,9 @@ function openUserAccountModal() {
     const currentUser = JSON.parse(localStorage.getItem('current_user'));
     if (!currentUser) return;
 
-    document.getElementById('user-account-modal').classList.remove('hidden');
+    const modal = document.getElementById('user-account-modal');
+    if (modal) modal.classList.remove('hidden');
+
     const navBadge = document.getElementById('badge-user-nav');
     const mobileBadge = document.getElementById('badge-user-mobile');
     if (navBadge) navBadge.classList.add('hidden');
@@ -408,8 +423,15 @@ function openUserAccountModal() {
     }
 }
 
-function closeUserAccountModal() { document.getElementById('user-account-modal').classList.add('hidden'); }
-function logoutUser() { localStorage.removeItem('current_user'); location.reload(); }
+function closeUserAccountModal() { 
+    const modal = document.getElementById('user-account-modal');
+    if (modal) modal.classList.add('hidden'); 
+}
+
+function logoutUser() { 
+    localStorage.removeItem('current_user'); 
+    location.reload(); 
+}
 
 // Send Message
 const studentMsgForm = document.getElementById('student-msg-form');
