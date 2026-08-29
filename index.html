@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>منصة مستر أشرف بسيوني | Mr. Ashraf Bassiouny Platform</title>
     
-    <!-- Google Fonts: Lemonada (عربي حديث) & Space Grotesk (إنجليزي مودرن) -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800;900&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
@@ -13,7 +12,7 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="style.css">
 </head>
-<body class="theme-light bg-slate-950 text-slate-100 min-h-screen font-cairo text-xs sm:text-sm selection:bg-amber-400 selection:text-black overflow-x-hidden">
+<body id="app-body" class="theme-dark bg-slate-950 text-slate-100 min-h-screen font-cairo text-xs sm:text-sm selection:bg-amber-400 selection:text-black overflow-x-hidden">
 
     <!-- 1. INTRO SCREEN & REGISTRATION -->
     <div id="intro-screen" class="fixed inset-0 bg-slate-950 z-50 flex flex-col items-center justify-center p-4 overflow-y-auto">
@@ -31,7 +30,7 @@
 
         <div id="typing-text" class="font-modern-en text-amber-400 text-center text-xl md:text-3xl font-bold tracking-tight mb-4 min-h-[40px]"></div>
 
-        <div id="registration-box" class="hidden w-full max-w-md bg-slate-900/95 backdrop-blur-2xl border border-amber-400/30 p-5 rounded-2xl shadow-2xl">
+        <div id="registration-box" class="hidden w-full max-w-md bg-slate-900/95 backdrop-blur-2xl border border-amber-400/30 p-5 rounded-2xl shadow-2xl relative">
             <h3 class="text-xl font-black text-center text-amber-400 mb-4">انضمام عضو جديد للمنصة</h3>
             
             <form id="register-form" class="space-y-3 text-xs">
@@ -88,13 +87,18 @@
                     إنشاء الحساب ودخول المنصة
                 </button>
             </form>
+
+            <div class="mt-4 pt-3 border-t border-slate-800 text-center">
+                <button onclick="openAdminModal()" class="text-xs text-amber-400/80 hover:text-amber-400 font-bold underline">
+                    🔑 تسجيل دخول الأدمن
+                </button>
+            </div>
         </div>
     </div>
 
     <!-- 2. MAIN APP CONTENT -->
     <div id="main-app" class="hidden opacity-0 transition-opacity duration-700 pb-20 md:pb-0">
         
-        <!-- Clean Mobile-Friendly Navbar -->
         <nav class="sticky top-0 z-40 bg-slate-950/90 backdrop-blur-md border-b border-slate-800 px-4 py-3">
             <div class="max-w-6xl mx-auto flex justify-between items-center">
                 <div class="flex items-center gap-2">
@@ -104,7 +108,10 @@
 
                 <div class="hidden md:flex items-center gap-5 text-xs font-bold text-slate-300">
                     <button onclick="showSection('hero')" class="nav-link">الرئيسية</button>
-                    <button onclick="showSection('news')" class="nav-link">الأخبار</button>
+                    <button onclick="showSection('news')" class="nav-link relative">
+                        الأخبار
+                        <span id="badge-news-nav" class="hidden absolute -top-1 -right-2 w-2 h-2 bg-red-500 rounded-full animate-ping"></span>
+                    </button>
                     <button onclick="showSection('courses')" class="nav-link">المحاضرات</button>
                     <button onclick="showSection('pdfs')" class="nav-link">الملازم</button>
                     <button onclick="showSection('quizzes')" class="nav-link">الاختبارات</button>
@@ -112,9 +119,15 @@
                 </div>
 
                 <div class="flex items-center gap-2">
+                    <!-- Dark/Light Theme Switcher Button -->
+                    <button onclick="toggleTheme()" class="px-2.5 py-1.5 rounded-lg border border-slate-700 bg-slate-800 text-slate-300 text-xs font-bold">
+                        <span id="theme-btn-text">🌙 الداكن</span>
+                    </button>
+
                     <button onclick="openUserAccountModal()" class="relative px-2.5 py-1.5 rounded-lg border border-amber-400/40 bg-amber-400/10 text-amber-300 text-xs font-bold flex items-center gap-1.5">
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path></svg>
                         <span id="nav-user-name">حسابي</span>
+                        <span id="badge-user-nav" class="hidden absolute -top-1 -right-1 w-2.5 h-2.5 bg-red-500 rounded-full"></span>
                     </button>
 
                     <button onclick="openAdminModal()" class="px-2.5 py-1.5 rounded-lg border border-slate-700 bg-slate-800 text-slate-300 text-xs font-bold">
@@ -137,7 +150,7 @@
                 <span class="inline-block px-3 py-1 rounded-full border border-amber-400/30 text-amber-300 bg-amber-400/10 text-[11px] font-bold">
                     🏆 المعلم المثقف بمحافظة كفر الشيخ (المشروع الوطني للقراءة)
                 </span>
-                <h2 class="text-2xl md:text-4xl font-black text-white">مستر أشرف بسيوني <span class="text-amber-400">علي أحمد</span></h2>
+                <h2 class="text-2xl md:text-4xl font-black">مستر أشرف بسيوني <span class="text-amber-400">علي أحمد</span></h2>
                 <p class="text-sm md:text-base text-slate-300 font-bold">معلم خبير اللغة الإنجليزية</p>
             </div>
         </section>
@@ -148,7 +161,7 @@
             <div id="news-container" class="space-y-3"></div>
         </section>
 
-        <!-- Clean Sections -->
+        <!-- Dynamic Sections -->
         <section id="courses" class="app-section hidden max-w-3xl mx-auto px-4 py-16 text-center">
             <div class="p-8 rounded-2xl bg-slate-900/80 border border-slate-800">
                 <h3 class="text-xl font-bold text-amber-400 mb-2">📚 قسم المحاضرات</h3>
@@ -170,7 +183,6 @@
             </div>
         </section>
 
-        <!-- Contact Section -->
         <section id="contact" class="app-section max-w-2xl mx-auto px-4 py-8">
             <div class="bg-slate-900/90 p-6 rounded-2xl border border-slate-800 shadow-xl">
                 <h3 class="text-base font-bold text-amber-400 text-center mb-4">ارسل استفسارك للمستر</h3>
@@ -185,15 +197,16 @@
             </div>
         </section>
 
-        <!-- Clean Bottom Mobile Navigation Bar -->
+        <!-- Clean Mobile Bottom Nav Bar with Red Badges -->
         <div class="md:hidden fixed bottom-0 inset-x-0 bg-slate-950/95 border-t border-slate-800 p-2 flex justify-around items-center z-40 text-[10px] font-bold">
             <button onclick="showSection('hero')" class="flex flex-col items-center gap-1 text-amber-400">
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path></svg>
                 <span>الرئيسية</span>
             </button>
-            <button onclick="showSection('news')" class="flex flex-col items-center gap-1 text-slate-300">
+            <button onclick="showSection('news')" class="flex flex-col items-center gap-1 text-slate-300 relative">
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z"></path></svg>
                 <span>الأخبار</span>
+                <span id="badge-news-mobile" class="hidden absolute top-0 right-1 w-2 h-2 bg-red-500 rounded-full"></span>
             </button>
             <button onclick="showSection('courses')" class="flex flex-col items-center gap-1 text-slate-300">
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path></svg>
@@ -203,9 +216,10 @@
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z"></path></svg>
                 <span>الملازم</span>
             </button>
-            <button onclick="showSection('contact')" class="flex flex-col items-center gap-1 text-slate-300">
-                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z"></path></svg>
-                <span>تواصل</span>
+            <button onclick="openUserAccountModal()" class="flex flex-col items-center gap-1 text-slate-300 relative">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path></svg>
+                <span>حسابي</span>
+                <span id="badge-user-mobile" class="hidden absolute top-0 right-1 w-2 h-2 bg-red-500 rounded-full"></span>
             </button>
         </div>
     </div>
@@ -217,9 +231,7 @@
             
             <h3 class="text-lg font-bold text-amber-400 mb-4">بيانات حسابي والإشعارات</h3>
             
-            <div id="user-info-card" class="mb-4 p-3 bg-slate-950 rounded-xl border border-slate-800 space-y-1">
-                <!-- User account data renders here -->
-            </div>
+            <div id="user-info-card" class="mb-4 p-3 bg-slate-950 rounded-xl border border-slate-800 space-y-1"></div>
 
             <div class="space-y-4">
                 <div class="p-3 rounded-xl bg-slate-950 border border-slate-800">
@@ -234,7 +246,7 @@
         </div>
     </div>
 
-    <!-- 4. ADMIN DASHBOARD MODAL WITH DELETE & REPLY -->
+    <!-- 4. ADMIN DASHBOARD MODAL -->
     <div id="admin-modal" class="fixed inset-0 bg-slate-950/95 backdrop-blur-md z-50 hidden flex flex-col p-4 overflow-y-auto text-xs">
         <div class="max-w-5xl mx-auto w-full">
             <div id="admin-auth" class="max-w-sm mx-auto my-16 p-6 rounded-2xl bg-slate-900 border border-amber-400/30 text-center">
@@ -252,16 +264,14 @@
                     <button onclick="closeAdminModal()" class="px-3 py-1.5 bg-slate-800 rounded-lg font-bold">إغلاق</button>
                 </div>
 
-                <!-- Add News Form -->
                 <div class="p-4 rounded-xl bg-slate-900 border border-slate-800 space-y-2">
-                    <h4 class="font-bold text-amber-400">نشر خبر / تنويه جديد</h4>
+                    <h4 class="font-bold text-amber-400">نشر خبر / تنويه جديد للطلاب</h4>
                     <div class="flex gap-2">
                         <input type="text" id="admin-news-input" placeholder="اكتب التنويه للطلاب..." class="form-input flex-1">
                         <button onclick="publishNews()" class="px-4 py-2 bg-amber-400 text-slate-950 font-bold rounded-xl">نشر</button>
                     </div>
                 </div>
 
-                <!-- Table with Delete & Reply buttons -->
                 <div class="bg-slate-900 rounded-xl border border-slate-800 overflow-x-auto">
                     <table class="w-full text-right">
                         <thead class="bg-slate-950 text-slate-400 border-b border-slate-800">
